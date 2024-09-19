@@ -15,25 +15,13 @@ This is a reference implementation of a **civil registry lookup** from within th
 ```mermaid
 block-beta
 columns 1
-  block:DHIS2
     dhis2
-    db[("postgres")]
-  end
 
-  dhis2 --> db
-
-  block:middleware
     mid["OAuth2 DHIS2 route middleware"]
-  end
 
-  dhis2 --> mid
 
-  block:external
+
     civreg["Civil Registry Resource server"]
-    auth["OAuth2 Authorization Server"]
-  end
-
-  mid -- "client authentication" --> auth
 ```
 
 ## Running the example
