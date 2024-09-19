@@ -7,6 +7,8 @@ const config = {
     entryPoints: {
         plugin: './src/Plugin.tsx'
     },
+    // todo: verify plugin type
+    pluginType: "CAPTURE",
 }
 
 module.exports = config

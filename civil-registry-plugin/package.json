@@ -12,7 +12,8 @@
     "deploy": "d2-app-scripts deploy"
   },
   "devDependencies": {
-    "@dhis2/cli-app-scripts": "^11.2.2",
+    "@dhis2/cli-app-scripts": "^12.0.0-alpha.14",
+    "@dhis2/cli-style": "^10.7.4",
     "autoprefixer": "^10.4.19",
     "concurrently": "^8.2.2",
     "postcss": "^8.4.38",
