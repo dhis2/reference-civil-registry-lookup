@@ -1,15 +1,13 @@
-import './tailwind.css';
-import './index.css';
-import React, {useState} from "react";
-import {Button} from "@dhis2/ui";
-import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
-import {IDataEntryPluginProps} from "./Plugin.types";
-import {ExternalSourceForm} from "./Components/ExternalSourceForm";
-import {PluginDetails} from "./Components/PluginDetails";
+import './tailwind.css'
+import './index.css'
+import React, { useState } from 'react'
+import { Button } from '@dhis2/ui'
+import { IDataEntryPluginProps } from './Plugin.types'
+import { ExternalSourceForm } from './Components/ExternalSourceForm'
+import { PluginDetails } from './Components/PluginDetails'
 
-const queryClient = new QueryClient();
 const PluginInner = (propsFromParent: IDataEntryPluginProps) => {
-    const [showExternalSourceForm, setShowExternalSourceForm] = useState(true);
+    const [showExternalSourceForm, setShowExternalSourceForm] = useState(true)
     const {
         fieldsMetadata,
         setFieldValue,
@@ -18,47 +16,41 @@ const PluginInner = (propsFromParent: IDataEntryPluginProps) => {
         warnings,
         formSubmitted,
         setContextFieldValue,
-    } = propsFromParent;
+    } = propsFromParent
 
     return (
-        <QueryClientProvider
-            client={queryClient}
-        >
-            <div
-                className={'bg-white w-lvw flex'}
-            >
-                <div
-                    className={'w-full'}
-                >
-                    <div className={'flex justify-end'}>
-                        <Button
-                            small
-                            onClick={() => setShowExternalSourceForm((prev) => !prev)}
-                            className={'mt-3 mr-3'}
-                        >
-                            {showExternalSourceForm ? "Show plugin details" : "Back to form"}
-                        </Button>
-                    </div>
-
-                    {showExternalSourceForm ? (
-                        <ExternalSourceForm
-                            setFieldValue={setFieldValue}
-                        />
-                    ) : (
-                        <PluginDetails
-                            fieldsMetadata={fieldsMetadata}
-                            setFieldValue={setFieldValue}
-                            values={values}
-                            errors={errors}
-                            warnings={warnings}
-                            formSubmitted={formSubmitted}
-                            setContextFieldValue={setContextFieldValue}
-                        />
-                    )}
+        <div className={'bg-white w-lvw flex'}>
+            <div className={'w-full'}>
+                <div className={'flex justify-end'}>
+                    <Button
+                        small
+                        onClick={() =>
+                            setShowExternalSourceForm((prev) => !prev)
+                        }
+                        className={'mt-3 mr-3'}
+                    >
+                        {showExternalSourceForm
+                            ? 'Show plugin details'
+                            : 'Back to form'}
+                    </Button>
                 </div>
+
+                {showExternalSourceForm ? (
+                    <ExternalSourceForm setFieldValue={setFieldValue} />
+                ) : (
+                    <PluginDetails
+                        fieldsMetadata={fieldsMetadata}
+                        setFieldValue={setFieldValue}
+                        values={values}
+                        errors={errors}
+                        warnings={warnings}
+                        formSubmitted={formSubmitted}
+                        setContextFieldValue={setContextFieldValue}
+                    />
+                )}
             </div>
-        </QueryClientProvider>
+        </div>
     )
 }
 
-export default PluginInner;
+export default PluginInner
