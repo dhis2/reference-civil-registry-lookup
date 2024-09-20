@@ -1,7 +1,5 @@
 import React from 'react'
 import Plugin from "./Plugin";
-import './tailwind.css';
-import './index.css';
 
 const MyApp = () => (
     <div>

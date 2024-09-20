@@ -14,7 +14,7 @@ export const LookupField = ({ setFieldValue }: Props) => {
     const [patientId, setPatientId] = React.useState('')
 
     return (
-        <div className={classes.formContainer}>
+        <div className={classes.fieldContainer}>
             <div className={classes.labelContainer}>
                 <Label required htmlFor={'patientId'} className={classes.label}>
                     {i18n.t('Patient ID')}
@@ -26,7 +26,7 @@ export const LookupField = ({ setFieldValue }: Props) => {
                     name="patientId"
                     value={patientId}
                     onChange={({ value }) => setPatientId(value)}
-                    className="grow"
+                    className={classes.input}
                 />
 
                 <Button
