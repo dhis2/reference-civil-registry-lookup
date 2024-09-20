@@ -3,7 +3,7 @@ import './index.css'
 import React, { useState } from 'react'
 import { Button } from '@dhis2/ui'
 import { IDataEntryPluginProps } from './Plugin.types'
-import { ExternalSourceForm } from './Components/ExternalSourceForm'
+import { LookupField } from './Components/LookupField'
 import { PluginDetails } from './Components/PluginDetails'
 
 const PluginInner = (propsFromParent: IDataEntryPluginProps) => {
@@ -36,7 +36,7 @@ const PluginInner = (propsFromParent: IDataEntryPluginProps) => {
                 </div>
 
                 {showExternalSourceForm ? (
-                    <ExternalSourceForm setFieldValue={setFieldValue} />
+                    <LookupField setFieldValue={setFieldValue} />
                 ) : (
                     <PluginDetails
                         fieldsMetadata={fieldsMetadata}

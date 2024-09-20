@@ -3,24 +3,20 @@ import i18n from '@dhis2/d2-i18n'
 import { Button, Input, Label } from '@dhis2/ui'
 import { SetFieldValueProps } from '../../Plugin.types'
 import { useRoutedMutation } from '../../lib/useRoutedMutation'
-import classes from './ExternalSourceForm.module.css'
+import classes from './LookupField.module.css'
 
 type Props = {
     setFieldValue: (values: SetFieldValueProps) => void
 }
 
-export const ExternalSourceForm = ({ setFieldValue }: Props) => {
+export const LookupField = ({ setFieldValue }: Props) => {
     const [mutate, { loading }] = useRoutedMutation(setFieldValue)
     const [patientId, setPatientId] = React.useState('')
 
     return (
         <div className={classes.formContainer}>
             <div className={classes.labelContainer}>
-                <Label
-                    required
-                    htmlFor={'patientId'}
-                    className={classes.label}
-                >
+                <Label required htmlFor={'patientId'} className={classes.label}>
                     {i18n.t('Patient ID')}
                 </Label>
             </div>
