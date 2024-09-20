@@ -1,74 +1,129 @@
-import { DataQuery, useDataMutation, useDataQuery } from "@dhis2/app-runtime";
-import i18n from "@dhis2/d2-i18n";
-import { Input, Button } from "@dhis2/ui";
+import { useDataMutation, useDataQuery } from "@dhis2/app-runtime";
+import {
+  Button,
+  DataTable,
+  DataTableRow,
+  DataTableCell,
+  DataTableHead,
+  DataTableColumnHeader,
+} from "@dhis2/ui";
 import React, { useState } from "react";
 import classes from "./App.module.css";
+import UpsertRoute from "./UpsertRoute";
+import TestRoute from "./TestRoute";
 
-// 1. create the route
-// 2. save the route id to data store
-// (assume namespace configured by plugin)
-
-const NAMESPACE = "civil-registry-plugin";
-
-const createConfig = {
-  resource: `dataStore/${NAMESPACE}`,
-  type: "update",
-  id: ({ key = "config" }) => `${key}`,
-  data: ({ data }) => data,
-};
-
-const createRouteMutation = {
+const deleteRouteMutation = {
   resource: "routes",
-  type: "create",
-  data: ({ url }) => ({
-    name: "postman-get-6" + Date.now(),
-    // code: "postman-get-2",
-    disabled: false,
-    url,
-  }),
+  type: "delete",
+  id: ({ id }) => id,
 };
 
-const getRouteQuery = {
+const listRoutesQuery = {
   routes: {
     resource: "routes",
-    id: (params) => {
-      console.log(">>>>", params);
-      return `${params.id}/run`;
+    params: {
+      fields: "*",
+      pageSize: 50,
     },
   },
 };
+
 const MyApp = () => {
-  const [urlValue, setValue] = useState("");
-  const [createRoute] = useDataMutation(createRouteMutation);
-  const [createConfigInDataStore] = useDataMutation(createConfig);
+  const [deleteRoute] = useDataMutation(deleteRouteMutation);
 
-  const { data: routeData, refetch } = useDataQuery(getRouteQuery, {
-    lazy: true,
-  });
+  const { data: allRoutesList, refetch: refetchRoutesList } =
+    useDataQuery(listRoutesQuery);
 
-  const handeCreateRoute = async () => {
-    const { response: result } = await createRoute({ url: urlValue });
-    console.log(result);
-    // await refetch({ id: result?.uid });
-
-    const { response: dataStoreResult } = await createConfigInDataStore({
-      namespace: "civil-registry-plugin",
-      key: "config",
-      data: {
-        routeId: result?.uid,
-      },
-    });
-
-    console.log(dataStoreResult);
+  const handleDeleteRoute = async (routeCode) => {
+    await deleteRoute({ id: routeCode });
+    refetchRoutesList();
   };
+
+  const [isCreateModalVisible, showCreateModal] = useState(false);
+  const [isTestRouteModalVisible, showTestRouteModal] = useState(false);
+
+  const [activeRoute, setActiveRoute] = useState(undefined);
+
+  const handleShowCreateModal = () => {
+    showCreateModal(true);
+  };
+
+  const handleShowTestModal = (route) => {
+    setActiveRoute(route);
+    showTestRouteModal(true);
+  };
+
+  const handleEditRoute = (route) => {
+    setActiveRoute(route);
+    showCreateModal(true);
+  };
+
+  const onSave = () => {
+    refetchRoutesList();
+    showCreateModal(false);
+  };
+
+  const onCloseCreateRouteModal = () => {
+    showCreateModal(false);
+    setActiveRoute(undefined);
+  };
+
+  const onCloseTestModal = () => {
+    showTestRouteModal(false);
+    setActiveRoute(undefined);
+  };
+
   return (
     <div className={classes.container}>
-      <Input
-        onChange={({ value }) => setValue(value)}
-        placeholder="URL of civil registry endpoint"
-      ></Input>
-      <Button onClick={handeCreateRoute}>Save</Button>
-      {routeData && JSON.stringify(routeData, null, 2)}
+      {isCreateModalVisible && (
+        <UpsertRoute
+          route={activeRoute}
+          closeModal={onCloseCreateRouteModal}
+          onSave={onSave}
+        />
+      )}
+
+      {isTestRouteModalVisible && (
+        <TestRoute route={activeRoute} closeModal={onCloseTestModal} />
+      )}
+
+      <div className={classes.actionsStrip}>
+        <Button onClick={handleShowCreateModal}>Create New Route</Button>
+      </div>
+      <DataTable>
+        <DataTableHead>
+          <DataTableColumnHeader>ID</DataTableColumnHeader>
+          <DataTableColumnHeader>Code</DataTableColumnHeader>
+          <DataTableColumnHeader>Name</DataTableColumnHeader>
+          <DataTableColumnHeader>URL</DataTableColumnHeader>
+          <DataTableColumnHeader></DataTableColumnHeader>
+        </DataTableHead>
+        {allRoutesList?.routes?.routes?.map((route) => {
+          return (
+            <DataTableRow key={route.id}>
+              <DataTableCell>{route.id}</DataTableCell>
+              <DataTableCell>{route.code}</DataTableCell>
+              <DataTableCell>{route.name}</DataTableCell>
+              <DataTableCell>{route.url}</DataTableCell>
+              <DataTableCell align="right">
+                <Button small onClick={() => handleShowTestModal(route)}>
+                  Test
+                </Button>{" "}
+                <Button small onClick={() => handleEditRoute(route)}>
+                  Edit Route
+                </Button>{" "}
+                <Button
+                  destructive
+                  small
+                  onClick={() => handleDeleteRoute(route.id)}
+                >
+                  Delete
+                </Button>
+              </DataTableCell>
+            </DataTableRow>
+          );
+        })}
+      </DataTable>
     </div>
   );
 };

@@ -7,4 +7,20 @@
     justify-content: center;
     font-size: 1rem;
     row-gap: 5px;
+    padding: 10px
+}
+
+.formContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    min-width: 50%;
+}
+
+.actionsStrip {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+    align-items: end;
 }
