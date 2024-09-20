@@ -4,10 +4,10 @@
 }
 
 .labelContainer {
+    padding: 8px 16px 4px 4px;
     flex-grow: 0;
     flex-shrink: 0;
     flex-basis: 200px;
-    padding-block-end: 16px;
 }
 
 .label {
