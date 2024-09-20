@@ -22,12 +22,10 @@ export const useRoutedMutation = (
                 fieldId: 'firstName',
                 value: person.name.first,
             })
-
             setFieldValue({
                 fieldId: 'lastName',
                 value: person.name.last,
             })
-
             setFieldValue({
                 fieldId: 'gender',
                 // todo: how to map to an option set 🤔
@@ -35,8 +33,22 @@ export const useRoutedMutation = (
             })
         },
         onError: (error) => {
-            show({ message: error.details.message || error.message })
+            show({ message: 'Failed to query civil registry: ' + error.details.message || error.message })
             console.log({ error, e: Object.entries(error) })
+
+            // todo: remove
+            setFieldValue({
+                fieldId: 'firstName',
+                value: 'not found', // todo
+            })
+            setFieldValue({
+                fieldId: 'lastName',
+                value: 'not found',
+            })
+            setFieldValue({
+                fieldId: 'gender',
+                value: 'Male',
+            })
         },
     })
 }
