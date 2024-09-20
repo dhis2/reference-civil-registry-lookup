@@ -1,0 +1,28 @@
+.formContainer {
+    display: flex;
+    padding: 8px 8px 8px 12px;
+}
+
+.labelContainer {
+    flex-grow: 0;
+    flex-shrink: 0;
+    flex-basis: 200px;
+    padding-block-end: 16px;
+}
+
+.label {
+    font-size: 14px;
+    color: rgba(0, 0, 0, 0.87);
+}
+
+.inputContainer {
+    display: flex;
+    flex-basis: 150px;
+    flex-grow: 1;
+    gap: 4px;
+    align-items: center;
+}
+
+.input {
+    flex-grow: 1;
+}
