@@ -1,0 +1,34 @@
+{
+  "urn": "urn:mediator:oauth-route-middleware",
+  "version": "1.0.0-SNAPSHOT",
+  "name": "oauth-route-middleware",
+  "defaultChannelConfig": [
+    {
+      "name": "oauth-route-middleware-channel",
+      "methods": [
+        "GET"
+      ],
+      "urlPattern": "^/api/orgUnits$",
+      "authType": "public",
+      "routes": {
+        "name": "DHIS2 Organisation Units",
+        "host": "localhost",
+        "port": 9070,
+        "path": "/api/orgUnits",
+        "primary": true,
+        "secured": false
+      }
+    }
+  ],
+  "endpoints": [
+    {
+      "name": "DHIS2 Organisation Units",
+      "type": "http",
+      "secured": false,
+      "host": "localhost",
+      "port": 9070,
+      "status": "enabled",
+      "path": "/api/orgUnits"
+    }
+  ]
+}

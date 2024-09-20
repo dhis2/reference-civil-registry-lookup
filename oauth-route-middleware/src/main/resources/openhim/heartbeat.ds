@@ -1,0 +1,4 @@
+{
+  "uptime": cml.exchangeProperty('uptime'),
+  "config": false
+}
