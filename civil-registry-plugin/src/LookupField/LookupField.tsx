@@ -1,8 +1,8 @@
 import React from 'react'
 import i18n from '@dhis2/d2-i18n'
 import { Button, Input, Label } from '@dhis2/ui'
-import { SetFieldValueProps } from '../../Plugin.types'
-import { useRoutedMutation } from '../../lib/useRoutedMutation'
+import { SetFieldValueProps } from '../Plugin.types'
+import { useRoutedMutation } from '../lib/useRoutedMutation'
 import classes from './LookupField.module.css'
 
 type Props = {

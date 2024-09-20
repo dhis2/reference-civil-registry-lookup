@@ -1,6 +1,6 @@
 import React from 'react'
 import { IDataEntryPluginProps } from './Plugin.types'
-import { LookupField } from './Components/LookupField'
+import { LookupField } from './LookupField'
 
 const PluginInner = (propsFromParent: IDataEntryPluginProps) => {
     const {
