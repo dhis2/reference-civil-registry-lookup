@@ -1,3 +1,4 @@
+import i18n from "@dhis2/d2-i18n";
 import {
   Modal,
   ModalContent,
@@ -36,10 +37,10 @@ const updateRouteMutation = {
 };
 
 type UpsertRouteProps = {
-  route: ApiRouteData
-  closeModal: VoidFunction
-  onSave: VoidFunction
-}
+  route: ApiRouteData;
+  closeModal: VoidFunction;
+  onSave: VoidFunction;
+};
 
 const UpsertRoute: React.FC<UpsertRouteProps> = ({
   route = {},
@@ -48,14 +49,13 @@ const UpsertRoute: React.FC<UpsertRouteProps> = ({
 }) => {
   const [code, setCode] = useState(route.code ?? "");
   const [name, setName] = useState(route.name ?? "");
-  const [urlValue, setValue] = useState(
-    route.url ?? "https://postman-echo.com/get"
-  );
+  const [urlValue, setValue] = useState(route.url ?? "");
 
   const { show } = useAlert(
     ({ type, error }) => {
-      if (type === "success") return "Route saved successfully";
-      if (type === "error") return `Failed to save route: ${error}`;
+      if (type === "success") return i18n.t("Route saved successfully");
+      if (type === "error")
+        return i18n.t("Failed to save route: {{error}}", { error });
     },
     ({ type }) => {
       if (type === "success") return { success: true };
@@ -80,11 +80,9 @@ const UpsertRoute: React.FC<UpsertRouteProps> = ({
 
         onSave();
       } else {
-        await createRoute(
-          {
-            data: { url: urlValue, code, name },
-          }
-        );
+        await createRoute({
+          data: { url: urlValue, code, name },
+        });
 
         onSave();
       }
@@ -95,14 +93,14 @@ const UpsertRoute: React.FC<UpsertRouteProps> = ({
 
   return (
     <Modal>
-      <ModalTitle>Route details</ModalTitle>
+      <ModalTitle>{i18n.t("Route details")}</ModalTitle>
       <ModalActions>
         <ButtonStrip end>
           <Button secondary onClick={closeModal}>
-            Close
+            {i18n.t("Close")}
           </Button>
           <Button primary onClick={handeCreateRoute}>
-            Save Route
+            {i18n.t("Save Route")}
           </Button>
         </ButtonStrip>
       </ModalActions>
@@ -111,21 +109,21 @@ const UpsertRoute: React.FC<UpsertRouteProps> = ({
           <InputField
             value={code}
             onChange={({ value }) => setCode(value)}
-            placeholder="A unique code for the route"
-            label="Route code"
+            placeholder={i18n.t("A unique code for the route")}
+            label={i18n.t("Route code")}
           />
           <InputField
             value={name}
             onChange={({ value }) => setName(value)}
-            placeholder="A unique name for the route"
-            label="Route Name"
+            placeholder={i18n.t("A unique name for the route")}
+            label={i18n.t("Route Name")}
           />
 
           <InputField
             value={urlValue}
             onChange={({ value }) => setValue(value)}
-            placeholder="URL of endpoint to route to"
-            label="URL for route destination"
+            placeholder={i18n.t("e.g. https://postman-echo.com/get")}
+            label={i18n.t("URL for route destination")}
           />
         </div>
       </ModalContent>

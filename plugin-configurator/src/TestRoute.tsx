@@ -1,3 +1,4 @@
+import i18n from "@dhis2/d2-i18n";
 import {
   Modal,
   ModalTitle,
@@ -29,7 +30,7 @@ type TestRouteProps = {
 
 const TestRoute: React.FC<TestRouteProps> = ({
   route = {},
-  closeModal = () => {}
+  closeModal = () => {},
 }) => {
   const [body, setBody] = useState<string>();
   const [wildcard, setWildcard] = useState<string>();
@@ -38,8 +39,9 @@ const TestRoute: React.FC<TestRouteProps> = ({
 
   const { show } = useAlert(
     ({ type, error }) => {
-      if (type === "success") return "Route invoked successfully";
-      if (type === "error") return `Failed to invoke route: ${error}`;
+      if (type === "success") return i18n.t("Route invoked successfully");
+      if (type === "error")
+        return i18n.t("Failed to invoke route: {{error}}", { error });
     },
     ({ type }) => {
       if (type === "success") return { success: true };
@@ -63,40 +65,48 @@ const TestRoute: React.FC<TestRouteProps> = ({
     setResult(result);
   };
 
-  const hasWildCardPath = route.url?.endsWith("*");
+  const hasWildCardPath = route.url?.endsWith("**");
 
   return (
     <Modal>
       <ModalActions>
         <ButtonStrip end>
           <Button secondary onClick={closeModal}>
-            Close
+            {i18n.t("Close")}
           </Button>
           <Button primary onClick={handleTestRoute}>
-            Test Route
+            {i18n.t("Test Route")}
           </Button>{" "}
         </ButtonStrip>
       </ModalActions>
-      <ModalTitle>Test Route</ModalTitle>
+      <ModalTitle>{i18n.t("Test Route")}</ModalTitle>
       <ModalContent>
         <div className={classes.formContainer}>
-          <InputField disabled value={route?.code} label="Route code" />
-          <InputField disabled value={route?.name} label="Route Name" />
-          <InputField disabled value={route?.url} label="Route URL" />
+          <InputField
+            disabled
+            value={route?.code}
+            label={i18n.t("Route code")}
+          />
+          <InputField
+            disabled
+            value={route?.name}
+            label={i18n.t("Route Name")}
+          />
+          <InputField disabled value={route?.url} label={i18n.t("Route URL")} />
 
           {hasWildCardPath && (
             <InputField
               value={wildcard}
               onChange={({ value }) => setWildcard(value)}
-              label="Wildcard path"
+              label={i18n.t("Wildcard path")}
             />
           )}
 
           <TextAreaField
             value={body}
             onChange={({ value }) => setBody(value)}
-            placeholder="Body to pass to route"
-            label="Body of request"
+            placeholder={i18n.t("Body to pass to route")}
+            label={i18n.t("Body of request")}
           />
 
           {result && JSON.stringify(result, null, 2)}

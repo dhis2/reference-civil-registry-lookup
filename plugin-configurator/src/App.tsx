@@ -1,3 +1,4 @@
+import i18n from "@dhis2/d2-i18n";
 import { useDataMutation, useDataQuery } from "@dhis2/app-runtime";
 import {
   Button,
@@ -11,7 +12,9 @@ import React, { useState } from "react";
 import classes from "./App.module.css";
 import UpsertRoute from "./UpsertRoute";
 import TestRoute from "./TestRoute";
-import { ApiRouteData, RouteInfo, WrapQueryResponse } from "./types/RouteInfo";
+import { ApiRouteData, WrapQueryResponse } from "./types/RouteInfo";
+
+import "./locales";
 
 const deleteRouteMutation = {
   resource: "routes",
@@ -33,7 +36,7 @@ const MyApp = () => {
   const [deleteRoute] = useDataMutation(deleteRouteMutation);
 
   const { data: allRoutesList, refetch: refetchRoutesList } =
-    useDataQuery<WrapQueryResponse<ApiRouteData[], 'routes'>>(listRoutesQuery);
+    useDataQuery<WrapQueryResponse<ApiRouteData[], "routes">>(listRoutesQuery);
 
   const handleDeleteRoute = async (routeCode) => {
     await deleteRoute({ id: routeCode });
@@ -43,7 +46,7 @@ const MyApp = () => {
   const [isCreateModalVisible, showCreateModal] = useState(false);
   const [isTestRouteModalVisible, showTestRouteModal] = useState(false);
 
-  const [activeRoute, setActiveRoute] = useState<RouteInfo>(undefined);
+  const [activeRoute, setActiveRoute] = useState<ApiRouteData>(undefined);
 
   const handleShowCreateModal = () => {
     showCreateModal(true);
@@ -89,14 +92,16 @@ const MyApp = () => {
       )}
 
       <div className={classes.actionsStrip}>
-        <Button onClick={handleShowCreateModal}>Create New Route</Button>
+        <Button onClick={handleShowCreateModal}>
+          {i18n.t("Create New Route")}
+        </Button>
       </div>
       <DataTable>
         <DataTableHead>
-          <DataTableColumnHeader>ID</DataTableColumnHeader>
-          <DataTableColumnHeader>Code</DataTableColumnHeader>
-          <DataTableColumnHeader>Name</DataTableColumnHeader>
-          <DataTableColumnHeader>URL</DataTableColumnHeader>
+          <DataTableColumnHeader>{i18n.t("ID")}</DataTableColumnHeader>
+          <DataTableColumnHeader>{i18n.t("Code")}</DataTableColumnHeader>
+          <DataTableColumnHeader>{i18n.t("Name")}</DataTableColumnHeader>
+          <DataTableColumnHeader>{i18n.t("URL")}</DataTableColumnHeader>
           <DataTableColumnHeader></DataTableColumnHeader>
         </DataTableHead>
         {allRoutesList?.routes?.routes?.map((route) => {
@@ -108,17 +113,17 @@ const MyApp = () => {
               <DataTableCell>{route.url}</DataTableCell>
               <DataTableCell align="right">
                 <Button small onClick={() => handleShowTestModal(route)}>
-                  Test
+                  {i18n.t("Test")}
                 </Button>{" "}
                 <Button small onClick={() => handleEditRoute(route)}>
-                  Edit Route
+                  {i18n.t("Edit Route")}
                 </Button>{" "}
                 <Button
                   destructive
                   small
                   onClick={() => handleDeleteRoute(route.id)}
                 >
-                  Delete
+                  {i18n.t("Delete")}
                 </Button>
               </DataTableCell>
             </DataTableRow>

@@ -5,11 +5,74 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2024-09-19T11:45:29.271Z\n"
-"PO-Revision-Date: 2024-09-19T11:45:29.271Z\n"
+"POT-Creation-Date: 2024-09-23T18:14:08.891Z\n"
+"PO-Revision-Date: 2024-09-23T18:14:08.891Z\n"
 
-msgid "Hello {{name}}"
-msgstr "Hello {{name}}"
+msgid "Create New Route"
+msgstr "Create New Route"
 
-msgid "Welcome to DHIS2!"
-msgstr "Welcome to DHIS2!"
+msgid "ID"
+msgstr "ID"
+
+msgid "Code"
+msgstr "Code"
+
+msgid "Name"
+msgstr "Name"
+
+msgid "URL"
+msgstr "URL"
+
+msgid "Test"
+msgstr "Test"
+
+msgid "Edit Route"
+msgstr "Edit Route"
+
+msgid "Delete"
+msgstr "Delete"
+
+msgid "Route invoked successfully"
+msgstr "Route invoked successfully"
+
+msgid "Close"
+msgstr "Close"
+
+msgid "Test Route"
+msgstr "Test Route"
+
+msgid "Route code"
+msgstr "Route code"
+
+msgid "Route Name"
+msgstr "Route Name"
+
+msgid "Route URL"
+msgstr "Route URL"
+
+msgid "Wildcard path"
+msgstr "Wildcard path"
+
+msgid "Body to pass to route"
+msgstr "Body to pass to route"
+
+msgid "Body of request"
+msgstr "Body of request"
+
+msgid "Route saved successfully"
+msgstr "Route saved successfully"
+
+msgid "Route details"
+msgstr "Route details"
+
+msgid "Save Route"
+msgstr "Save Route"
+
+msgid "A unique code for the route"
+msgstr "A unique code for the route"
+
+msgid "A unique name for the route"
+msgstr "A unique name for the route"
+
+msgid "URL for route destination"
+msgstr "URL for route destination"
