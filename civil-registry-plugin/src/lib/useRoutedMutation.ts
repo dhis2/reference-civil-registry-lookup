@@ -33,7 +33,11 @@ export const useRoutedMutation = (
             })
         },
         onError: (error) => {
-            show({ message: 'Failed to query civil registry: ' + error.details.message || error.message })
+            show({
+                message:
+                    'Failed to query civil registry: ' +
+                    (error.details.message || error.message),
+            })
             console.log({ error, e: Object.entries(error) })
 
             // todo: remove
