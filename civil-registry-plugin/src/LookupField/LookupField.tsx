@@ -32,7 +32,7 @@ export const LookupField = ({ setFieldValue }: Props) => {
                 <Button
                     primary
                     onClick={() => {
-                        mutate({ registryId: patientId })
+                        mutate({ id: patientId })
                     }}
                     loading={loading}
                 >
