@@ -27,3 +27,8 @@
 .input {
     flex-grow: 1;
 }
+
+:global(.app-shell-app) {
+    background-color: #fbfcfd;
+    border-block-end: 1px solid #e8edf2;
+}

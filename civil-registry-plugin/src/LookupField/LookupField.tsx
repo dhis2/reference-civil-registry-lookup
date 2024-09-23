@@ -16,7 +16,7 @@ export const LookupField = ({ setFieldValue }: Props) => {
     return (
         <div className={classes.fieldContainer}>
             <div className={classes.labelContainer}>
-                <Label required htmlFor={'patientId'} className={classes.label}>
+                <Label htmlFor={'patientId'} className={classes.label}>
                     {i18n.t('Patient ID')}
                 </Label>
             </div>
