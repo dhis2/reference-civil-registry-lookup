@@ -52,8 +52,3 @@ hawtio:
 logging:
   file:
     name: oauth-route-middleware.log
-
-openhim:
-  url: https://localhost:8080
-  username: root@openhim.org
-  password: openhim-password

@@ -3,6 +3,8 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
+oauth-route-middleware.log
+
 ### IntelliJ IDEA ###
 .idea/
 *.iws
