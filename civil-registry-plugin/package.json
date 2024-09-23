@@ -6,25 +6,18 @@
   "private": true,
   "scripts": {
     "build": "d2-app-scripts build",
-    "start": "concurrently --names \"CSS,CRP\" \"yarn start:css\" \"d2-app-scripts start\" --hide \"CSS\"",
-    "start:css": "tailwindcss -o src/tailwind.css --watch",
+    "start": "d2-app-scripts start",
     "test": "d2-app-scripts test",
     "deploy": "d2-app-scripts deploy"
   },
   "devDependencies": {
     "@dhis2/cli-app-scripts": "^12.0.0-alpha.14",
     "@dhis2/cli-style": "^10.7.4",
-    "autoprefixer": "^10.4.19",
-    "concurrently": "^8.2.2",
-    "postcss": "^8.4.38",
     "typescript-eslint": "^7.9.0"
   },
   "dependencies": {
     "@dhis2/app-runtime": "^3.10.0-alpha.6",
     "@dhis2/ui": "^9.4.6",
-    "@tanstack/react-query": "4",
-    "formik": "^2.4.5",
-    "tailwindcss": "^3.4.3",
     "typescript": "^5.4.5"
   }
 }
