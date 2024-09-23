@@ -11,10 +11,11 @@ import React, { useState } from "react";
 import classes from "./App.module.css";
 import UpsertRoute from "./UpsertRoute";
 import TestRoute from "./TestRoute";
+import { ApiRouteData, RouteInfo, WrapQueryResponse } from "./types/RouteInfo";
 
 const deleteRouteMutation = {
   resource: "routes",
-  type: "delete",
+  type: "delete" as const,
   id: ({ id }) => id,
 };
 
@@ -32,7 +33,7 @@ const MyApp = () => {
   const [deleteRoute] = useDataMutation(deleteRouteMutation);
 
   const { data: allRoutesList, refetch: refetchRoutesList } =
-    useDataQuery(listRoutesQuery);
+    useDataQuery<WrapQueryResponse<ApiRouteData[], 'routes'>>(listRoutesQuery);
 
   const handleDeleteRoute = async (routeCode) => {
     await deleteRoute({ id: routeCode });
@@ -42,7 +43,7 @@ const MyApp = () => {
   const [isCreateModalVisible, showCreateModal] = useState(false);
   const [isTestRouteModalVisible, showTestRouteModal] = useState(false);
 
-  const [activeRoute, setActiveRoute] = useState(undefined);
+  const [activeRoute, setActiveRoute] = useState<RouteInfo>(undefined);
 
   const handleShowCreateModal = () => {
     showCreateModal(true);

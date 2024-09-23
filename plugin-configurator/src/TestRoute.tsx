@@ -8,29 +8,33 @@ import {
   InputField,
   TextAreaField,
 } from "@dhis2/ui";
-import { useState } from "react";
+import React, { useState } from "react";
 import { useAlert, useDataQuery } from "@dhis2/app-runtime";
 import classes from "./App.module.css";
+import { ApiRouteData } from "./types/RouteInfo";
 
 const invokeRouteQuery = {
   routes: {
     resource: "routes",
     id: ({ id, code, wildcard }) => {
-      console.log(">>>", id, code, wildcard);
-      return `${code ?? id}/run${wildcard ? `/${wildcard}` : ""}`;
+      return `${id}/run${wildcard ? `/${wildcard}` : ""}`;
     },
   },
 };
 
-const TestRoute = ({
-  route = {},
-  closeModal = () => {},
-  onSave = () => {},
-}) => {
-  const [body, setBody] = useState();
-  const [wildcard, setWildcard] = useState();
+type TestRouteProps = {
+  route: ApiRouteData;
+  closeModal: VoidFunction;
+};
 
-  const [result, setResult] = useState("");
+const TestRoute: React.FC<TestRouteProps> = ({
+  route = {},
+  closeModal = () => {}
+}) => {
+  const [body, setBody] = useState<string>();
+  const [wildcard, setWildcard] = useState<string>();
+
+  const [result, setResult] = useState<unknown>("");
 
   const { show } = useAlert(
     ({ type, error }) => {
@@ -43,7 +47,7 @@ const TestRoute = ({
     }
   );
 
-  const { data: routeData, refetch: invokeRoute } = useDataQuery(
+  const { data: routeData, refetch: invokeRoute } = useDataQuery<unknown>(
     invokeRouteQuery,
     {
       lazy: true,
@@ -77,12 +81,7 @@ const TestRoute = ({
       <ModalContent>
         <div className={classes.formContainer}>
           <InputField disabled value={route?.code} label="Route code" />
-          <InputField
-            disabled
-            value={route?.name}
-            onChange={({ value }) => setName(value)}
-            label="Route Name"
-          />
+          <InputField disabled value={route?.name} label="Route Name" />
           <InputField disabled value={route?.url} label="Route URL" />
 
           {hasWildCardPath && (

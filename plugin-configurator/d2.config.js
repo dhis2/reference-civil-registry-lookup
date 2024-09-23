@@ -4,7 +4,7 @@ const config = {
     title: 'Route Manager',
 
     entryPoints: {
-        app: './src/App.js',
+        app: './src/App.tsx',
     },
 }
 

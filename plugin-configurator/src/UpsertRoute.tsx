@@ -7,9 +7,10 @@ import {
   Button,
   InputField,
 } from "@dhis2/ui";
-import { useState } from "react";
+import React, { useState } from "react";
 import { useAlert, useDataMutation } from "@dhis2/app-runtime";
 import classes from "./App.module.css";
+import { ApiRouteData } from "./types/RouteInfo";
 
 const createRouteMutation = {
   resource: "routes",
@@ -20,15 +21,6 @@ const createRouteMutation = {
     disabled: false,
     url: data.url,
   }),
-};
-
-const deleteRouteMutation = {
-  resource: "routes",
-  type: "delete",
-  id: (params) => {
-    console.log(">>>>", params);
-    return `${params.id}`;
-  },
 };
 
 const updateRouteMutation = {
@@ -43,7 +35,13 @@ const updateRouteMutation = {
   }),
 };
 
-const UpsertRoute = ({
+type UpsertRouteProps = {
+  route: ApiRouteData
+  closeModal: VoidFunction
+  onSave: VoidFunction
+}
+
+const UpsertRoute: React.FC<UpsertRouteProps> = ({
   route = {},
   closeModal = () => {},
   onSave = () => {},
@@ -75,26 +73,22 @@ const UpsertRoute = ({
   const handeCreateRoute = async () => {
     try {
       if (route?.id) {
-        const { response: result } = await updateRoute({
+        await updateRoute({
           id: route.id,
           data: { url: urlValue, code, name },
         });
 
         onSave();
       } else {
-        const { response: result } = await createRoute(
+        await createRoute(
           {
             data: { url: urlValue, code, name },
-          },
-          {
-            onError: () => show({ type: "error" }),
           }
         );
 
         onSave();
       }
     } catch (err) {
-      console.log(">>>>", err);
       show({ type: "error", message: err.message });
     }
   };
