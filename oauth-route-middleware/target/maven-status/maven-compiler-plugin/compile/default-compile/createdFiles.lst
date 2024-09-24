@@ -1,7 +1,0 @@
-org/hisp/dhis/integration/camel/security/SelfSignedHttpClientConfigurer.class
-org/hisp/dhis/integration/camel/route/HelloWorldRouteBuilder.class
-org/hisp/dhis/integration/camel/Application.class
-org/hisp/dhis/integration/camel/security/DefaultSecurityConfig$SpaCsrfTokenRequestHandler.class
-org/hisp/dhis/integration/camel/security/DefaultSecurityConfig$CsrfCookieFilter.class
-org/hisp/dhis/integration/camel/UptimeExpression.class
-org/hisp/dhis/integration/camel/security/DefaultSecurityConfig.class
