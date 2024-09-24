@@ -33,6 +33,8 @@ const listRoutesQuery = {
 }
 
 const MyApp = () => {
+    // Todo: update the type for delete mutation
+    // @ts-expect-error("the error is because because delete mutation expects hardcoded ID but that's not accurate (it can take a function return a string)
     const [deleteRoute] = useDataMutation(deleteRouteMutation)
 
     const { data: allRoutesList, refetch: refetchRoutesList } =

@@ -8,7 +8,7 @@
         "target": "ESNext",
         "module": "esnext",
         "moduleResolution": "node",
-        "types": ["reflect-metadata", "jest"],
+        "types": ["jest"],
         "typeRoots": ["./types", "./node_modules/@types"]
     },
     "include": ["./src/**/*"]

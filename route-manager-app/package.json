@@ -9,7 +9,8 @@
         "start": "d2-app-scripts start",
         "test": "d2-app-scripts test",
         "deploy": "d2-app-scripts deploy",
-        "lint": "d2-style check",
+        "tsc": "tsc --noEmit",
+        "lint": "yarn tsc && d2-style check",
         "lint:staged": "d2-style check --staged",
         "format": "d2-style apply",
         "format:staged": "d2-style apply --staged"
