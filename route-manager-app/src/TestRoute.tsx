@@ -29,7 +29,7 @@ const typesMap: Record<string, MutationType> = {
     POST: 'create',
     DELETE: 'delete',
     PUT: 'update',
-    PATCH: 'replace',
+    PATCH: 'update',
     'JSON-PATCH': 'json-patch',
 }
 
@@ -90,6 +90,11 @@ const TestRoute: React.FC<TestRouteProps> = ({
                 delete mutationOptions.data
             }
 
+            if (verb === 'PATCH') {
+                // @ts-expect-error("another workaround to be able to have a generic set of options for all verbs")
+                mutationOptions.partial = true
+            }
+
             // @ts-expect-error("the error is because different mutations expect ID or not, but in practice, they can be used generically with id=null")
             const result = await engine.mutate(mutationOptions)
 
@@ -140,11 +145,10 @@ const TestRoute: React.FC<TestRouteProps> = ({
                             label="DELETE"
                             value="DELETE"
                         ></SingleSelectOption>
-                        {/* // Todo: disabling PATCH for now - it doesn't seem to work correctly with DataEngine */}
-                        {/* <SingleSelectOption
-              label="PATCH"
-              value="PATCH"
-            ></SingleSelectOption> */}
+                        <SingleSelectOption
+                            label="PATCH"
+                            value="PATCH"
+                        ></SingleSelectOption>
                         <SingleSelectOption
                             label="JSON-PATCH"
                             value="JSON-PATCH"
