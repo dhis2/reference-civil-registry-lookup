@@ -1,5 +1,7 @@
 import { useAlert, useDataMutation } from '@dhis2/app-runtime'
-import { SetFieldValueProps } from '../Plugin.types'
+import { SetFieldValue } from '../Plugin.types'
+
+type Props = { setFieldValue: SetFieldValue }
 
 // TODO: These types should be edited to match the response from your civil registry
 type Address = {
@@ -27,9 +29,7 @@ const mutation = {
     data: ({ id }: { id: string }) => ({ id }),
 }
 
-export const useCivilRegistryQuery = (
-    setFieldValue: (values: SetFieldValueProps) => void
-) => {
+export const useCivilRegistryQuery = ({ setFieldValue }: Props) => {
     const { show } = useAlert(({ message }) => message, { critical: true })
 
     return useDataMutation(mutation as any, {
@@ -38,12 +38,16 @@ export const useCivilRegistryQuery = (
 
             // TODO: `fieldId`s should match the configured 'plugin alias' keys,
             // and `value` should be the appropriate value from the civil
-            // registry response
+            // registry response.
+            // For option sets, make sure values exactly match options
             const fieldValueMap = [
                 { fieldId: 'firstName', value: person.firstName },
                 { fieldId: 'lastName', value: person.lastName },
-                // todo: consider option sets
-                { fieldId: 'gender', value: person.sex },
+                {
+                    // todo: consider option sets
+                    fieldId: 'gender',
+                    value: person.sex === 'male' ? 'Male' : 'Female',
+                },
                 // todo: this isn't perfect; doesn't populate 'age since DoB'
                 { fieldId: 'age', value: { date: person.dateOfBirth } },
                 // todo: is this right? 🤔 the form tip says country
@@ -53,7 +57,7 @@ export const useCivilRegistryQuery = (
                 { fieldId: 'zip', value: person.address.postalCode },
                 { fieldId: 'phone', value: person.phone },
                 // todo:
-                // { fieldId: 'nationalId', value: person.id },
+                { fieldId: 'nationalId', value: person.id },
             ]
             fieldValueMap.forEach((options) => setFieldValue(options))
         },
@@ -82,12 +86,15 @@ export const useCivilRegistryQuery = (
                     line: 'Sharaf Rashidov Avenue 3',
                 },
             }
-            // same mapping & populating logic as above
+            // same mapping & populating logic copied from above
             const fieldValueMap = [
                 { fieldId: 'firstName', value: person.firstName },
                 { fieldId: 'lastName', value: person.lastName },
-                // todo: consider option sets
-                { fieldId: 'gender', value: person.sex },
+                {
+                    // todo: consider option sets
+                    fieldId: 'gender',
+                    value: person.sex === 'male' ? 'Male' : 'Female',
+                },
                 // todo: this isn't perfect; doesn't populate 'age since DoB'
                 { fieldId: 'age', value: { date: person.dateOfBirth } },
                 // todo: is this right? 🤔 the form tip says country
@@ -97,7 +104,7 @@ export const useCivilRegistryQuery = (
                 { fieldId: 'zip', value: person.address.postalCode },
                 { fieldId: 'phone', value: person.phone },
                 // todo:
-                // { fieldId: 'nationalId', value: person.id },
+                { fieldId: 'nationalId', value: person.id },
             ]
             fieldValueMap.forEach((options) => setFieldValue(options))
         },

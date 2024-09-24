@@ -2,15 +2,13 @@ import i18n from '@dhis2/d2-i18n'
 import { Button, Input, Label } from '@dhis2/ui'
 import React from 'react'
 import { useCivilRegistryQuery } from '../lib/useCivilRegistryQuery'
-import { SetFieldValueProps } from '../Plugin.types'
+import { SetFieldValue } from '../Plugin.types'
 import classes from './LookupField.module.css'
 
-type Props = {
-    setFieldValue: (values: SetFieldValueProps) => void
-}
+type Props = { setFieldValue: SetFieldValue }
 
 export const LookupField = ({ setFieldValue }: Props) => {
-    const [query, { loading }] = useCivilRegistryQuery(setFieldValue)
+    const [query, { loading }] = useCivilRegistryQuery({ setFieldValue })
     const [patientId, setPatientId] = React.useState('')
 
     return (

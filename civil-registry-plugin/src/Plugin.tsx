@@ -1,17 +1,21 @@
 import React from 'react'
-import { IDataEntryPluginProps } from './Plugin.types'
 import { LookupField } from './LookupField'
+import { IDataEntryPluginProps } from './Plugin.types'
+import './locales'
 
 const PluginInner = (propsFromParent: IDataEntryPluginProps) => {
     const {
-        // fieldsMetadata,
         // values,
         // errors,
         // warnings,
         // formSubmitted,
         // setContextFieldValue,
+        // fieldsMetadata,
         setFieldValue,
     } = propsFromParent
+
+    // todo: remove after testing
+    console.log({ propsFromParent })
 
     return <LookupField setFieldValue={setFieldValue} />
 }
