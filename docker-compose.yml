@@ -1,14 +1,12 @@
-version: "3.8"
-
 services:
   dhis2:
-    image: "${DHIS2_IMAGE:-dhis2/core:2.40.1}"
+    image: "${DHIS2_IMAGE:-dhis2/core:40.5.0}"
     restart: unless-stopped
     volumes:
-      - files:/opt/dhis2
-      - ./config/dhis.conf:/opt/dhis2/dhis.conf:ro
-      - ./config/log4j2.xml:/opt/dhis2/log4j2.xml:ro
-      - ./config/server.xml:/usr/local/tomcat/conf/server.xml:ro
+      - type: bind
+        source: config/dhis.conf
+        target: /opt/dhis2/dhis.conf
+        read_only: true
     environment:
       JAVA_OPTS: "-Dcontext.path='${DHIS2_CORE_CONTEXT_PATH:-}' \
               -Dlog4j2.configurationFile=/opt/dhis2/log4j2.xml"
@@ -25,23 +23,25 @@ services:
       - no-new-privileges:true
 
   db:
-    image: postgis/postgis
-    restart: unless-stopped
+    image: ghcr.io/baosystems/postgis:13-3.4
+    ports:
+      - "127.0.0.1:5432:5432"
     volumes:
-      - postgresql:/var/lib/postgresql
+      - type: bind
+        source: db-dump
+        target: /docker-entrypoint-initdb.d/
+        read_only: true
     environment:
       POSTGRES_USER: dhis
       POSTGRES_DB: dhis
       POSTGRES_PASSWORD: &postgres_password dhis
       PGPASSWORD: *postgres_password # needed by psql in healthcheck
     healthcheck:
-      test: ["CMD-SHELL", "psql --no-password --quiet --username $$POSTGRES_USER postgres://127.0.0.1/$$POSTGRES_DB -p 5432 --command \"SELECT 'ok'\" > /dev/null"]
+      test: [ "CMD-SHELL", "psql --no-password --quiet --username $$POSTGRES_USER postgres://127.0.0.1/$$POSTGRES_DB -p 5432 --command \"SELECT 'ok'\" > /dev/null" ]
       start_period: 120s
-      interval: 10s
+      interval: 1s
       timeout: 3s
       retries: 5
-    security_opt:
-      - no-new-privileges:true
 
   gateway:
     image: nginx
@@ -52,29 +52,27 @@ services:
     ports:
       - "${DHIS2_PORT:-8080}:80"
     volumes:
-      - ./config/nginx.conf:/etc/nginx/nginx.conf:ro
-    security_opt:
-      - no-new-privileges:true
-
-  auth:
-    image: keybase
-    restart: always
+      - type: bind
+        source: ./config/nginx.conf
+        target: /etc/nginx/nginx.conf
+        read_only: true
     security_opt:
       - no-new-privileges:true
   
-  oauth-route-middleware:
-    build: ./oauth-route-middleware
-    restart: always
-    security_opt:
-      - no-new-privileges:true
+  # oauth-route-middleware:
+  #   build: ./oauth-route-middleware
+  #   restart: always
+  #   security_opt:
+  #     - no-new-privileges:true
 
-  mock-civil-registry:
-    build: ./mock-civil-registry
-    restart: always
-    security_opt:
-      - no-new-privileges:true
+  # mock-civil-registry:
+  #   build: ./mock-civil-registry
+  #   restart: always
+  #   security_opt:
+  #     - no-new-privileges:true
 
 volumes:
+  db-dump: { }
   files:
     driver: local
   postgresql:
