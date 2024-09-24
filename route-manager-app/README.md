@@ -1,45 +1,28 @@
+# Route Manager App
+
+This app supports managing routes using [DHIS2 Routes API](https://docs.dhis2.org/en/develop/using-the-api/dhis-core-version-master/route.html).
+
+It currently supports:
+
+1. Creating new routes (for all `GET`, `POST`, `DELETE`, `PUT`, `PATCH` and `JSON-PATCH`).
+1. Editing and deleting existing routes
+1. Testing routes by invoking the upstream endpoint and displaying the result.
+
+Please note that, in order, to be able to perform these operations, the logged-in user's role should have the `Route` authority enabled (under User App -> Roles (select the role) -> Metadata authorities (search for `Route`))
+
+It does not _yet_ support:
+
+1. Configuring authentication parameters
+1. Setting authorities required to run the route
+1. Configuring the route metadata sharing
+1. The app is still not published on AppHub
+
+These should come as improvements in the near future.
+
+
 This project was bootstrapped with [DHIS2 Application Platform](https://github.com/dhis2/app-platform).
 
-## Available Scripts
 
-In the project directory, you can run:
+# Deploying the app
 
-### `yarn start`
-
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
-
-### `yarn test`
-
-Launches the test runner and runs all available tests found in `/src`.<br />
-
-See the section about [running tests](https://platform.dhis2.nu/#/scripts/test) for more information.
-
-### `yarn build`
-
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.<br />
-A deployable `.zip` file can be found in `build/bundle`!
-
-See the section about [building](https://platform.dhis2.nu/#/scripts/build) for more information.
-
-### `yarn deploy`
-
-Deploys the built app in the `build` folder to a running DHIS2 instance.<br />
-This command will prompt you to enter a server URL as well as the username and password of a DHIS2 user with the App Management authority.<br/>
-You must run `yarn build` before running `yarn deploy`.<br />
-
-See the section about [deploying](https://platform.dhis2.nu/#/scripts/deploy) for more information.
-
-## Learn More
-
-You can learn more about the platform in the [DHIS2 Application Platform Documentation](https://platform.dhis2.nu/).
-
-You can learn more about the runtime in the [DHIS2 Application Runtime Documentation](https://runtime.dhis2.nu/).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+The app is not yet deployed on App Hub. In order to install it, you can run `yarn && yarn build` and install the resulting zip file (in `build/bundle` folder) using the `App Management` app in DHIS2. 
