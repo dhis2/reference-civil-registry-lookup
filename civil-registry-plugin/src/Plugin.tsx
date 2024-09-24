@@ -10,14 +10,14 @@ const PluginInner = (propsFromParent: IDataEntryPluginProps) => {
         // warnings,
         // formSubmitted,
         // setContextFieldValue,
-        // fieldsMetadata,
+        fieldsMetadata,
         setFieldValue,
     } = propsFromParent
 
     // todo: remove after testing
     console.log({ propsFromParent })
 
-    return <LookupField setFieldValue={setFieldValue} />
+    return <LookupField setFieldValue={setFieldValue} fieldsMetadata={fieldsMetadata} />
 }
 
 export default PluginInner
