@@ -1,0 +1,34 @@
+.container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    font-size: 1rem;
+    row-gap: 5px;
+    padding: 10px;
+}
+
+.formContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    min-width: 50%;
+}
+
+.actionsStrip {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+    align-items: end;
+}
+
+.tableContainerFooter {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+    align-items: end;
+    font-size: 0.8em;
+    margin-top: 20px;
+}
