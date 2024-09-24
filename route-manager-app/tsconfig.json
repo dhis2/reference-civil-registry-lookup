@@ -1,16 +1,15 @@
 {
     "compilerOptions": {
-      "noEmit": true,
-      "skipLibCheck": true,
-      "allowJs": true,
-      "jsx": "react",
-      "esModuleInterop": true,
-      "target": "ESNext",
-      "module": "esnext",
-      "moduleResolution": "node",
-      "types": ["reflect-metadata", "jest"],
-      "typeRoots": ["./types", "./node_modules/@types"]
-  
+        "noEmit": true,
+        "skipLibCheck": true,
+        "allowJs": true,
+        "jsx": "react",
+        "esModuleInterop": true,
+        "target": "ESNext",
+        "module": "esnext",
+        "moduleResolution": "node",
+        "types": ["reflect-metadata", "jest"],
+        "typeRoots": ["./types", "./node_modules/@types"]
     },
-    "include": ["./src/**/*"],
+    "include": ["./src/**/*"]
 }

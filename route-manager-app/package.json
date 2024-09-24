@@ -1,32 +1,32 @@
 {
-  "name": "route-manager",
-  "version": "1.0.0",
-  "description": "",
-  "license": "BSD-3-Clause",
-  "private": true,
-  "scripts": {
-    "build": "d2-app-scripts build",
-    "start": "d2-app-scripts start",
-    "test": "d2-app-scripts test",
-    "deploy": "d2-app-scripts deploy",
-    "lint": "d2-style check",
-    "lint:staged": "d2-style check --staged",
-    "format": "d2-style apply",
-    "format:staged": "d2-style apply --staged"
-  },
-  "devDependencies": {
-    "@dhis2/cli-app-scripts": "^12.0.0-alpha.14",
-    "@dhis2/cli-style": "^10.7.4",
-    "@types/jest": "^29.5.13",
-    "@typescript-eslint/eslint-plugin": "^8.7.0",
-    "@typescript-eslint/parser": "^8.7.0",
-    "eslint": "^8",
-    "typescript": "^5.6.2"
-  },
-  "dependencies": {
-    "@dhis2/app-runtime": "^3.11.0"
-  },
-  "resolutions": {
-    "eslint": "^8"
-  }
+    "name": "route-manager",
+    "version": "1.0.0",
+    "description": "",
+    "license": "BSD-3-Clause",
+    "private": true,
+    "scripts": {
+        "build": "d2-app-scripts build",
+        "start": "d2-app-scripts start",
+        "test": "d2-app-scripts test",
+        "deploy": "d2-app-scripts deploy",
+        "lint": "d2-style check",
+        "lint:staged": "d2-style check --staged",
+        "format": "d2-style apply",
+        "format:staged": "d2-style apply --staged"
+    },
+    "devDependencies": {
+        "@dhis2/cli-app-scripts": "^12.0.0-alpha.14",
+        "@dhis2/cli-style": "^10.7.4",
+        "@types/jest": "^29.5.13",
+        "@typescript-eslint/eslint-plugin": "^8.7.0",
+        "@typescript-eslint/parser": "^8.7.0",
+        "eslint": "^8",
+        "typescript": "^5.6.2"
+    },
+    "dependencies": {
+        "@dhis2/app-runtime": "^3.11.0"
+    },
+    "resolutions": {
+        "eslint": "^8"
+    }
 }
