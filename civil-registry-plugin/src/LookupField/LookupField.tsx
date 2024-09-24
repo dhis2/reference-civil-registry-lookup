@@ -31,7 +31,6 @@ export const LookupField = ({ setFieldValue, fieldsMetadata }: Props) => {
                 />
 
                 <Button
-                    primary
                     onClick={() => query({ id: patientId })}
                     loading={loading}
                 >
