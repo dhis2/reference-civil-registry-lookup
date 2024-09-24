@@ -130,6 +130,14 @@ const MyApp = () => {
           );
         })}
       </DataTable>
+      <div className={classes.tableContainerFooter}>
+        <a
+          target="_blank"
+          href="https://docs.dhis2.org/en/develop/using-the-api/dhis-core-version-master/route.html"
+        >
+          Route API Documentation
+        </a>
+      </div>
     </div>
   );
 };

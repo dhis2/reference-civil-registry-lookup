@@ -7,62 +7,101 @@ import {
   ButtonStrip,
   Button,
   InputField,
+  SingleSelectField,
   TextAreaField,
+  SingleSelectOption,
 } from "@dhis2/ui";
 import React, { useState } from "react";
-import { useAlert, useDataQuery } from "@dhis2/app-runtime";
+import { useAlert, useDataQuery, useDataEngine } from "@dhis2/app-runtime";
 import classes from "./App.module.css";
 import { ApiRouteData } from "./types/RouteInfo";
-
-const invokeRouteQuery = {
-  routes: {
-    resource: "routes",
-    id: ({ id, code, wildcard }) => {
-      return `${id}/run${wildcard ? `/${wildcard}` : ""}`;
-    },
-  },
-};
 
 type TestRouteProps = {
   route: ApiRouteData;
   closeModal: VoidFunction;
 };
 
+type Verb = "GET" | "POST" | "PUT" | "PATCH" | "DELETE" | "JSON-PATCH";
+
+type MutationType = "create" | "delete" | "update" | "replace" | "json-patch";
+
+const typesMap: Record<string, MutationType> = {
+  POST: "create",
+  DELETE: "delete",
+  PUT: "update",
+  PATCH: "replace",
+  "JSON-PATCH": "json-patch",
+};
+
+const invokeRouteQuery = {
+  routes: {
+    resource: "routes",
+    id: ({ id, code, wildcard }) => {
+      return `${code ?? id}/run${wildcard ? `/${wildcard}` : ""}`;
+    },
+  },
+};
+
 const TestRoute: React.FC<TestRouteProps> = ({
   route = {},
   closeModal = () => {},
 }) => {
+  const [verb, setVerb] = useState<Verb>("GET");
   const [body, setBody] = useState<string>();
   const [wildcard, setWildcard] = useState<string>();
-
   const [result, setResult] = useState<unknown>("");
+
+  const engine = useDataEngine();
 
   const { show } = useAlert(
     ({ type, error }) => {
-      if (type === "success") return i18n.t("Route invoked successfully");
-      if (type === "error")
-        return i18n.t("Failed to invoke route: {{error}}", { error });
+      if (error) return i18n.t("Failed to invoke route: {{error}}", { error });
+      return i18n.t("Route invoked successfully");
     },
-    ({ type }) => {
-      if (type === "success") return { success: true };
-      if (type === "error") return { critical: true };
+    ({ error }) => {
+      if (error) return { critical: true };
+      return { success: true };
     }
   );
 
-  const { data: routeData, refetch: invokeRoute } = useDataQuery<unknown>(
-    invokeRouteQuery,
-    {
-      lazy: true,
-      onComplete: () => show({ type: "success" }),
-      onError: (error) => show({ type: "error", error: error.message }),
-    }
-  );
   const handleTestRoute = async () => {
-    const result = await invokeRoute({
-      ...route,
-      wildcard,
-    });
-    setResult(result);
+    try {
+      let result: unknown;
+
+      setResult(undefined);
+
+      const resource = `routes/${route.id ?? route.code}/run${
+        wildcard ? `/${wildcard}` : ""
+      }`;
+
+      if (verb === "GET") {
+        const result = await engine.query({
+          routes: { resource },
+        });
+
+        return setResult(result);
+      }
+
+      // other verbs: POST, PUT, PATCH, JSON-PATCH, DELETE
+      const mutationOptions = {
+        resource,
+        type: typesMap[verb],
+        data: body && JSON.parse(body),
+      };
+
+      if (verb === "DELETE") {
+        // a wrokaround for DELETE since it crashes with data: undefined
+        delete mutationOptions.data;
+      }
+
+      // @ts-ignore
+      result = await engine.mutate(mutationOptions);
+
+      setResult(result);
+    } catch (error) {
+      console.error(error);
+      show({ error });
+    }
   };
 
   const hasWildCardPath = route.url?.endsWith("**");
@@ -82,6 +121,30 @@ const TestRoute: React.FC<TestRouteProps> = ({
       <ModalTitle>{i18n.t("Test Route")}</ModalTitle>
       <ModalContent>
         <div className={classes.formContainer}>
+          <SingleSelectField
+            filterable={false}
+            selected={verb}
+            onChange={({ selected }) => {
+              setVerb(selected as Verb);
+            }}
+          >
+            <SingleSelectOption label="GET" value="GET"></SingleSelectOption>
+            <SingleSelectOption label="POST" value="POST"></SingleSelectOption>
+            <SingleSelectOption label="PUT" value="PUT"></SingleSelectOption>
+            <SingleSelectOption
+              label="DELETE"
+              value="DELETE"
+            ></SingleSelectOption>
+            {/* // Todo: disabling PATCH for now - it doesn't seem to work correctly with DataEngine */}
+            {/* <SingleSelectOption
+              label="PATCH"
+              value="PATCH"
+            ></SingleSelectOption> */}
+            <SingleSelectOption
+              label="JSON-PATCH"
+              value="JSON-PATCH"
+            ></SingleSelectOption>
+          </SingleSelectField>
           <InputField
             disabled
             value={route?.code}
@@ -103,13 +166,17 @@ const TestRoute: React.FC<TestRouteProps> = ({
           )}
 
           <TextAreaField
+            helpText={i18n.t(
+              "Use valid JSON for this field (i.e. double quoted properties etc..)"
+            )}
+            disabled={verb === "GET"}
             value={body}
             onChange={({ value }) => setBody(value)}
             placeholder={i18n.t("Body to pass to route")}
             label={i18n.t("Body of request")}
           />
 
-          {result && JSON.stringify(result, null, 2)}
+          <pre>{result && JSON.stringify(result, null, 2)}</pre>
         </div>
       </ModalContent>
     </Modal>

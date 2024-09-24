@@ -22,3 +22,13 @@
     justify-content: end;
     align-items: end;
 }
+
+.tableContainerFooter {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+    align-items: end;
+    font-size: 0.8em;
+    margin-top: 20px;
+}
