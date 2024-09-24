@@ -1,6 +1,32 @@
-version: "3.8"
-
 services:
+  # opencrvs-base:
+  #   image: opencrvs/ocrvs-base:develop
+  # auth:
+  #   image: opencrvs/ocrvs-auth
+  #   volumes:
+  #     - '.secrets/public-key.pem:/secrets/public-key.pem'
+  #     - '.secrets/private-key.pem:/secrets/private-key.pem'
+    # environment:
+    #   - CERT_PUBLIC_KEY_PATH=/secrets/public-key.pem
+    #   - CERT_PRIVATE_KEY_PATH=/secrets/private-key.pem
+    # ports:
+    #   - '4040:4040'
+  # opencrvs:
+  #   image: opencrvs/ocrvs-farajaland
+  #   volumes:
+  #     - '.secrets/public-key.pem:/secrets/public-key.pem'
+  #     - '.secrets/private-key.pem:/secrets/private-key.pem'
+  #   environment:
+  #     - CERT_PUBLIC_KEY_PATH=/secrets/public-key.pem
+  #     - MONGO_URL=mongodb://mongo1/user-mgnt
+  #     - NODE_ENV=development
+  #     - FHIR_URL=http://hearth:3447/fhir
+  #     - AUTH_URL=http://auth:4040
+  #     - CONFIRM_REGISTRATION_URL=http://workflow:5050/confirm/registration
+  #     - CHECK_INVALID_TOKEN=true
+  #   ports:
+  #     - '3040:3040'
+
   dhis2:
     image: "${DHIS2_IMAGE:-dhis2/core:2.40.1}"
     restart: unless-stopped
@@ -56,23 +82,23 @@ services:
     security_opt:
       - no-new-privileges:true
 
-  auth:
-    image: keybase
-    restart: always
-    security_opt:
-      - no-new-privileges:true
+  # auth:
+  #   image: keybase
+  #   restart: always
+  #   security_opt:
+  #     - no-new-privileges:true
   
-  oauth-route-middleware:
-    build: ./oauth-route-middleware
-    restart: always
-    security_opt:
-      - no-new-privileges:true
+  # oauth-route-middleware:
+  #   build: ./oauth-route-middleware
+  #   restart: always
+  #   security_opt:
+  #     - no-new-privileges:true
 
-  mock-civil-registry:
-    build: ./mock-civil-registry
-    restart: always
-    security_opt:
-      - no-new-privileges:true
+  # mock-civil-registry:
+  #   build: ./mock-civil-registry
+  #   restart: always
+  #   security_opt:
+  #     - no-new-privileges:true
 
 volumes:
   files:

@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2024-09-23T18:14:08.891Z\n"
-"PO-Revision-Date: 2024-09-23T18:14:08.891Z\n"
+"POT-Creation-Date: 2024-09-24T08:02:28.474Z\n"
+"PO-Revision-Date: 2024-09-24T08:02:28.474Z\n"
 
 msgid "Create New Route"
 msgstr "Create New Route"
@@ -52,6 +52,9 @@ msgstr "Route URL"
 
 msgid "Wildcard path"
 msgstr "Wildcard path"
+
+msgid "Use valid JSON for this field (i.e. double quoted properties etc..)"
+msgstr "Use valid JSON for this field (i.e. double quoted properties etc..)"
 
 msgid "Body to pass to route"
 msgstr "Body to pass to route"
