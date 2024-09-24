@@ -1,5 +1,6 @@
 import { useAlert, useDataMutation } from '@dhis2/app-runtime'
 import { SetFieldValue } from '../Plugin.types'
+import i18n from '../locales'
 
 type Props = { setFieldValue: SetFieldValue }
 
@@ -63,9 +64,10 @@ export const useCivilRegistryQuery = ({ setFieldValue }: Props) => {
         },
         onError: (error) => {
             show({
-                message:
-                    'Failed to query civil registry: ' +
-                    (error.details.message || error.message),
+                message: i18n.t('Failed to query civil registry: {{error}}', {
+                    error: error.details.message || error.message,
+                    nsSeparator: '`',
+                }),
             })
 
             // todo: remove after testing
