@@ -14,9 +14,6 @@ const PluginInner = (propsFromParent: IDataEntryPluginProps) => {
         setFieldValue,
     } = propsFromParent
 
-    // todo: remove after testing
-    console.log({ propsFromParent })
-
     return <LookupField setFieldValue={setFieldValue} fieldsMetadata={fieldsMetadata} />
 }
 
