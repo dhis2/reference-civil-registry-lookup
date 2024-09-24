@@ -53,9 +53,9 @@ services:
   civil-registry:
     image: "hapiproject/hapi:v7.4.0-tomcat"
     volumes:
-      - ./config/gateway/server.xml:/opt/bitnami/apache-tomcat/conf/server.xml:ro
-      - ./config/gateway/localhost-rsa-cert.pem:/opt/bitnami/apache-tomcat/conf/localhost-rsa-cert.pem:ro
-      - ./config/gateway/localhost-rsa-key.pem:/opt/bitnami/apache-tomcat/conf/localhost-rsa-key.pem:ro
+      - ./config/civil-registry/server.xml:/opt/bitnami/apache-tomcat/conf/server.xml:ro
+      - ./config/civil-registry/localhost-rsa-cert.pem:/opt/bitnami/apache-tomcat/conf/localhost-rsa-cert.pem:ro
+      - ./config/civil-registry/localhost-rsa-key.pem:/opt/bitnami/apache-tomcat/conf/localhost-rsa-key.pem:ro
     ports:
       - "8090:8080"  
   
