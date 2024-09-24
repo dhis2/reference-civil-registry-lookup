@@ -1,5 +1,5 @@
-import i18n from "@dhis2/d2-i18n";
 import { useDataMutation, useDataQuery } from "@dhis2/app-runtime";
+import i18n from "@dhis2/d2-i18n";
 import {
   Button,
   DataTable,
@@ -10,9 +10,9 @@ import {
 } from "@dhis2/ui";
 import React, { useState } from "react";
 import classes from "./App.module.css";
-import UpsertRoute from "./UpsertRoute";
 import TestRoute from "./TestRoute";
 import { ApiRouteData, WrapQueryResponse } from "./types/RouteInfo";
+import UpsertRoute from "./UpsertRoute";
 
 import "./locales";
 
@@ -133,7 +133,7 @@ const MyApp = () => {
       <div className={classes.tableContainerFooter}>
         <a
           target="_blank"
-          href="https://docs.dhis2.org/en/develop/using-the-api/dhis-core-version-master/route.html"
+          href="https://docs.dhis2.org/en/develop/using-the-api/dhis-core-version-master/route.html" rel="noreferrer"
         >
           Route API Documentation
         </a>

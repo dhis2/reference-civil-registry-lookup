@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2024-09-24T08:02:28.474Z\n"
-"PO-Revision-Date: 2024-09-24T08:02:28.474Z\n"
+"POT-Creation-Date: 2024-09-24T09:57:43.535Z\n"
+"PO-Revision-Date: 2024-09-24T09:57:43.535Z\n"
 
 msgid "Create New Route"
 msgstr "Create New Route"
@@ -31,6 +31,9 @@ msgstr "Edit Route"
 
 msgid "Delete"
 msgstr "Delete"
+
+msgid "Failed to invoke route: {{error}}"
+msgstr "Failed to invoke route: {{error}}"
 
 msgid "Route invoked successfully"
 msgstr "Route invoked successfully"
@@ -65,6 +68,9 @@ msgstr "Body of request"
 msgid "Route saved successfully"
 msgstr "Route saved successfully"
 
+msgid "Failed to save route: {{error}}"
+msgstr "Failed to save route: {{error}}"
+
 msgid "Route details"
 msgstr "Route details"
 
@@ -76,6 +82,9 @@ msgstr "A unique code for the route"
 
 msgid "A unique name for the route"
 msgstr "A unique name for the route"
+
+msgid "e.g. https://postman-echo.com/get"
+msgstr "e.g. https://postman-echo.com/get"
 
 msgid "URL for route destination"
 msgstr "URL for route destination"

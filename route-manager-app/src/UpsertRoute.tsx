@@ -1,3 +1,4 @@
+import { useAlert, useDataMutation } from "@dhis2/app-runtime";
 import i18n from "@dhis2/d2-i18n";
 import {
   Modal,
@@ -9,13 +10,12 @@ import {
   InputField,
 } from "@dhis2/ui";
 import React, { useState } from "react";
-import { useAlert, useDataMutation } from "@dhis2/app-runtime";
 import classes from "./App.module.css";
 import { ApiRouteData } from "./types/RouteInfo";
 
 const createRouteMutation = {
   resource: "routes",
-  type: "create",
+  type: "create" as const,
   data: ({ data }) => ({
     code: data.code,
     name: data.name,
@@ -26,7 +26,7 @@ const createRouteMutation = {
 
 const updateRouteMutation = {
   resource: "routes",
-  type: "update",
+  type: "update" as const,
   id: ({ id }) => id,
   data: ({ data }) => ({
     name: data.name,
@@ -53,13 +53,23 @@ const UpsertRoute: React.FC<UpsertRouteProps> = ({
 
   const { show } = useAlert(
     ({ type, error }) => {
-      if (type === "success") return i18n.t("Route saved successfully");
-      if (type === "error")
-        return i18n.t("Failed to save route: {{error}}", { error });
+      if (type === "success") {
+        return i18n.t("Route saved successfully");
+      }
+      if (type === "error") {
+        return i18n.t("Failed to save route: {{error}}", {
+          error,
+          nsSeparator: "-:-",
+        });
+      }
     },
     ({ type }) => {
-      if (type === "success") return { success: true };
-      if (type === "error") return { critical: true };
+      if (type === "success") {
+        return { success: true };
+      }
+      if (type === "error") {
+        return { critical: true };
+      }
     }
   );
 
@@ -68,6 +78,8 @@ const UpsertRoute: React.FC<UpsertRouteProps> = ({
     onError: (error) => show({ type: "error", error: error.message }),
   };
   const [createRoute] = useDataMutation(createRouteMutation, options);
+
+  // @ts-expect-error("we need the ID to be dynamic, which is allowed but not reflected in the type")
   const [updateRoute] = useDataMutation(updateRouteMutation, options);
 
   const handeCreateRoute = async () => {
@@ -122,7 +134,9 @@ const UpsertRoute: React.FC<UpsertRouteProps> = ({
           <InputField
             value={urlValue}
             onChange={({ value }) => setValue(value)}
-            placeholder={i18n.t("e.g. https://postman-echo.com/get")}
+            placeholder={i18n.t("e.g. https://postman-echo.com/get", {
+              nsSeparator: "-:-",
+            })}
             label={i18n.t("URL for route destination")}
           />
         </div>

@@ -1,3 +1,4 @@
+import { useAlert, useDataEngine } from "@dhis2/app-runtime";
 import i18n from "@dhis2/d2-i18n";
 import {
   Modal,
@@ -12,7 +13,6 @@ import {
   SingleSelectOption,
 } from "@dhis2/ui";
 import React, { useState } from "react";
-import { useAlert, useDataQuery, useDataEngine } from "@dhis2/app-runtime";
 import classes from "./App.module.css";
 import { ApiRouteData } from "./types/RouteInfo";
 
@@ -33,15 +33,6 @@ const typesMap: Record<string, MutationType> = {
   "JSON-PATCH": "json-patch",
 };
 
-const invokeRouteQuery = {
-  routes: {
-    resource: "routes",
-    id: ({ id, code, wildcard }) => {
-      return `${code ?? id}/run${wildcard ? `/${wildcard}` : ""}`;
-    },
-  },
-};
-
 const TestRoute: React.FC<TestRouteProps> = ({
   route = {},
   closeModal = () => {},
@@ -54,20 +45,25 @@ const TestRoute: React.FC<TestRouteProps> = ({
   const engine = useDataEngine();
 
   const { show } = useAlert(
-    ({ type, error }) => {
-      if (error) return i18n.t("Failed to invoke route: {{error}}", { error });
+    ({ error }) => {
+      if (error) {
+        return i18n.t("Failed to invoke route: {{error}}", {
+          error,
+          nsSeparator: "-:-",
+        });
+      }
       return i18n.t("Route invoked successfully");
     },
     ({ error }) => {
-      if (error) return { critical: true };
+      if (error) {
+        return { critical: true };
+      }
       return { success: true };
     }
   );
 
   const handleTestRoute = async () => {
     try {
-      let result: unknown;
-
       setResult(undefined);
 
       const resource = `routes/${route.id ?? route.code}/run${
@@ -94,8 +90,8 @@ const TestRoute: React.FC<TestRouteProps> = ({
         delete mutationOptions.data;
       }
 
-      // @ts-ignore
-      result = await engine.mutate(mutationOptions);
+      // @ts-expect-error("the error is because different mutations expect ID or not, but in practice, they can be used generically with id=null")
+      const result = await engine.mutate(mutationOptions);
 
       setResult(result);
     } catch (error) {
