@@ -1,8 +1,8 @@
-import React from 'react'
 import i18n from '@dhis2/d2-i18n'
 import { Button, Input, Label } from '@dhis2/ui'
+import React from 'react'
+import { useCivilRegistryQuery } from '../lib/useCivilRegistryQuery'
 import { SetFieldValueProps } from '../Plugin.types'
-import { useRoutedMutation } from '../lib/useRoutedMutation'
 import classes from './LookupField.module.css'
 
 type Props = {
@@ -10,7 +10,7 @@ type Props = {
 }
 
 export const LookupField = ({ setFieldValue }: Props) => {
-    const [mutate, { loading }] = useRoutedMutation(setFieldValue)
+    const [query, { loading }] = useCivilRegistryQuery(setFieldValue)
     const [patientId, setPatientId] = React.useState('')
 
     return (
@@ -31,9 +31,7 @@ export const LookupField = ({ setFieldValue }: Props) => {
 
                 <Button
                     primary
-                    onClick={() => {
-                        mutate({ id: patientId })
-                    }}
+                    onClick={() => query({ id: patientId })}
                     loading={loading}
                 >
                     {i18n.t('Search')}

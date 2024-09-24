@@ -1,6 +1,7 @@
 import { useAlert, useDataMutation } from '@dhis2/app-runtime'
 import { SetFieldValueProps } from '../Plugin.types'
 
+// TODO: These types should be edited to match the response from your civil registry
 type Address = {
     line: string
     city: string
@@ -9,7 +10,6 @@ type Address = {
     postalCode: string
     country: string
 }
-
 type Person = {
     id: string
     firstName: string
@@ -27,7 +27,7 @@ const mutation = {
     data: ({ id }: { id: string }) => ({ id }),
 }
 
-export const useRoutedMutation = (
+export const useCivilRegistryQuery = (
     setFieldValue: (values: SetFieldValueProps) => void
 ) => {
     const { show } = useAlert(({ message }) => message, { critical: true })
@@ -35,6 +35,10 @@ export const useRoutedMutation = (
     return useDataMutation(mutation as any, {
         onComplete: (person: Person) => {
             // Sierra Leone TB value map
+
+            // TODO: `fieldId`s should match the configured 'plugin alias' keys,
+            // and `value` should be the appropriate value from the civil
+            // registry response
             const fieldValueMap = [
                 { fieldId: 'firstName', value: person.firstName },
                 { fieldId: 'lastName', value: person.lastName },
