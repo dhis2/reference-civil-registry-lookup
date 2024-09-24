@@ -35,30 +35,31 @@ export const useCivilRegistryQuery = ({ setFieldValue }: Props) => {
 
     return useDataMutation(mutation as any, {
         onComplete: (person: Person) => {
-            // Sierra Leone TB value map
-
             // TODO: `fieldId`s should match the configured 'plugin alias' keys,
             // and `value` should be the appropriate value from the civil
             // registry response.
             // For option sets, make sure values exactly match options
+
+            // These values correspond to the WHO Tuberculosis metadata package
             const fieldValueMap = [
+                { fieldId: 'nationalId', value: person.id },
                 { fieldId: 'firstName', value: person.firstName },
                 { fieldId: 'lastName', value: person.lastName },
                 {
                     // todo: consider option sets
-                    fieldId: 'gender',
+                    fieldId: 'sex',
                     value: person.sex === 'male' ? 'Male' : 'Female',
                 },
-                // todo: this isn't perfect; doesn't populate 'age since DoB'
-                { fieldId: 'age', value: { date: person.dateOfBirth } },
-                // todo: is this right? 🤔 the form tip says country
-                { fieldId: 'address', value: person.address.line },
-                { fieldId: 'city', value: person.address.city },
-                { fieldId: 'state', value: person.address.state },
-                { fieldId: 'zip', value: person.address.postalCode },
-                { fieldId: 'phone', value: person.phone },
-                // todo:
-                { fieldId: 'nationalId', value: person.id },
+                { fieldId: 'dateOfBirth', value: person.dateOfBirth },
+                { fieldId: 'administrativeArea', value: person.address.state },
+                {
+                    fieldId: 'address',
+                    value: [
+                        person.address.line,
+                        person.address.postalCode,
+                        person.address.city,
+                    ].join('\n'),
+                },
             ]
             fieldValueMap.forEach((options) => setFieldValue(options))
         },
@@ -88,25 +89,26 @@ export const useCivilRegistryQuery = ({ setFieldValue }: Props) => {
                     line: 'Sharaf Rashidov Avenue 3',
                 },
             }
-            // same mapping & populating logic copied from above
+            // These values correspond to the WHO Tuberculosis metadata package
             const fieldValueMap = [
+                { fieldId: 'nationalId', value: person.id },
                 { fieldId: 'firstName', value: person.firstName },
                 { fieldId: 'lastName', value: person.lastName },
                 {
                     // todo: consider option sets
-                    fieldId: 'gender',
+                    fieldId: 'sex',
                     value: person.sex === 'male' ? 'Male' : 'Female',
                 },
-                // todo: this isn't perfect; doesn't populate 'age since DoB'
-                { fieldId: 'age', value: { date: person.dateOfBirth } },
-                // todo: is this right? 🤔 the form tip says country
-                { fieldId: 'address', value: person.address.line },
-                { fieldId: 'city', value: person.address.city },
-                { fieldId: 'state', value: person.address.state },
-                { fieldId: 'zip', value: person.address.postalCode },
-                { fieldId: 'phone', value: person.phone },
-                // todo:
-                { fieldId: 'nationalId', value: person.id },
+                { fieldId: 'dateOfBirth', value: person.dateOfBirth },
+                { fieldId: 'administrativeArea', value: person.address.state },
+                {
+                    fieldId: 'address',
+                    value: [
+                        person.address.line,
+                        person.address.postalCode,
+                        person.address.city,
+                    ].join('\n'),
+                },
             ]
             fieldValueMap.forEach((options) => setFieldValue(options))
         },
