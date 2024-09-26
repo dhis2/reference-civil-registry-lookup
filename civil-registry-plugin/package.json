@@ -13,13 +13,17 @@
   "devDependencies": {
     "@dhis2/cli-app-scripts": "^12.0.0-alpha.14",
     "@dhis2/cli-style": "^10.7.4",
+    "@testing-library/jest-dom": "^6.5.0",
+    "@testing-library/react": "^16.0.1",
+    "@testing-library/user-event": "^14.5.2",
+    "@types/jest": "^29.5.13",
     "@typescript-eslint/eslint-plugin": "^8.7.0",
     "@typescript-eslint/parser": "^8.7.0",
     "typescript-eslint": "^7.9.0"
   },
   "dependencies": {
     "@dhis2/app-runtime": "^3.10.0-alpha.6",
-    "@dhis2/ui": "^9.4.6",
+    "@dhis2/ui": "^9.11.5",
     "typescript": "^5.4.5"
   }
 }
