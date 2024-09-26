@@ -62,7 +62,7 @@ const mockProps: IDataEntryPluginProps = {
 
 const expectedError = new Error('Query failed')
 const mockData = {
-    'route/civil-registry/run': async (_: string, query: any) => {
+    'routes/civil-registry/run': async (_: string, query: any) => {
         if (query.data.id === mockPerson.id) {
             return mockPerson
         }

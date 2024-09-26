@@ -6,7 +6,7 @@ type Props = { setFieldValue: SetFieldValue; fieldsMetadata: FieldsMetadata }
 
 const mutation = {
     // todo: verify code
-    resource: 'route/civil-registry/run',
+    resource: 'routes/civil-registry/run',
     type: 'create',
     data: ({ id }: { id: string }) => ({ id }),
 }
