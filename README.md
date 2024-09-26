@@ -16,7 +16,7 @@ The plugin is designed to be secure and flexible and follows best practices that
 
 ## Architecture
 
-Uzbekistan is running a FHIR instance with custom configuration for civil registry. However, for the development of this integration we’ll assume a generic integration which will be configurable by each individual country. The data-mapping itself will happen in the plugin/plugin configuration.
+We will use a [Hapi FHIR](https://hapifhir.io/) server with the [FHIR Person resource](https://www.hl7.org/fhir/person.html) as a mock Civil Registry for the purposes of this example repository.  The middleware component will need to be modified to support different upstream civil registry services when adapting this reference implementation in production.
 
 The plugin in turn talks to the civil registry through a few steps
 
