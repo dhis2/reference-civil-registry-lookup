@@ -35,3 +35,5 @@ build/
 .DS_Store
 
 .db-dump/
+
+*.log

@@ -1,5 +1,6 @@
 - rest:
-    get:
-    - path: "/orgUnits"
+    post:
+    - path: "/find"
+      consumes: "application/json"
       produces: "application/json"
-      to: "direct:orgUnits"
+      to: "direct:find"

@@ -1,0 +1,14 @@
+- from:
+    uri: "direct:find"
+    steps:
+      - unmarshal:
+          json: {}
+      - toD: "fhir:search/searchByUrl?url=Person?identifier=${body['id']}&client=#fhirClient"
+      - marshal:
+          fhirJson: {}
+      - transform:
+          datasonnet:
+            expression: resource:classpath:dhis2Person.ds
+            resultType: java.lang.String
+            bodyMediaType: application/json
+            outputMediaType: application/json
