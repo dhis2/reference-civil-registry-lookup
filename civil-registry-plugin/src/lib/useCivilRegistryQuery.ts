@@ -34,6 +34,7 @@ export const useCivilRegistryQuery = ({
             })
         },
         onError: (error) => {
+            console.error(error)
             show({
                 message: i18n.t('Failed to query civil registry: {{error}}', {
                     error: error.details.message || error.message,

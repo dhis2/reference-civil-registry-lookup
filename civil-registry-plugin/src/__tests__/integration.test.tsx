@@ -60,14 +60,22 @@ const mockProps: IDataEntryPluginProps = {
     setFieldValue: mockSetFieldValue,
 }
 
-const mockData = { 'route/civil-registry/run': mockPerson }
+const expectedError = new Error('Query failed')
+const mockData = {
+    'route/civil-registry/run': async (_: string, query: any) => {
+        if (query.data.id === mockPerson.id) {
+            return mockPerson
+        }
+        throw expectedError
+    },
+}
 
 afterEach(() => {
     jest.clearAllMocks()
 })
 
-test('loads and displays greeting', async () => {
-    // ARRANGE
+test('happy path, successful query', async () => {
+    // arrange
     const consoleWarnSpy = jest.spyOn(console, 'warn')
     render(
         <CustomDataProvider data={mockData}>
@@ -75,13 +83,14 @@ test('loads and displays greeting', async () => {
         </CustomDataProvider>
     )
 
-    // ACT
+    // act
     const input = screen.getByLabelText('Patient ID')
     const searchButton = screen.getByText('Search')
 
     await userEvent.type(input, mockPerson.id)
     await userEvent.click(searchButton)
 
+    // assert
     // should be called for all the fieldMetadata fields
     expect(mockSetFieldValue).toHaveBeenCalledTimes(
         Object.keys(mockFieldsMetadata).length
@@ -98,4 +107,27 @@ test('loads and displays greeting', async () => {
     expect(consoleWarnSpy).toHaveBeenCalledWith(
         `Field ID "phone" not found in configured fields; skipping value ${mockPerson.phone}`
     )
+})
+
+test('failed query', async () => {
+    // arrange
+    const consoleErrorSpy = jest.spyOn(console, 'error')
+    render(
+        <CustomDataProvider data={mockData}>
+            <Plugin {...mockProps} />
+        </CustomDataProvider>
+    )
+
+    // act
+    const input = screen.getByLabelText('Patient ID')
+    const searchButton = screen.getByText('Search')
+
+    await userEvent.type(input, 'not an id')
+    await userEvent.click(searchButton)
+
+    // assert
+    // should not try to set any fields, and log error
+    expect(mockSetFieldValue).not.toHaveBeenCalled()
+    expect(consoleErrorSpy).toHaveBeenCalledWith(expectedError)
+    // todo: test alert?
 })
