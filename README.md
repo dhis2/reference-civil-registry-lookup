@@ -10,7 +10,7 @@ The plugin is designed to be secure and flexible and follows best practices that
 
 * DHIS2 v40.5
 * Mock Civil Registry (FHIR-compliant)
-* OAuth2 Route Middleware
+* OAuth2 Route Middleware & Translation layer (Apache Camel)
 * OAuth2 Authentication server (Keycloak)
 * Civil Registry lookup plugin (DHIS2 Capture App plugin)
 
@@ -41,7 +41,7 @@ An app is built to configure the route using the Routes API. A pre-defined code 
 Only admins should be able to configure the Route (and access the App), but all users (potentially within a limit) should be able to execute/use the configured route.
 
 ### Translation layer
-The Apache Camel middleware provided by this reference implementation will handle the translation of the data from the civil registry to the format the app expects. This is done to make sure that the plugin is generic and can be used by multiple countries with different civil registry structures.
+The Apache Camel middleware provided by this reference implementation will handle the translation of the data from the civil registry to the format the plugin expects. This is done to make sure that the plugin is generic and can be used by multiple countries with different civil registry structures.
 
 ### oAuth handling
 The Apache Camel middleware will handle the oAuth2 authentication. The plugin will not have to handle the oAuth2 authentication itself. This solves the problem of having oAuth authentication in the plugin, and therefore requiring all the users to have credentials for the Civil registry. 
