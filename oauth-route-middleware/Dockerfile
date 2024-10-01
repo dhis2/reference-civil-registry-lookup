@@ -26,6 +26,7 @@
 #  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 
-FROM openjdk:17-jdk-alpine
+FROM openjdk:17-slim
 COPY target/oauth-route-middleware-1.0.0-SNAPSHOT.jar oauth-route-middleware-1.0.0-SNAPSHOT.jar
+EXPOSE 9070
 ENTRYPOINT ["java","-jar","/oauth-route-middleware-1.0.0-SNAPSHOT.jar"]

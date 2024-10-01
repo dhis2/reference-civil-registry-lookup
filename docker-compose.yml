@@ -5,13 +5,12 @@ services:
     volumes:
       - ./config/dhis2/dhis.conf:/opt/dhis2/dhis.conf:ro
     environment:
-      JAVA_OPTS: "-Dcontext.path='${DHIS2_CORE_CONTEXT_PATH:-}' \
-              -Dlog4j2.configurationFile=/opt/dhis2/log4j2.xml"
+      JAVA_OPTS: "-Dcontext.path='${DHIS2_CORE_CONTEXT_PATH:-}' -Dlog4j2.configurationFile=/opt/dhis2/log4j2.xml"
     depends_on:
       db:
         condition: service_healthy
     healthcheck:
-      test: ["CMD-SHELL", "wget -q -S -O /dev/null http://127.0.0.1:8080/dhis-web-commons/security/login.action 2>&1| grep -q 'HTTP.*200'"]
+      test: [ "CMD-SHELL", "wget -q -S -O /dev/null http://127.0.0.1:8080/dhis-web-commons/security/login.action 2>&1| grep -q 'HTTP.*200'" ]
       start_period: 120s
       interval: 10s
       timeout: 5s
@@ -21,8 +20,6 @@ services:
 
   db:
     image: ghcr.io/baosystems/postgis:13-3.4
-    ports:
-      - "127.0.0.1:5432:5432"
     volumes:
       - ./db-dump:/docker-entrypoint-initdb.d/:ro
     environment:
@@ -36,13 +33,15 @@ services:
       interval: 1s
       timeout: 3s
       retries: 5
+    security_opt:
+      - no-new-privileges:true
 
   gateway:
     image: nginx
     restart: always
     depends_on:
-      dhis2:
-        condition: service_healthy
+      seed:
+        condition: service_completed_successfully
     ports:
       - "${DHIS2_PORT:-8080}:80"
     volumes:
@@ -52,8 +51,14 @@ services:
 
   civil-registry:
     image: "hapiproject/hapi:v7.4.0-tomcat"
+    healthcheck:
+      test: [ "CMD", "bash", "-c", "echo -n '' > /dev/tcp/127.0.0.1/8080" ]
+      start_period: 60s
+      interval: 5s
+      timeout: 1s
+      retries: 5
 
-  keycloak:
+  identity-provider:
     image: "quay.io/keycloak/keycloak:25.0.6"
     environment:
       KEYCLOAK_ADMIN: "admin"
@@ -61,7 +66,7 @@ services:
       KC_HEALTH_ENABLED: "true"
 
       # comment KC_HOSTNAME and KC_HOSTNAME_BACKCHANNEL_DYNAMIC to test Keycloak from Docker host
-      KC_HOSTNAME: "http://keycloak:8080"
+      KC_HOSTNAME: "http://identity-provider:8080"
       KC_HOSTNAME_BACKCHANNEL_DYNAMIC: "true"
     healthcheck:
       test:
@@ -74,27 +79,47 @@ services:
       timeout: 5s
       retries: 10
     volumes:
-      - ./config/keycloak/civil-registry-realm.json:/opt/keycloak/data/import/civil-registry-realm.json:ro
-    command: ["start-dev", "--import-realm"]
+      - ./config/identity-provider/civil-registry-realm.json:/opt/keycloak/data/import/civil-registry-realm.json:ro
+    command: [ "start-dev", "--import-realm" ]
+    security_opt:
+      - no-new-privileges:true
 
   auth-proxy:
     image: "quay.io/oauth2-proxy/oauth2-proxy:v7.6.0"
-    ports:
-      - "4180:4180"
     command: --config /oauth2-proxy.cfg
     volumes:
       - "./config/auth-proxy/oauth2-proxy-keycloak.cfg:/oauth2-proxy.cfg"
     depends_on:
-       keycloak:
-         condition: service_healthy
+      identity-provider:
+        condition: service_healthy
+    security_opt:
+      - no-new-privileges:true
 
   oauth-route-middleware:
     build: ./oauth-route-middleware
-    ports:
-      - "9070:9070"
     restart: always
+    depends_on:
+      identity-provider:
+        condition: service_healthy
     security_opt:
       - no-new-privileges:true
+
+  seed:
+    image: busybox
+    command:
+      - "/bin/sh"
+      - "-c"
+      - |
+        wget --quiet --timeout=0 --header 'Content-Type: application/json' --post-file persons.json 'http://civil-registry:8080/fhir'
+        wget --quiet --timeout=0 --header 'Authorization: Basic YWRtaW46ZGlzdHJpY3Q=' --header 'Content-Type: application/json' --post-file route.json 'http://dhis2:8080/api/routes'
+    volumes:
+      - ./config/civil-registry/persons.json:/persons.json:ro
+      - ./config/dhis2/route.json:/route.json:ro
+    depends_on:
+      civil-registry:
+        condition: service_healthy
+      dhis2:
+        condition: service_healthy
 
 volumes:
   db-dump: { }

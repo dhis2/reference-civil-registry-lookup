@@ -28,7 +28,7 @@
 
 server:
   port: 9070
-  address: 127.0.0.1
+  address: 0.0.0.0
   error:
     whitelabel:
       enabled: false
@@ -48,7 +48,7 @@ camel:
       context-path: "/api/*"
   component:
     fhir:
-      server-url: https://localhost:8090/baseR4
+      server-url: http://civil-registry:8080/fhir
 
 management:
   endpoints:
@@ -65,12 +65,6 @@ spring:
   security:
     user:
       roles: admin,viewer
-  artemis:
-    mode: EMBEDDED
-    host: localhost
-    port: 61616
-    user: myuser
-    password: mypass
 
 hawtio:
   authenticationEnabled: false
@@ -80,6 +74,6 @@ logging:
     name: oauth-route-middleware.log
 
 oauth2:
-  tokenEndpoint: http://keycloak:8080/realms/civil-registry/protocol/openid-connect/token
+  tokenEndpoint: http://identity-provider:8080/realms/civil-registry/protocol/openid-connect/token
   clientId: civil-registry-client
   clientSecret: ibz2lEXdGe02CJS2N7tY13r6664eJpoX
