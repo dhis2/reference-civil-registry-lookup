@@ -36,6 +36,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.util.TestSocketUtils;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.wait.strategy.HttpWaitStrategy;
 import org.testcontainers.junit.jupiter.Container;
@@ -54,7 +55,9 @@ public class AbstractRouteFunctionalTestCase {
 
   @Autowired protected ProducerTemplate producerTemplate;
 
-  protected static IGenericClient FHIR_CLIENT;
+  protected static IGenericClient fhirClient;
+
+  protected static String identityProviderUrl;
 
   private static GenericContainer<?> newHapiFhirContainer() {
     return new GenericContainer<>(DockerImageName.parse("hapiproject/hapi:v7.4.0-tomcat"))
@@ -71,8 +74,13 @@ public class AbstractRouteFunctionalTestCase {
 
       String fhirServerUrl =
           String.format("http://localhost:%s/fhir", HAPI_FHIR_CONTAINER.getFirstMappedPort());
-      FHIR_CLIENT = FhirVersionEnum.R4.newContext().newRestfulGenericClient(fhirServerUrl);
+      fhirClient = FhirVersionEnum.R4.newContext().newRestfulGenericClient(fhirServerUrl);
 
+      identityProviderUrl =
+          String.format(
+              "http://localhost:%s/realms/civil-registry/protocol/openid-connect/token",
+              TestSocketUtils.findAvailableTcpPort());
+      System.setProperty("oauth2.tokenEndpoint", identityProviderUrl);
       System.setProperty("camel.component.fhir.server-url", fhirServerUrl);
     }
   }

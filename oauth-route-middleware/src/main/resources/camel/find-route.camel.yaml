@@ -31,20 +31,25 @@
     from:
       uri: direct:find
       steps:
-        - to:
-            uri: direct:fetchAccessToken
-            variableReceive: accessToken
+        - removeHeaders: "CamelHttp*"
+        - setHeader:
+            name: Content-Type
+            constant: application/x-www-form-urlencoded
+        - setBody:
+            simple: identifier=${body['id']}
         - toD:
-            uri: fhir:search/searchByUrl
+            # `fhir:search/searchByUrl` from the FHIR component permits only GET operations so this route relies on the HTTP component
+            # to POST the search query in order to reduce the risk of the national ID leaking into the server access logs
+            uri: "{{camel.component.fhir.server-url}}/Person/_search"
             parameters:
-              url: Person?identifier=${body['id']}
-              accessToken: ${variable.accessToken}
+              httpMethod: POST
+              oauth2ClientId: "{{oauth2.clientId}}"
+              oauth2ClientSecret: "{{oauth2.clientSecret}}"
+              oauth2TokenEndpoint: "{{oauth2.tokenEndpoint}}"
         - choice:
             when:
-              - simple: ${body.total} > 0
+              - jsonpath: $[?(@.total > 0)]
                 steps:
-                - marshal:
-                    fhirJson: { }
                 - transform:
                     datasonnet:
                       expression: resource:classpath:dhis2Person.ds
@@ -53,6 +58,8 @@
                       outputMediaType: application/x-java-object
             otherwise:
               steps:
+                - setBody:
+                    simple: "${null}"
                 - setHeader:
                     name: CamelHttpResponseCode
                     constant: "404"

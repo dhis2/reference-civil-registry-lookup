@@ -1,0 +1,118 @@
+{
+  "resourceType": "Bundle",
+  "type": "transaction",
+  "entry": [
+    {
+      "resource": {
+        "resourceType": "Person",
+        "identifier": [
+          {
+            "value": "328808792660010"
+          }
+        ],
+        "name": [
+          {
+            "family": "Doe",
+            "given": [
+              "John"
+            ]
+          }
+        ],
+        "telecom": [
+          {
+            "value": "+998 12345678"
+          }
+        ],
+        "gender": "male",
+        "birthDate": "2007-02-15",
+        "address": [
+          {
+            "line": [
+              "HISP Centre",
+              "University of Oslo",
+              "Oslo"
+            ]
+          }
+        ]
+      },
+      "request": {
+        "method": "POST",
+        "url": "Person"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Person",
+        "identifier": [
+          {
+            "value": "328808792660011"
+          }
+        ],
+        "name": [
+          {
+            "family": "Mcknight",
+            "given": [
+              "Sarah"
+            ]
+          }
+        ],
+        "telecom": [
+          {
+            "value": "+998 22345678"
+          }
+        ],
+        "gender": "female",
+        "birthDate": "1999-09-27",
+        "address": [
+          {
+            "line": [
+              "4730 Mapleview Drive",
+              "Polk City"
+            ]
+          }
+        ]
+      },
+      "request": {
+        "method": "POST",
+        "url": "Person"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Person",
+        "identifier": [
+          {
+            "value": "328808792660012"
+          }
+        ],
+        "name": [
+          {
+            "family": "Schwartz",
+            "given": [
+              "Trystan"
+            ]
+          }
+        ],
+        "telecom": [
+          {
+            "value": "+998 22345670"
+          }
+        ],
+        "gender": "male",
+        "birthDate": "1978-11-28",
+        "address": [
+          {
+            "line": [
+              "3909 Illinois Avenue",
+              "Portland"
+            ]
+          }
+        ]
+      },
+      "request": {
+        "method": "POST",
+        "url": "Person"
+      }
+    }
+  ]
+}

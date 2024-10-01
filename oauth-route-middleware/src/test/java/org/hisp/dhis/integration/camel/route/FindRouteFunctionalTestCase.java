@@ -30,12 +30,8 @@ package org.hisp.dhis.integration.camel.route;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.camel.CamelContext;
 import org.apache.camel.Exchange;
-import org.apache.camel.builder.AdviceWith;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.impl.DefaultCamelContext;
-import org.apache.camel.model.Model;
-import org.apache.camel.model.ProcessorDefinition;
-import org.apache.camel.model.ToDynamicDefinition;
 import org.apache.camel.support.DefaultExchange;
 import org.apache.camel.test.spring.junit5.UseAdviceWith;
 import org.hl7.fhir.r4.model.Address;
@@ -50,7 +46,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.test.util.TestSocketUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -72,12 +67,8 @@ public class FindRouteFunctionalTestCase extends AbstractRouteFunctionalTestCase
 
   @BeforeEach
   public void beforeEach() throws Exception {
-    int identityProviderPort = TestSocketUtils.findAvailableTcpPort();
-
-    identityProviderCamelContext = mockIdentityProvider(identityProviderPort);
+    identityProviderCamelContext = mockIdentityProvider();
     identityProviderCamelContext.start();
-
-    mockIdentityProviderEndpoint(identityProviderPort);
     camelContext.start();
   }
 
@@ -86,15 +77,13 @@ public class FindRouteFunctionalTestCase extends AbstractRouteFunctionalTestCase
     identityProviderCamelContext.close();
   }
 
-  private CamelContext mockIdentityProvider(int identityProviderPort) throws Exception {
+  private CamelContext mockIdentityProvider() throws Exception {
     CamelContext identityProviderCamelContext = new DefaultCamelContext(false);
     identityProviderCamelContext.addRoutes(
             new RouteBuilder() {
               @Override
               public void configure() {
-                from(String.format(
-                        "jetty:http://0.0.0.0:%s/realms/civil-registry/protocol/openid-connect/token",
-                        identityProviderPort))
+                from("jetty:" + identityProviderUrl)
                         .process(
                                 exchange -> {
                                   assertEquals(
@@ -128,34 +117,9 @@ public class FindRouteFunctionalTestCase extends AbstractRouteFunctionalTestCase
     return identityProviderCamelContext;
   }
 
-  private void mockIdentityProviderEndpoint(int identityProviderPort) throws Exception {
-    Model model = camelContext.getCamelContextExtension().getContextPlugin(Model.class);
-    List<ProcessorDefinition<?>> processorDefinitions =
-            model.getRouteDefinition("fetchAccessTokenRoute").getOutputs();
-    for (ProcessorDefinition<?> processorDefinition : processorDefinitions) {
-      if (processorDefinition instanceof ToDynamicDefinition) {
-        String identityProviderUri = ((ToDynamicDefinition) processorDefinition).getUri();
-        String endpointQueryPath =
-                identityProviderUri.substring(identityProviderUri.indexOf("?") + 1);
-
-        AdviceWith.adviceWith(
-                camelContext,
-                "fetchAccessTokenRoute",
-                r ->
-                        r.weaveByToUri("\\{{oauth2.tokenEndpoint\\}}*")
-                                .replace()
-                                .to(
-                                        String.format(
-                                                "http://localhost:%s/realms/civil-registry/protocol/openid-connect/token?bridgeEndpoint=true&%s",
-                                                identityProviderPort, endpointQueryPath)));
-        break;
-      }
-    }
-  }
-
   @Test
   public void testFindRouteGivenKnownPersonIdentifier() throws Exception {
-    FHIR_CLIENT
+    fhirClient
         .create()
         .resource(
             new Person()
@@ -172,7 +136,6 @@ public class FindRouteFunctionalTestCase extends AbstractRouteFunctionalTestCase
                             .addLine("University of Oslo")
                             .addLine("Oslo")))
                 .setTelecom(List.of(new ContactPoint().setValue("+998 12345678"))))
-        .prettyPrint()
         .encodedJson()
         .execute();
 
@@ -210,5 +173,6 @@ public class FindRouteFunctionalTestCase extends AbstractRouteFunctionalTestCase
                     String.format("http://localhost:%s/api/find?okStatusCodeRange=200-500", serverPort), inExchange);
 
     assertEquals(404, outExchange.getMessage().getHeader("CamelHttpResponseCode"));
+    assertEquals("", outExchange.getMessage().getBody(String.class));
   }
 }
