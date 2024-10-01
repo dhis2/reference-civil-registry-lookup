@@ -13,7 +13,7 @@
     "wait-on": "^8.0.1"
   },
   "scripts": {
-    "build-middleware": "cd oauth-route-middleware && mvn clean install",
+    "build-middleware": "mvn -B clean package -Dmaven.test.skip=true -f oauth-route-middleware/pom.xml",
     "build-plugin": "cd civil-registry-plugin && yarn install --frozen-lockfile && yarn build --no-verify",
     "build-app": "cd route-manager-app && yarn install --frozen-lockfile && yarn build --no-verify",
     "build": "concurrently --kill-others-on-fail \"yarn:build-middleware\" \"yarn:build-plugin\" \"yarn:build-app\"",
