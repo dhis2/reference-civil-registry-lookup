@@ -24,7 +24,7 @@ jobs:
         run: mvn -B clean package -Dmaven.test.skip=true -f oauth-route-middleware/pom.xml
       - uses: hoverkraft-tech/compose-action@v2.0.1
       - name: Install dependencies
-        run: npm ci
+        run: yarn install --frozen-lockfile
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
       - name: Run Playwright tests
