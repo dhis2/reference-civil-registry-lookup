@@ -26,10 +26,25 @@
 #  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 
-- rest:
-    bindingMode: json
-    post:
-    - path: /find
-      consumes: application/json
-      produces: application/json
-      to: direct:find
+- route:
+    id: fetchAccessTokenRoute
+    from:
+      uri: direct:fetchAccessToken
+      steps:
+        - setHeader:
+            name: Content-Type
+            constant: application/x-www-form-urlencoded
+        - setBody:
+            constant: "grant_type=client_credentials"
+        - toD:
+            uri: "{{oauth2.tokenEndpoint}}"
+            parameters:
+              httpMethod: POST
+              authMethod: Basic
+              authUsername: "{{oauth2.clientId}}"
+              authPassword: "{{oauth2.clientSecret}}"
+              authenticationPreemptive: true
+        - unmarshal:
+            json: { }
+        - setBody:
+            simple: "${body['access_token']}"

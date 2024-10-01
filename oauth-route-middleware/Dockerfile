@@ -26,10 +26,6 @@
 #  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 
-- rest:
-    bindingMode: json
-    post:
-    - path: /find
-      consumes: application/json
-      produces: application/json
-      to: direct:find
+FROM openjdk:17-jdk-alpine
+COPY target/oauth-route-middleware-1.0.0-SNAPSHOT.jar oauth-route-middleware-1.0.0-SNAPSHOT.jar
+ENTRYPOINT ["java","-jar","/oauth-route-middleware-1.0.0-SNAPSHOT.jar"]

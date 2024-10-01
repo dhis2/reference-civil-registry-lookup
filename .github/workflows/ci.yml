@@ -19,7 +19,7 @@ jobs:
           distribution: 'temurin'
           cache: maven
       - name: Test oauth-route-middleware
-        run: mvn -B clean test
+        run: mvn -B clean package
         working-directory: ./oauth-route-middleware
       - name: Test docker-compose
         uses: hoverkraft-tech/compose-action@v2.0.1
