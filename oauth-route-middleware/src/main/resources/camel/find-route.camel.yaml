@@ -52,7 +52,7 @@
                 steps:
                 - transform:
                     datasonnet:
-                      expression: resource:classpath:dhis2Person.ds
+                      expression: "{{dataSonnet.dhis2Person}}"
                       resultType: java.util.Map
                       bodyMediaType: application/json
                       outputMediaType: application/x-java-object

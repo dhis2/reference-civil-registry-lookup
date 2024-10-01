@@ -103,6 +103,8 @@ services:
         condition: service_healthy
     security_opt:
       - no-new-privileges:true
+    volumes:
+      - ./config/oauth-route-middleware/dhis2Person.ds:/dhis2Person.ds:ro
 
   seed:
     image: busybox
