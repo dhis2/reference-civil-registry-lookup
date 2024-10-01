@@ -6,7 +6,7 @@ const {
 test('should not find a person', async ({
     request
 }) => {
-    const person = await request.post('/api/routes/find-person/run', {
+    const person = await request.post('/api/routes/civil-registry/run', {
         data: {
             id: '328802792660011'
         }
@@ -18,7 +18,7 @@ test('should not find a person', async ({
 test('should find a person', async ({
     request
 }) => {
-    const person = await request.post('/api/routes/find-person/run', {
+    const person = await request.post('/api/routes/civil-registry/run', {
         data: {
             id: '328808792660010'
         }

@@ -6,13 +6,44 @@ The purpose of the Civil Registry plugin is to reduce the chance of errors and p
 
 The plugin is designed to be secure and flexible and follows best practices that match the functionality offered by DHIS2 v40 and higher.
 
-## Components
+## Quick Start
+
+To run this example locally, you must have the following pre-requisites installed:
+* Docker Desktop
+* Maven
+* Node.js
+* Yarn
+
+Once these tools are installed and this repository has been cloned to the local machine, run these two commands to build the components, start all services with docker-compose, and configure the system with some example metadata and data.
+
+```sh
+yarn install --frozen-lockfile
+yarn build
+yarn start
+```
+
+If you want to run middleware API tests, you can run the following in another terminal:
+
+```sh
+yarn test
+```
+
+## Core Components
+
+These components extend the capabilities of the Capture App in DHIS2 to support looking up demographic information from an external civil registry
+
+* Civil Registry lookup plugin (DHIS2 Capture App plugin)
+* API Route for civil registry lookups (DHIS2 configuration)
+* OAuth2 Route Middleware & Translation layer (Apache Camel)
+
+## Mock components
+
+These services are also included in the docker-compose setup of the reference implementation, allowing this to be a fully self-contained example.  However, in most production implementations these services will already exist and the core components above should be configured to talk with them.
 
 * DHIS2 v40.5
 * Mock Civil Registry (FHIR-compliant)
-* OAuth2 Route Middleware & Translation layer (Apache Camel)
 * OAuth2 Authentication server (Keycloak)
-* Civil Registry lookup plugin (DHIS2 Capture App plugin)
+* OAuth2 Proxy Service (in front of Civil Registry)
 
 ## Architecture
 
