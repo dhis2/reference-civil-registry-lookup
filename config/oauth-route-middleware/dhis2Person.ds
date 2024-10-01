@@ -1,0 +1,9 @@
+{
+  id: body.entry[0].resource.identifier[0].value,
+  firstName: body.entry[0].resource.name[0].given[0],
+  lastName: body.entry[0].resource.name[0].family,
+  sex: body.entry[0].resource.gender,
+  dateOfBirth: body.entry[0].resource.birthDate,
+  address: ds.joinBy(body.entry[0].resource.address[0].line, ", "),
+  phone: body.entry[0].resource.telecom[0].value
+}
