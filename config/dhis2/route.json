@@ -1,5 +1,5 @@
 {
-  "name": "Find Person",
-  "code": "find-person",
+  "name": "Civil Registry",
+  "code": "civil-registry",
   "url": "http://oauth-route-middleware:9070/api/find"
 }

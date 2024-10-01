@@ -112,9 +112,16 @@ services:
       - |
         wget --quiet --timeout=0 --header 'Content-Type: application/json' --post-file persons.json 'http://civil-registry:8080/fhir'
         wget --quiet --timeout=0 --header 'Authorization: Basic YWRtaW46ZGlzdHJpY3Q=' --header 'Content-Type: application/json' --post-file route.json 'http://dhis2:8080/api/routes'
+        wget --quiet --timeout=0 --header 'Authorization: Basic YWRtaW46ZGlzdHJpY3Q=' --header 'Content-Type: application/json' --post-file pluginConfig.json 'http://dhis2:8080/api/40/dataStore/capture/dataEntryForms'
+        wget --quiet --timeout=0 --header 'Authorization: Basic YWRtaW46ZGlzdHJpY3Q=' --header 'Content-Type: application/json' --post-data '' 'http://dhis2:8080/api/appHub/e66cece4-8582-4329-81c2-043869cf1614'
+      # ls /civil-registry-plugin/*.zip | head -1 | xargs -0 -I '{}' wget --quiet --timeout=0 --header 'Authorization: Basic YWRtaW46ZGlzdHJpY3Q=' --post-file '{}' 'http://dhis2:8080/api/apps'
+      # ls /route-manager-app/*.zip | head -1 | xargs -0 -I '{}' wget --quiet --timeout=0 --header 'Authorization: Basic YWRtaW46ZGlzdHJpY3Q=' --post-file {} 'http://dhis2:8080/api/apps'
     volumes:
       - ./config/civil-registry/persons.json:/persons.json:ro
       - ./config/dhis2/route.json:/route.json:ro
+      - ./config/dhis2/pluginConfig.json:/pluginConfig.json:ro
+      #- ./civil-registry-plugin/build/bundle/:/civil-registry-plugin/:ro
+      #- ./route-manager-app/build/bundle/:/route-manager-app/:ro
     depends_on:
       civil-registry:
         condition: service_healthy
