@@ -5,13 +5,12 @@ services:
     volumes:
       - ./config/dhis2/dhis.conf:/opt/dhis2/dhis.conf:ro
     environment:
-      JAVA_OPTS: "-Dcontext.path='${DHIS2_CORE_CONTEXT_PATH:-}' \
-              -Dlog4j2.configurationFile=/opt/dhis2/log4j2.xml"
+      JAVA_OPTS: "-Dcontext.path='${DHIS2_CORE_CONTEXT_PATH:-}' -Dlog4j2.configurationFile=/opt/dhis2/log4j2.xml"
     depends_on:
       db:
         condition: service_healthy
     healthcheck:
-      test: ["CMD-SHELL", "wget -q -S -O /dev/null http://127.0.0.1:8080/dhis-web-commons/security/login.action 2>&1| grep -q 'HTTP.*200'"]
+      test: [ "CMD-SHELL", "wget -q -S -O /dev/null http://127.0.0.1:8080/dhis-web-commons/security/login.action 2>&1| grep -q 'HTTP.*200'" ]
       start_period: 120s
       interval: 10s
       timeout: 5s
@@ -21,8 +20,6 @@ services:
 
   db:
     image: ghcr.io/baosystems/postgis:13-3.4
-    ports:
-      - "127.0.0.1:5432:5432"
     volumes:
       - ./db-dump:/docker-entrypoint-initdb.d/:ro
     environment:
@@ -36,35 +33,102 @@ services:
       interval: 1s
       timeout: 3s
       retries: 5
+    security_opt:
+      - no-new-privileges:true
 
   gateway:
     image: nginx
     restart: always
     depends_on:
-      dhis2:
-        condition: service_healthy
+      seed:
+        condition: service_completed_successfully
     ports:
       - "${DHIS2_PORT:-8080}:80"
     volumes:
       - ./config/gateway/nginx.conf:/etc/nginx/nginx.conf:ro
     security_opt:
       - no-new-privileges:true
-  
+
   civil-registry:
     image: "hapiproject/hapi:v7.4.0-tomcat"
-    volumes:
-      - ./config/civil-registry/server.xml:/opt/bitnami/apache-tomcat/conf/server.xml:ro
-      - ./config/civil-registry/localhost-rsa-cert.pem:/opt/bitnami/apache-tomcat/conf/localhost-rsa-cert.pem:ro
-      - ./config/civil-registry/localhost-rsa-key.pem:/opt/bitnami/apache-tomcat/conf/localhost-rsa-key.pem:ro
-    ports:
-      - "8090:8080"  
-  
-  # oauth-route-middleware:
-  #   build: ./oauth-route-middleware
-  #   restart: always
-  #   security_opt:
-  #     - no-new-privileges:true
+    healthcheck:
+      test: [ "CMD", "bash", "-c", "echo -n '' > /dev/tcp/127.0.0.1/8080" ]
+      start_period: 60s
+      interval: 5s
+      timeout: 1s
+      retries: 5
 
+  identity-provider:
+    image: "quay.io/keycloak/keycloak:25.0.6"
+    environment:
+      KEYCLOAK_ADMIN: "admin"
+      KEYCLOAK_ADMIN_PASSWORD: "admin"
+      KC_HEALTH_ENABLED: "true"
+
+      # comment KC_HOSTNAME and KC_HOSTNAME_BACKCHANNEL_DYNAMIC to test Keycloak from Docker host
+      KC_HOSTNAME: "http://identity-provider:8080"
+      KC_HOSTNAME_BACKCHANNEL_DYNAMIC: "true"
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "exec 3<>/dev/tcp/localhost/9000 && echo -e 'GET /health/ready HTTP/1.1\\r\\nHost: localhost\\r\\nConnection: close\\r\\n\\r\\n' >&3 && cat <&3 | grep -q '200 OK'"
+        ]
+      start_period: 120s
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    volumes:
+      - ./config/identity-provider/civil-registry-realm.json:/opt/keycloak/data/import/civil-registry-realm.json:ro
+    command: [ "start-dev", "--import-realm" ]
+    security_opt:
+      - no-new-privileges:true
+
+  auth-proxy:
+    image: "quay.io/oauth2-proxy/oauth2-proxy:v7.6.0"
+    command: --config /oauth2-proxy.cfg
+    volumes:
+      - "./config/auth-proxy/oauth2-proxy-keycloak.cfg:/oauth2-proxy.cfg"
+    depends_on:
+      identity-provider:
+        condition: service_healthy
+    security_opt:
+      - no-new-privileges:true
+
+  oauth-route-middleware:
+    build: ./oauth-route-middleware
+    restart: always
+    depends_on:
+      identity-provider:
+        condition: service_healthy
+    security_opt:
+      - no-new-privileges:true
+    volumes:
+      - ./config/oauth-route-middleware/dhis2Person.ds:/dhis2Person.ds:ro
+
+  seed:
+    image: busybox
+    command:
+      - "/bin/sh"
+      - "-c"
+      - |
+        wget --quiet --timeout=0 --header 'Content-Type: application/json' --post-file persons.json 'http://civil-registry:8080/fhir'
+        wget --quiet --timeout=0 --header 'Authorization: Basic YWRtaW46ZGlzdHJpY3Q=' --header 'Content-Type: application/json' --post-file route.json 'http://dhis2:8080/api/routes'
+        wget --quiet --timeout=0 --header 'Authorization: Basic YWRtaW46ZGlzdHJpY3Q=' --header 'Content-Type: application/json' --post-file pluginConfig.json 'http://dhis2:8080/api/40/dataStore/capture/dataEntryForms'
+        wget --quiet --timeout=0 --header 'Authorization: Basic YWRtaW46ZGlzdHJpY3Q=' --header 'Content-Type: application/json' --post-data '' 'http://dhis2:8080/api/appHub/e66cece4-8582-4329-81c2-043869cf1614'
+      # ls /civil-registry-plugin/*.zip | head -1 | xargs -0 -I '{}' wget --quiet --timeout=0 --header 'Authorization: Basic YWRtaW46ZGlzdHJpY3Q=' --post-file '{}' 'http://dhis2:8080/api/apps'
+      # ls /route-manager-app/*.zip | head -1 | xargs -0 -I '{}' wget --quiet --timeout=0 --header 'Authorization: Basic YWRtaW46ZGlzdHJpY3Q=' --post-file {} 'http://dhis2:8080/api/apps'
+    volumes:
+      - ./config/civil-registry/persons.json:/persons.json:ro
+      - ./config/dhis2/route.json:/route.json:ro
+      - ./config/dhis2/pluginConfig.json:/pluginConfig.json:ro
+      #- ./civil-registry-plugin/build/bundle/:/civil-registry-plugin/:ro
+      #- ./route-manager-app/build/bundle/:/route-manager-app/:ro
+    depends_on:
+      civil-registry:
+        condition: service_healthy
+      dhis2:
+        condition: service_healthy
 
 volumes:
   db-dump: { }

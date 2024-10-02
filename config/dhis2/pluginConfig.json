@@ -1,0 +1,59 @@
+{
+  "KYzHf1Ta6C4": [
+    {
+      "id": "default",
+      "elements": [
+        {
+          "id": "civil-registry-plugin",
+          "type": "plugin",
+          "pluginSource": "http://localhost:8080/api/apps/civil-registry-plugin/plugin.html",
+          "fieldMap": [
+            {
+              "IdFromApp": "Ewi7FUfcHAD",
+              "IdFromPlugin": "id",
+              "objectType": "TrackedEntityAttribute"
+            },
+            {
+              "IdFromApp": "sB1IHYu2xQT",
+              "IdFromPlugin": "firstName",
+              "objectType": "TrackedEntityAttribute"
+            },
+            {
+              "IdFromApp": "ENRjVGxVL6l",
+              "IdFromPlugin": "lastName",
+              "objectType": "TrackedEntityAttribute"
+            },
+            {
+              "IdFromApp": "oindugucx72",
+              "IdFromPlugin": "sex",
+              "objectType": "TrackedEntityAttribute"
+            },
+            {
+              "IdFromApp": "NI0QRzJvQ0k",
+              "IdFromPlugin": "dateOfBirth",
+              "objectType": "TrackedEntityAttribute"
+            },
+            {
+              "IdFromApp": "Xhdn49gUd52",
+              "IdFromPlugin": "address",
+              "objectType": "TrackedEntityAttribute"
+            }
+          ]
+        },
+        { "id": "Ewi7FUfcHAD", "type": "TrackedEntityAttribute" },
+        { "id": "BdvE9shT6GX", "type": "TrackedEntityAttribute" },
+        { "id": "aOrGt5JE0gV", "type": "TrackedEntityAttribute" },
+        { "id": "sB1IHYu2xQT", "type": "TrackedEntityAttribute" },
+        { "id": "ENRjVGxVL6l", "type": "TrackedEntityAttribute" },
+        { "id": "oindugucx72", "type": "TrackedEntityAttribute" },
+        { "id": "Z1rLc1rVHK8", "type": "TrackedEntityAttribute" },
+        { "id": "NI0QRzJvQ0k", "type": "TrackedEntityAttribute" },
+        { "id": "ntelZthDPpR", "type": "TrackedEntityAttribute" },
+        { "id": "ljHL8NnSEAD", "type": "TrackedEntityAttribute" },
+        { "id": "f038nOc9uRF", "type": "TrackedEntityAttribute" },
+        { "id": "Xhdn49gUd52", "type": "TrackedEntityAttribute" },
+        { "id": "PBdqXh8Nvuj", "type": "TrackedEntityAttribute" }
+      ]
+    }
+  ]
+}

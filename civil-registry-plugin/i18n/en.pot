@@ -5,14 +5,14 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2024-05-15T19:19:37.805Z\n"
-"PO-Revision-Date: 2024-05-15T19:19:37.805Z\n"
+"POT-Creation-Date: 2024-09-24T10:09:58.468Z\n"
+"PO-Revision-Date: 2024-09-24T10:09:58.469Z\n"
 
 msgid "Patient ID"
 msgstr "Patient ID"
 
-msgid "Enter patient ID"
-msgstr "Enter patient ID"
-
 msgid "Search"
 msgstr "Search"
+
+msgid "Failed to query civil registry: {{error}}"
+msgstr "Failed to query civil registry: {{error}}"

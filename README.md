@@ -10,9 +10,9 @@ The plugin is designed to be secure and flexible and follows best practices that
 
 * DHIS2 v40.5
 * Mock Civil Registry (FHIR-compliant)
-* OAuth2 Route Middleware & Translation layer (Apache Camel)
+* OAuth2 Route Middleware
 * OAuth2 Authentication server (Keycloak)
-* Civil Registry lookup plugin (DHIS2 Capture App plugin)
+* OAuth2 Proxy Service (in front of Civil Registry)
 
 ## Architecture
 
