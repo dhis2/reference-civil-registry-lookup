@@ -73,6 +73,9 @@ logging:
   file:
     name: oauth-route-middleware.log
 
+dataSonnet:
+  dhis2Person: resource:file:/dhis2Person.ds
+
 oauth2:
   tokenEndpoint: http://identity-provider:8080/realms/civil-registry/protocol/openid-connect/token
   clientId: civil-registry-client
