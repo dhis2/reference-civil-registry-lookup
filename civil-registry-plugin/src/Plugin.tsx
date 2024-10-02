@@ -5,7 +5,7 @@ import './locales'
 
 const PluginInner = (propsFromParent: IDataEntryPluginProps) => {
     const {
-        // values,
+        values,
         // errors,
         // warnings,
         // formSubmitted,
@@ -14,7 +14,7 @@ const PluginInner = (propsFromParent: IDataEntryPluginProps) => {
         setFieldValue,
     } = propsFromParent
 
-    return <LookupField setFieldValue={setFieldValue} fieldsMetadata={fieldsMetadata} />
+    return <LookupField setFieldValue={setFieldValue} fieldsMetadata={fieldsMetadata} values={values} />
 }
 
 export default PluginInner
