@@ -5,20 +5,20 @@ import { useCivilRegistryQuery } from '../lib/useCivilRegistryQuery'
 import { FieldsMetadata, SetFieldValue } from '../Plugin.types'
 import classes from './LookupField.module.css'
 
-type Props = { setFieldValue: SetFieldValue; fieldsMetadata: FieldsMetadata }
+type Props = { setFieldValue: SetFieldValue; fieldsMetadata: FieldsMetadata, values: Record<string, any> }
 
-export const LookupField = ({ setFieldValue, fieldsMetadata }: Props) => {
+export const LookupField = ({ setFieldValue, fieldsMetadata, values }: Props) => {
     const [query, { loading }] = useCivilRegistryQuery({
         setFieldValue,
         fieldsMetadata,
     })
-    const [patientId, setPatientId] = React.useState('')
+    const [patientId, setPatientId] = React.useState(values['id'] || '')
 
     return (
         <div className={classes.fieldContainer}>
             <div className={classes.labelContainer}>
                 <Label htmlFor={'patientId'} className={classes.label}>
-                    {i18n.t('Patient ID')}
+                    {fieldsMetadata['id']?.formName || i18n.t('Patient ID')}
                 </Label>
             </div>
 
