@@ -27,7 +27,12 @@
  */
 package org.hisp.dhis.integration.camel.route;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+
 import org.apache.camel.CamelContext;
 import org.apache.camel.Exchange;
 import org.apache.camel.builder.RouteBuilder;
@@ -42,18 +47,13 @@ import org.hl7.fhir.r4.model.Identifier;
 import org.hl7.fhir.r4.model.Person;
 import org.hl7.fhir.r4.model.StringType;
 import org.junit.jupiter.api.AfterEach;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.server.LocalServerPort;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @UseAdviceWith
 public class FindRouteFunctionalTestCase extends AbstractRouteFunctionalTestCase {
@@ -155,7 +155,7 @@ public class FindRouteFunctionalTestCase extends AbstractRouteFunctionalTestCase
     assertEquals("328802792660010", body.get("id"));
     assertEquals("John", body.get("firstName"));
     assertEquals("Doe", body.get("lastName"));
-    assertEquals("male", body.get("sex"));
+    assertEquals("MALE", body.get("sex"));
     assertEquals(new SimpleDateFormat("yyyy-MM-dd").format(new Date()), body.get("dateOfBirth"));
     assertEquals("HISP Centre, University of Oslo, Oslo", body.get("address"));
     assertEquals("+998 12345678", body.get("phone"));
