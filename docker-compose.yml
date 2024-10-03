@@ -17,6 +17,10 @@ services:
       retries: 5
     security_opt:
       - no-new-privileges:true
+    networks:
+      - default
+      - middleware
+      - db
 
   db:
     image: ghcr.io/baosystems/postgis:13-3.4
@@ -35,6 +39,8 @@ services:
       retries: 5
     security_opt:
       - no-new-privileges:true
+    networks:
+      - db
 
   gateway:
     image: nginx
@@ -57,6 +63,8 @@ services:
       interval: 5s
       timeout: 1s
       retries: 5
+    networks:
+      - civil-registry
 
   identity-provider:
     image: "quay.io/keycloak/keycloak:25.0.6"
@@ -83,6 +91,8 @@ services:
     command: [ "start-dev", "--import-realm" ]
     security_opt:
       - no-new-privileges:true
+    networks:
+      - auth
 
   auth-proxy:
     image: "quay.io/oauth2-proxy/oauth2-proxy:v7.6.0"
@@ -94,6 +104,9 @@ services:
         condition: service_healthy
     security_opt:
       - no-new-privileges:true
+    networks:
+      - auth
+      - civil-registry
 
   oauth-route-middleware:
     build: ./oauth-route-middleware
@@ -105,6 +118,9 @@ services:
       - no-new-privileges:true
     volumes:
       - ./config/oauth-route-middleware/dhis2Person.ds:/dhis2Person.ds:ro
+    networks:
+      - middleware
+      - auth
 
   seed:
     image: busybox
@@ -129,6 +145,9 @@ services:
         condition: service_healthy
       dhis2:
         condition: service_healthy
+    networks:
+      - default
+      - civil-registry
 
 volumes:
   db-dump: { }
@@ -136,3 +155,13 @@ volumes:
     driver: local
   postgresql:
     driver: local
+
+networks:
+  civil-registry:
+    internal: true
+  auth:
+    internal: true
+  middleware:
+    internal: true
+  db:
+    internal: true
