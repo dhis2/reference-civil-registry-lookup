@@ -40,7 +40,7 @@
         - toD:
             # `fhir:search/searchByUrl` from the FHIR component permits only GET operations so this route relies on the HTTP component
             # to POST the search query in order to reduce the risk of the national ID leaking into the server access logs
-            uri: "{{camel.component.fhir.server-url}}/Person/_search"
+            uri: "{{civil-registry-url}}/Person/_search"
             parameters:
               httpMethod: POST
               oauth2ClientId: "{{oauth2.clientId}}"

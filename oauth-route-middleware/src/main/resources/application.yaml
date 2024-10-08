@@ -46,9 +46,8 @@ camel:
   servlet:
     mapping:
       context-path: "/api/*"
-  component:
-    fhir:
-      server-url: http://civil-registry:8080/fhir
+
+civil-registry-url: http://auth-proxy:4180/fhir
 
 management:
   endpoints:

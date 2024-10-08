@@ -83,7 +83,7 @@ public class AbstractRouteFunctionalTestCase {
               "http://localhost:%s/realms/civil-registry/protocol/openid-connect/token",
               TestSocketUtils.findAvailableTcpPort());
       System.setProperty("oauth2.tokenEndpoint", identityProviderUrl);
-      System.setProperty("camel.component.fhir.server-url", fhirServerUrl);
+      System.setProperty("civil-registry-url", fhirServerUrl);
     }
   }
 }
