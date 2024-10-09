@@ -88,7 +88,7 @@ To understand how to configure correctly, please refer to the [Route Manager Con
 ### Transformation layer
 The Apache Camel middleware provided by this reference implementation will handle the translation of the data from the civil registry to the format the plugin expects. This is done to make sure that the plugin is generic and can be used by multiple countries with different civil registry structures.
 
-The transformation of one data source to the one accepted by the plugin is done in the `dhis2Person.ds` configuration file which can be found at `config/oauth-route-middleware/dhis2Person.ds` in this repository. Adjusting this file will allow you to adjust the transformation to your own civil registry structure.
+The transformation of the data coming from the Civil Registry API to the structure that's accepted by the plugin is done in the `dhis2Person.ds` configuration file which can be found at `config/oauth-route-middleware/dhis2Person.ds` in this repository. Adjusting this file will allow you to adjust the transformation to your own civil registry structure.
 
 ### Authentication
 The Apache Camel middleware follows the [OAuth 2 client credentials flow](https://auth0.com/docs/get-started/authentication-and-authorization-flow/client-credentials-flow) (i.e., machine-to-machine) to authenticate with the civil registry. The Civil Registry Plugin does not initiate or participate in the OAuth 2 dance. This solves the problem of having authentication concerns in the plugin, and therefore, requiring DHIS2 end-users to be in possession of credentials for the civil registry.
