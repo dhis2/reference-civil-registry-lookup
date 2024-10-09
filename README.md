@@ -1,5 +1,13 @@
 # Civil Registry Lookup - reference implementation
 
+## What is this implementation?
+
+A civil registry is a national database used for storing personal details of citizens. When working with DHIS2 it can be useful to have a way to look up information from the civil registry to prefill forms in DHIS2. By having it integrated with DHIS2, it can reduce the chance of errors and provide a quick way to prefill forms with information of the patients that's accurate and up-to-date.
+
+This reference implementation shows how to build a plugin for the DHIS2 Capture App that can look up information from a civil registry and prefill forms in DHIS2. It also adds a middleware layer to handle the oAuth2 authentication and translation of data from the civil registry to the format expected by the plugin. This is especially useful as it adds a layer of security. 
+
+## Technical Overview
+
 This is a reference implementation of a **civil registry lookup** from within the DHIS2 Capture App, with a FHIR-compliant civil registry backend protected by OAuth2 authorization.  This is an example which should be used for reference, it **SHOULD NOT** be used directly in production.
 
 The purpose of the Civil Registry plugin is to reduce the chance of errors and provide a quick way to prefill forms with information of the patients. By developing a plugin in a flexible and adjustable way we allow many countries to use the reference implementation and quickly adjust it to their own civil registry structure and DHIS2 setup. 
@@ -10,6 +18,7 @@ The plugin is designed to be secure and flexible and follows best practices that
 ## Quick Start
 
 To run this example locally, you must have the following pre-requisites installed:
+
 * Docker Desktop
 * Maven
 * Node.js
@@ -41,11 +50,8 @@ These components extend the capabilities of the Capture App in DHIS2 to support 
 
 These services are also included in the docker-compose setup of the reference implementation, allowing this to be a fully self-contained example.  However, in most production implementations these services will already exist and the core components above should be configured to talk with them.
 
-## Components
-
 * DHIS2 v40.5
 * Mock Civil Registry (FHIR-compliant)
-* OAuth2 Route Middleware
 * OAuth2 Authentication server (Keycloak)
 * OAuth2 Proxy Service (in front of Civil Registry)
 
@@ -71,19 +77,23 @@ Data coming from the Civil registry will contain, potentially:
 This data is then prefilled in the form.
 
 ### Route Configuration
-An app is built, called `Route Manager`. This app can be found in the [App Hub](https://apps.dhis2.org/app/5dbe9ab8-46bd-411e-b22f-905f08a81d78) and on [Github](https://github.com/dhis2/route-manager-app), to configure the route using the Routes API. A pre-defined code is used to define the route so both the plugin and the app which configures the routes are pointing to the same Route. 
+For managing routes you can use the App called `Route Manager`. This app can be found in the [App Hub](https://apps.dhis2.org/app/5dbe9ab8-46bd-411e-b22f-905f08a81d78) and on [Github](https://github.com/dhis2/route-manager-app), to configure the route using the Routes API. 
 
-Only admins should be able to configure the Route (and access the App), but all users (potentially within a limit) should be able to execute/use the configured route. Make sure this is configured correctly to prevent unauthorized access to the Civil Registry.
+The plugin within this reference implementation expects a route to be configured using the code `civil-registry`. By defining a route with this code, the plugin will know where to look for the civil registry data.
+
+Only admins should be able to configure the Route (and access the App), but all users who should have access to the plugin should be able to execute/use the configured route. Make sure this is configured according to those permissions to prevent unauthorized access to the Civil Registry.
+
+To understand how to configure correctly, please refer to the [Route Manager Configuration](./routes.md) documentation.
 
 ### Transformation layer
 The Apache Camel middleware provided by this reference implementation will handle the translation of the data from the civil registry to the format the plugin expects. This is done to make sure that the plugin is generic and can be used by multiple countries with different civil registry structures.
 
 The transformation of one data source to the one accepted by the plugin is done in the `dhis2Person.ds` configuration file which can be found at `config/oauth-route-middleware/dhis2Person.ds` in this repository. Adjusting this file will allow you to adjust the transformation to your own civil registry structure.
 
-### oAuth handling
-The Apache Camel middleware will handle the oAuth2 authentication. The plugin will not have to handle the oAuth2 authentication itself. This solves the problem of having oAuth authentication in the plugin, and therefore requiring all the users to have credentials for the Civil registry. 
+### Authentication
+The Apache Camel middleware follows the [OAuth 2 client credentials flow](https://auth0.com/docs/get-started/authentication-and-authorization-flow/client-credentials-flow) (i.e., machine-to-machine) to authenticate with the civil registry. The Civil Registry Plugin does not initiate or participate in the OAuth 2 dance. This solves the problem of having authentication concerns in the plugin, and therefore, requiring DHIS2 end-users to be in possession of credentials for the civil registry.
 
-oAuth is configured in the `application.yaml` file which can be found in `oauth-route-middleware/src/main/resources/application.yaml` on [line 76-79](https://github.com/dhis2/reference-civil-registry-lookup/blob/084ea4554918cab85afcb6f2a819c95c5fbece90/oauth-route-middleware/src/main/resources/application.yaml#L76-L79). 
+oAuth 2 parameters, like `client ID` and `secret` are configured in the `application.yaml` file which can be found in `oauth-route-middleware/src/main/resources/application.yaml` on [line 79-82](https://github.com/dhis2/reference-civil-registry-lookup/blob/main/oauth-route-middleware/src/main/resources/application.yaml#L79-L82). 
 
 ## Running the example
 
