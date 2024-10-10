@@ -1,4 +1,5 @@
 import i18n from '@dhis2/d2-i18n'
+import debounce from 'lodash/debounce'
 import { Button, Input, Label } from '@dhis2/ui'
 import React, { useState, useCallback } from 'react'
 import { useCivilRegistryQuery } from '../lib/useCivilRegistryQuery'
@@ -27,14 +28,29 @@ export const LookupField = ({
     })
     const [patientId, setPatientId] = useState(values['id'] || '')
 
+    const updateFormValue = useCallback(
+        debounce((value) => {
+            if ('id' in fieldsMetadata) {
+                setFieldValue({ fieldId: 'id', value })
+            } else if (!idWarningIssued) {
+                console.warn(idWarning)
+                idWarningIssued = true
+            }
+        }, 800),
+        []
+    )
+
     const handleChange = useCallback(({ value }) => {
         setPatientId(value)
-        if ('id' in fieldsMetadata) {
-            setFieldValue({ fieldId: 'id', value })
-        } else if (!idWarningIssued) {
-            console.warn(idWarning)
-            idWarningIssued = true
-        }
+        updateFormValue(value)
+    }, [])
+
+    const handleBlur = useCallback(() => {
+        updateFormValue.flush()
+    }, [updateFormValue])
+
+    const handleSearch = useCallback(() => {
+        query({ id: patientId })
     }, [])
 
     return (
@@ -49,17 +65,13 @@ export const LookupField = ({
                 <div className={classes.inputContainer}>
                     <Input
                         name="patientId"
+                        className={classes.input}
                         value={patientId}
                         onChange={handleChange}
-                        className={classes.input}
+                        onBlur={handleBlur}
                     />
 
-                    <Button
-                        onClick={() => {
-                            query({ id: patientId })
-                        }}
-                        loading={loading}
-                    >
+                    <Button onClick={handleSearch} loading={loading}>
                         {i18n.t('Search')}
                     </Button>
                 </div>
