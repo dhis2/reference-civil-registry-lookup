@@ -1,6 +1,6 @@
 import i18n from '@dhis2/d2-i18n'
 import debounce from 'lodash/debounce'
-import { Button, Input, Label } from '@dhis2/ui'
+import { Button, Help, Input, Label } from '@dhis2/ui'
 import React, { useState, useCallback } from 'react'
 import { useCivilRegistryQuery } from '../lib/useCivilRegistryQuery'
 import { FieldsMetadata, SetFieldValue } from '../Plugin.types'
@@ -10,6 +10,13 @@ import classes from './LookupField.module.css'
 let idWarningIssued = false
 const idWarning =
     "No field with a plugin alias `id` has been found; the value in this field won't automatically update the form value. Values returned from the civil registry still may, depending on the configured plugin aliases."
+
+const personNotFoundMessage = i18n.t(
+    "This person wasn't found in the civil registry. Check the ID and search again, or enter their details manually."
+)
+const registryErrMessage = i18n.t(
+    "Failed to query civil registry. Please enter the person's details manually."
+)
 
 type Props = {
     setFieldValue: SetFieldValue
@@ -22,7 +29,7 @@ export const LookupField = ({
     fieldsMetadata,
     values,
 }: Props) => {
-    const [query, { loading }] = useCivilRegistryQuery({
+    const [query, { loading, error }] = useCivilRegistryQuery({
         setFieldValue,
         fieldsMetadata,
     })
@@ -51,7 +58,27 @@ export const LookupField = ({
 
     const handleSearch = useCallback(() => {
         query({ id: patientId })
-    }, [])
+    }, [patientId])
+
+    const validationStatus = React.useMemo(() => {
+        if (!error) {
+            return {}
+        }
+
+        if (
+            // Types: currently, the type for `error.details` only supports
+            // the `.message` property
+            (error.details as any)?.httpStatusCode === 404 &&
+            !(error.details as any)?.errorCode
+        ) {
+            // This is the case if a person is not found in the registry
+            return { message: personNotFoundMessage, warning: false }
+        }
+
+        // All other errors
+        // (useCivilRegistryQuery logs error to the console)
+        return { message: registryErrMessage, warning: true }
+    }, [error])
 
     return (
         <div className={classes.fieldContainer}>
@@ -66,6 +93,7 @@ export const LookupField = ({
                     <Input
                         name="patientId"
                         className={classes.input}
+                        warning={validationStatus.warning}
                         value={patientId}
                         onChange={handleChange}
                         onBlur={handleBlur}
@@ -75,6 +103,11 @@ export const LookupField = ({
                         {i18n.t('Search')}
                     </Button>
                 </div>
+                {error && (
+                    <Help warning={validationStatus.warning}>
+                        {validationStatus.message}
+                    </Help>
+                )}
             </div>
         </div>
     )
