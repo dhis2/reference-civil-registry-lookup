@@ -59,7 +59,7 @@
             otherwise:
               steps:
                 - setBody:
-                    simple: "${null}"
+                    simple: "Person not found"
                 - setHeader:
                     name: CamelHttpResponseCode
                     constant: "404"

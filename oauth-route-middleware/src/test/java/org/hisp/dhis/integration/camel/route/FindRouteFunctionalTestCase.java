@@ -173,6 +173,6 @@ public class FindRouteFunctionalTestCase extends AbstractRouteFunctionalTestCase
                     String.format("http://localhost:%s/api/find?okStatusCodeRange=200-500", serverPort), inExchange);
 
     assertEquals(404, outExchange.getMessage().getHeader("CamelHttpResponseCode"));
-    assertEquals("", outExchange.getMessage().getBody(String.class));
+    assertEquals("Person not found", outExchange.getMessage().getBody(String.class));
   }
 }
