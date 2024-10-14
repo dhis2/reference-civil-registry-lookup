@@ -23,7 +23,7 @@
     "typescript-eslint": "^7.9.0"
   },
   "dependencies": {
-    "@dhis2/app-runtime": "^3.11.1",
+    "@dhis2/app-runtime": "^3.11.2",
     "@dhis2/ui": "^9.11.5",
     "lodash": "^4.17.21",
     "typescript": "^5.4.5"

@@ -66,10 +66,8 @@ export const LookupField = ({
         }
 
         if (
-            // Types: currently, the type for `error.details` only supports
-            // the `.message` property
-            (error.details as any)?.httpStatusCode === 404 &&
-            !(error.details as any)?.errorCode
+            error.details?.httpStatusCode === 404 &&
+            !error.details?.errorCode
         ) {
             // This is the case if a person is not found in the registry
             return { message: personNotFoundMessage, warning: false }
