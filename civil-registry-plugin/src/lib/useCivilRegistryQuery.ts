@@ -1,11 +1,9 @@
-import { useAlert, useDataMutation } from '@dhis2/app-runtime'
+import { useDataMutation } from '@dhis2/app-runtime'
 import { FieldsMetadata, SetFieldValue } from '../Plugin.types'
-import i18n from '../locales'
 
 type Props = { setFieldValue: SetFieldValue; fieldsMetadata: FieldsMetadata }
 
 const mutation = {
-    // todo: verify code
     resource: 'routes/civil-registry/run',
     type: 'create',
     data: ({ id }: { id: string }) => ({ id }),
@@ -15,8 +13,6 @@ export const useCivilRegistryQuery = ({
     setFieldValue,
     fieldsMetadata,
 }: Props) => {
-    const { show } = useAlert(({ message }) => message, { critical: true })
-
     return useDataMutation(mutation as any, {
         onComplete: (person) => {
             // Take data returned from Route and set enrollment field values.
@@ -34,13 +30,7 @@ export const useCivilRegistryQuery = ({
             })
         },
         onError: (error) => {
-            console.error(error)
-            show({
-                message: i18n.t('Failed to query civil registry: {{error}}', {
-                    error: error.details.message || error.message,
-                    nsSeparator: '`',
-                }),
-            })
+            console.error(error.details || error)
         },
     })
 }
