@@ -114,9 +114,9 @@ services:
     environment:
       CIVIL_REGISTRY_URL: http://auth-proxy:4180/fhir
       DATASONNET_DHIS2PERSON: resource:file:/dhis2Person.ds
-      OAUTH_TOKENENDPOINT: http://identity-provider:8080/realms/civil-registry/protocol/openid-connect/token
-      OAUTH_CLIENTID: civil-registry-client
-      OAUTH_CLIENTSECRET: ibz2lEXdGe02CJS2N7tY13r6664eJpoX
+      OAUTH2_TOKENENDPOINT: http://identity-provider:8080/realms/civil-registry/protocol/openid-connect/token
+      OAUTH2_CLIENTID: civil-registry-client
+      OAUTH2_CLIENTSECRET: ibz2lEXdGe02CJS2N7tY13r6664eJpoX
     depends_on:
       identity-provider:
         condition: service_healthy
