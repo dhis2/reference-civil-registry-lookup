@@ -65,7 +65,3 @@ spring:
 
 hawtio:
   authenticationEnabled: false
-
-logging:
-  file:
-    name: oauth-route-middleware.log
