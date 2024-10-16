@@ -87,7 +87,7 @@ public class FindRouteFunctionalTestCase extends AbstractRouteFunctionalTestCase
                         .process(
                                 exchange -> {
                                   assertEquals(
-                                          "Basic Y2l2aWwtcmVnaXN0cnktY2xpZW50OmliejJsRVhkR2UwMkNKUzJON3RZMTNyNjY2NGVKcG9Y",
+                                          "Basic Y2l2aWwtcmVnaXN0cnktY2xpZW50OnBhc3N3MHJk",
                                           exchange.getMessage().getHeader("Authorization"));
                                   assertEquals(
                                           "grant_type=client_credentials",
