@@ -34,6 +34,7 @@ import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.server.LocalManagementPort;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
@@ -42,6 +43,8 @@ import org.springframework.test.context.ActiveProfiles;
 @ActiveProfiles("test")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class HawtioWebConsoleFunctionalTestCase {
+  @LocalManagementPort private int managementPort;
+
   @LocalServerPort private int serverPort;
 
   private RequestSpecification hawtioRequestSpec;
@@ -50,13 +53,17 @@ public class HawtioWebConsoleFunctionalTestCase {
   public void beforeEach() {
     hawtioRequestSpec =
         new RequestSpecBuilder()
-            .setBaseUri(String.format("http://localhost:%s/management/hawtio", serverPort))
             .setRelaxedHTTPSValidation()
             .build();
   }
 
   @Test
-  public void testAnonymousHttpGet() {
-    given(hawtioRequestSpec).get().then().statusCode(200);
+  public void testHttpGetGivenManagementPort() {
+    given(hawtioRequestSpec).get(String.format("http://localhost:%s/management/hawtio", managementPort)).then().statusCode(200);
+  }
+
+  @Test
+  public void testHttpGetGivenServerPort() {
+    given(hawtioRequestSpec).get(String.format("http://localhost:%s/management/hawtio", serverPort)).then().statusCode(403);
   }
 }

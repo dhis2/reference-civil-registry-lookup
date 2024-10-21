@@ -48,6 +48,8 @@ camel:
       context-path: "/api/*"
 
 management:
+  server:
+    port: 9071
   endpoints:
     web:
       base-path: /management

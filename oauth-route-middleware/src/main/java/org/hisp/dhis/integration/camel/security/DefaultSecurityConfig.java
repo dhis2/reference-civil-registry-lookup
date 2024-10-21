@@ -27,19 +27,40 @@
  */
 package org.hisp.dhis.integration.camel.security;
 
+import org.springframework.boot.web.context.WebServerInitializedEvent;
+import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.util.matcher.AndRequestMatcher;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
-public class DefaultSecurityConfig {
+public class DefaultSecurityConfig implements ApplicationListener<WebServerInitializedEvent> {
+
+  private int serverPort;
 
   @Bean
   protected SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-    return http.authorizeHttpRequests(a -> a.anyRequest().permitAll())
-            .csrf(AbstractHttpConfigurer::disable)
-            .build();
+    return http.authorizeHttpRequests(
+            a ->
+                a.requestMatchers(
+                        new AndRequestMatcher(
+                                request -> serverPort == request.getServerPort(),
+                            new AntPathRequestMatcher("/management/hawtio/**")))
+                    .authenticated()
+                    .anyRequest()
+                    .permitAll())
+        .csrf(AbstractHttpConfigurer::disable)
+        .build();
+  }
+
+  @Override
+  public void onApplicationEvent(WebServerInitializedEvent event) {
+    if (event.getApplicationContext().getServerNamespace() == null) {
+      serverPort = event.getWebServer().getPort();
+    }
   }
 }
