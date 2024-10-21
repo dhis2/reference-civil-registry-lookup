@@ -26,12 +26,6 @@
 #  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 
-spring:
-  security:
-    user:
-      name: test
-      password: test
-
 dataSonnet:
   dhis2Person: resource:file:../config/oauth-route-middleware/dhis2Person.ds
 

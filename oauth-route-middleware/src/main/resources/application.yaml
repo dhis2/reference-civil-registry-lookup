@@ -59,9 +59,6 @@ management:
 spring:
   jmx:
     enabled: true
-  security:
-    user:
-      roles: admin,viewer
 
 hawtio:
   authenticationEnabled: false
