@@ -5,14 +5,21 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2024-09-24T10:09:58.468Z\n"
-"PO-Revision-Date: 2024-09-24T10:09:58.469Z\n"
+"POT-Creation-Date: 2024-10-21T06:32:28.514Z\n"
+"PO-Revision-Date: 2024-10-21T06:32:28.515Z\n"
+
+msgid ""
+"This person wasn't found in the civil registry. Check the ID and search "
+"again, or enter their details manually."
+msgstr ""
+"This person wasn't found in the civil registry. Check the ID and search "
+"again, or enter their details manually."
+
+msgid "Failed to query civil registry. Please enter the person's details manually."
+msgstr "Failed to query civil registry. Please enter the person's details manually."
 
 msgid "Patient ID"
 msgstr "Patient ID"
 
 msgid "Search"
 msgstr "Search"
-
-msgid "Failed to query civil registry: {{error}}"
-msgstr "Failed to query civil registry: {{error}}"
