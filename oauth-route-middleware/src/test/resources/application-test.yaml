@@ -26,11 +26,12 @@
 #  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 
-spring:
-  security:
-    user:
-      name: test
-      password: test
-
 dataSonnet:
   dhis2Person: resource:file:../config/oauth-route-middleware/dhis2Person.ds
+
+civil-registry-url: http://civil-registry
+
+oauth2:
+  clientId: civil-registry-client
+  clientSecret: passw0rd
+  tokenEndpoint: http://identity-provider/realms/civil-registry/protocol/openid-connect/token

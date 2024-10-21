@@ -26,6 +26,14 @@
 #  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 
+- rest:
+    bindingMode: json
+    post:
+      - path: /find
+        consumes: application/json
+        produces: application/json
+        to: direct:find
+
 - route:
     id: findRoute
     from:

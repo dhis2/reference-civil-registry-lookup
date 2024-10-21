@@ -56,12 +56,7 @@ public class HawtioWebConsoleFunctionalTestCase {
   }
 
   @Test
-  public void testAnonymousHttpGet() throws InterruptedException {
-    given(hawtioRequestSpec).get().then().statusCode(401);
-  }
-
-  @Test
-  public void testAuthorisedHttpGet() {
-    given(hawtioRequestSpec).auth().basic("test", "test").get().then().statusCode(200);
+  public void testAnonymousHttpGet() {
+    given(hawtioRequestSpec).get().then().statusCode(200);
   }
 }
