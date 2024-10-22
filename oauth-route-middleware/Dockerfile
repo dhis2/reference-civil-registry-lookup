@@ -27,6 +27,6 @@
 #
 
 FROM openjdk:17-slim
-COPY target/oauth-route-middleware-1.0.0-SNAPSHOT.jar oauth-route-middleware-1.0.0-SNAPSHOT.jar
+COPY target/oauth-route-middleware.jar oauth-route-middleware.jar
 EXPOSE 9070
-ENTRYPOINT ["java","-jar","/oauth-route-middleware-1.0.0-SNAPSHOT.jar"]
+ENTRYPOINT ["java","-jar","/oauth-route-middleware.jar"]
