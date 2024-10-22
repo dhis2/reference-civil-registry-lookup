@@ -33,7 +33,7 @@
 
     <groupId>org.hisp.dhis.integration.camel</groupId>
     <artifactId>oauth-route-middleware</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <packaging>jar</packaging>
 
     <properties>
@@ -59,6 +59,9 @@
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <finalName>${project.artifactId}</finalName>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
