@@ -11,8 +11,9 @@
     "deploy": "d2-app-scripts deploy"
   },
   "devDependencies": {
-    "@dhis2/cli-app-scripts": "^12.0.0-alpha.19",
+    "@dhis2/cli-app-scripts": "^12.6.4",
     "@dhis2/cli-style": "^10.7.4",
+    "@testing-library/dom": "^8.20.1",
     "@testing-library/jest-dom": "^6.5.0",
     "@testing-library/react": "^16.0.1",
     "@testing-library/user-event": "^14.5.2",
@@ -23,9 +24,10 @@
     "typescript-eslint": "^7.9.0"
   },
   "dependencies": {
-    "@dhis2/app-runtime": "^3.11.2",
-    "@dhis2/ui": "^9.11.5",
+    "@dhis2/app-runtime": "^3.14.5",
+    "@dhis2/ui": "^10.7.8",
     "lodash": "^4.17.21",
-    "typescript": "^5.4.5"
+    "typescript": "^5.4.5",
+    "jsonata": "^2.0.6"
   }
 }

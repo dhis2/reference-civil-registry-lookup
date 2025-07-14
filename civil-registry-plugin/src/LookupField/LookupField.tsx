@@ -3,6 +3,7 @@ import debounce from 'lodash/debounce'
 import { Button, Help, Input, Label } from '@dhis2/ui'
 import React, { useState, useCallback } from 'react'
 import { useCivilRegistryQuery } from '../lib/useCivilRegistryQuery'
+import { usePersonMapQuery } from '../lib/usePersonMapQuery'
 import { FieldsMetadata, SetFieldValue } from '../Plugin.types'
 import classes from './LookupField.module.css'
 
@@ -29,9 +30,12 @@ export const LookupField = ({
     fieldsMetadata,
     values,
 }: Props) => {
+    const { loading: personMapLoading, error: personMapError, data: personMap } = usePersonMapQuery()
+
     const [query, { loading, error }] = useCivilRegistryQuery({
         setFieldValue,
         fieldsMetadata,
+        personMap
     })
     const [patientId, setPatientId] = useState(values['id'] || '')
 
