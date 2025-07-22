@@ -6,6 +6,7 @@ import { useCivilRegistryQuery } from '../lib/useCivilRegistryQuery'
 import { usePersonMapQuery } from '../lib/usePersonMapQuery'
 import { FieldsMetadata, SetFieldValue } from '../Plugin.types'
 import classes from './LookupField.module.css'
+import jsonata from 'jsonata'
 
 // ! NB: This is a little custom, and not so generic
 let idWarningIssued = false
@@ -30,13 +31,13 @@ export const LookupField = ({
     fieldsMetadata,
     values,
 }: Props) => {
-    const { loading: personMapLoading, error: personMapError, data: personMap } = usePersonMapQuery()
+    const {
+        // loading: personMapLoading,
+        // error: personMapError,
+        data: personMap,
+    } = usePersonMapQuery()
 
-    const [query, { loading, error }] = useCivilRegistryQuery({
-        setFieldValue,
-        fieldsMetadata,
-        personMap
-    })
+    const [query, { loading, error }] = useCivilRegistryQuery()
     const [patientId, setPatientId] = useState(values['id'] || '')
 
     const updateFormValue = useCallback(
@@ -60,9 +61,32 @@ export const LookupField = ({
         updateFormValue.flush()
     }, [updateFormValue])
 
-    const handleSearch = useCallback(() => {
-        query({ id: patientId })
-    }, [patientId])
+    const handleSearch = useCallback(async () => {
+        try {
+            // todo: handle missing personMap
+            const fhirPerson = await query({ id: patientId })
+
+            const lookupPerson = await jsonata(
+                personMap?.escapedScript as string
+            ).evaluate(fhirPerson)
+
+            // Take data returned from Route and set enrollment field values.
+            // Expects a flat object, and for keys and values to match the
+            // plugin's configured fields
+            Object.entries(lookupPerson).forEach(([key, value]) => {
+                // Avoids setting values outside of plugin's configured fields
+                if (Object.hasOwn(fieldsMetadata, key)) {
+                    setFieldValue({ fieldId: key, value: value })
+                } else {
+                    console.warn(
+                        `Field ID "${key}" not found in configured fields; skipping value ${value}`
+                    )
+                }
+            })
+        } catch (error) {
+            console.error(error.details || error)
+        }
+    }, [patientId, personMap])
 
     const validationStatus = React.useMemo(() => {
         if (!error) {
