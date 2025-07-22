@@ -19,6 +19,7 @@
     "@testing-library/user-event": "^14.5.2",
     "@types/jest": "^29.5.13",
     "@types/lodash": "^4.17.10",
+    "@types/react": "^19.1.8",
     "@typescript-eslint/eslint-plugin": "^8.7.0",
     "@typescript-eslint/parser": "^8.7.0",
     "typescript-eslint": "^7.9.0"
@@ -26,8 +27,8 @@
   "dependencies": {
     "@dhis2/app-runtime": "^3.14.5",
     "@dhis2/ui": "^10.7.8",
+    "jsonata": "^2.0.6",
     "lodash": "^4.17.21",
-    "typescript": "^5.4.5",
-    "jsonata": "^2.0.6"
+    "typescript": "^5.4.5"
   }
 }
