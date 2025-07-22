@@ -18,8 +18,9 @@ export const useCivilRegistryQuery = ({
     return useDataMutation(mutation as any, {
         onComplete: (fhirPerson) => {
             (async () => {
-                const script = JSON.parse('"' + personMap.escapedScript + '"')
-                const lookupPerson = await jsonata(script).evaluate(fhirPerson);
+                const lookupPerson = await jsonata(
+                    personMap?.escapedScript
+                ).evaluate(fhirPerson)
 
                // Take data returned from Route and set enrollment field values.
                // Expects a flat object, and for keys and values to match the
