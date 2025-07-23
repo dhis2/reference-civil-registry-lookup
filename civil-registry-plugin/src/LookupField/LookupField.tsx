@@ -32,6 +32,7 @@ export const LookupField = ({
     values,
 }: Props) => {
     const {
+        // todo: handle
         // loading: personMapLoading,
         // error: personMapError,
         data: personMap,
@@ -52,7 +53,7 @@ export const LookupField = ({
         []
     )
 
-    const handleChange = useCallback(({ value }) => {
+    const handleChange = useCallback(({ value }: { value: string }) => {
         setPatientId(value)
         updateFormValue(value)
     }, [])
