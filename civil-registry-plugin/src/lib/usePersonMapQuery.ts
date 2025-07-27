@@ -2,8 +2,8 @@ import { useDataQuery } from '@dhis2/app-runtime'
 
 const query = {
     escapedExpression: {
-        resource: 'dataStore/capture/personMap'
-    }
+        resource: 'dataStore/civilRegistryPlugin/personMap',
+    },
 }
 
 export const usePersonMapQuery = () => {

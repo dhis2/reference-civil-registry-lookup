@@ -136,7 +136,7 @@ services:
         curl -X POST -s --max-time 0 -H "Authorization: Basic YWRtaW46ZGlzdHJpY3Q=" -H "Content-Type: application/json" -d @/route.json http://dhis2:8080/api/routes
         curl -X POST -s --max-time 0 -H "Authorization: Basic YWRtaW46ZGlzdHJpY3Q=" -H "Content-Type: application/json" -d @/pluginConfig.json http://dhis2:8080/api/dataStore/capture/dataEntryForms
         curl -X POST -s --max-time 0 -H "Authorization: Basic YWRtaW46ZGlzdHJpY3Q=" -H "Content-Type: application/json" http://dhis2:8080/api/appHub/e66cece4-8582-4329-81c2-043869cf1614
-        curl -X POST -s --max-time 0 -H "Authorization: Basic YWRtaW46ZGlzdHJpY3Q=" -H "Content-Type: application/json" -d @/personMap.json http://dhis2:8080/api/dataStore/capture/personMap
+        curl -X POST -s --max-time 0 -H "Authorization: Basic YWRtaW46ZGlzdHJpY3Q=" -H "Content-Type: application/json" -d @/personMap.json http://dhis2:8080/api/dataStore/civilRegistryPlugin/personMap
 
       # ls /civil-registry-plugin/*.zip | head -1 | xargs -0 -I '{}' wget --quiet --timeout=0 --header 'Authorization: Basic YWRtaW46ZGlzdHJpY3Q=' --post-file '{}' 'http://dhis2:8080/api/apps'
       # ls /route-manager-app/*.zip | head -1 | xargs -0 -I '{}' wget --quiet --timeout=0 --header 'Authorization: Basic YWRtaW46ZGlzdHJpY3Q=' --post-file {} 'http://dhis2:8080/api/apps'
