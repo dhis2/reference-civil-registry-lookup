@@ -1,12 +1,12 @@
 import i18n from '@dhis2/d2-i18n'
-import debounce from 'lodash/debounce'
 import { Button, Help, Input, Label } from '@dhis2/ui'
+import jsonata from 'jsonata'
+import debounce from 'lodash/debounce'
 import React, { useState, useCallback, useMemo } from 'react'
 import { useCivilRegistryQuery } from '../lib/useCivilRegistryQuery'
 import { usePersonMapQuery } from '../lib/usePersonMapQuery'
 import { FieldsMetadata, SetFieldValue } from '../Plugin.types'
 import classes from './LookupField.module.css'
-import jsonata from 'jsonata'
 
 // ! NB: This is a little custom, and not so generic
 let idWarningIssued = false
@@ -64,21 +64,35 @@ export const LookupField = ({
         []
     )
 
-    const handleChange = useCallback(({ value }: { value: string }) => {
-        setPatientId(value)
-        updateFormValue(value)
-    }, [])
+    const handleChange = useCallback(
+        ({ value }: { value: string }) => {
+            setPatientId(value)
+            updateFormValue(value)
+        },
+        [updateFormValue]
+    )
 
     const handleBlur = useCallback(() => {
         updateFormValue.flush()
     }, [updateFormValue])
 
+    const jsonataExpression = useMemo(() => {
+        if (personMap) {
+            try {
+                const expression = jsonata(personMap.escapedScript as string)
+                return expression
+            } catch (err) {
+                console.error('Failed to parse mapping expression')
+                console.error(err)
+                setMappingError(true)
+            }
+        }
+    }, [personMap])
+
     const handleSearch = useCallback(async () => {
         const fhirPerson = await query({ id: patientId })
         try {
-            const lookupPerson = await jsonata(
-                personMap?.escapedScript as string
-            ).evaluate(fhirPerson)
+            const lookupPerson = await jsonataExpression.evaluate(fhirPerson)
 
             // Take data returned from Route and set enrollment field values.
             // Expects a flat object, and for keys and values to match the
@@ -94,10 +108,11 @@ export const LookupField = ({
                 }
             })
         } catch (error) {
-            setMappingError(true)
+            console.error('Failed to map registry data')
             console.error(error.details || error)
+            setMappingError(true)
         }
-    }, [patientId, personMap])
+    }, [patientId, jsonataExpression, fieldsMetadata])
 
     const mappingNotSetUp = useMemo(
         () =>
