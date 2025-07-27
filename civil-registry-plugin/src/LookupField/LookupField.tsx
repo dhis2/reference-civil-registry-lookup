@@ -43,8 +43,8 @@ export const LookupField = ({
         error: personMapError,
         data: personMap,
     } = usePersonMapQuery()
-    // todo: similar value names between queries
-    const [query, { loading, error }] = useCivilRegistryQuery()
+    const [query, { loading: registryLoading, error: registryError }] =
+        useCivilRegistryQuery()
     const [patientId, setPatientId] = useState(values['id'] || '')
 
     const updateFormValue = useCallback(
@@ -71,7 +71,7 @@ export const LookupField = ({
     const handleSearch = useCallback(async () => {
         try {
             const fhirPerson = await query({ id: patientId })
-            
+
             // The Person mapping should exist if the app gets here
             const lookupPerson = await jsonata(
                 personMap?.escapedScript as string
@@ -105,36 +105,34 @@ export const LookupField = ({
     )
 
     const validationStatus = useMemo(() => {
-        if (mappingNotSetUp) {
-            return {
-                message: mappingNotFoundMessage,
-                warning: true,
-            }
+        if (!registryError && !personMapError && !mappingNotSetUp) {
+            return null
         }
 
+        if (mappingNotSetUp) {
+            return { message: mappingNotFoundMessage, warning: true }
+        }
         // other Person Map errors
         if (personMapError) {
-            return {
-                message: personMapErrMessage,
-                warning: true,
-            }
+            return { message: personMapErrMessage, warning: true }
         }
 
-        if (!error) {
-            return {}
-        }
-
+        // This is the case if a person is not found in the registry;
+        // it depends on the middleware setup
         if (
-            error.details?.httpStatusCode === 404 &&
-            !error.details?.errorCode
+            registryError?.details?.httpStatusCode === 404 &&
+            !registryError.details?.errorCode
         ) {
-            // This is the case if a person is not found in the registry
             return { message: personNotFoundMessage, warning: false }
         }
 
-        // All other errors
-        return { message: registryErrMessage, warning: true }
-    }, [error, mappingNotSetUp, personMapError])
+        // Other registry errors
+        if (registryError) {
+            return { message: registryErrMessage, warning: true }
+        }
+
+        return null
+    }, [registryError, mappingNotSetUp, personMapError])
 
     return (
         <div className={classes.fieldContainer}>
@@ -157,13 +155,13 @@ export const LookupField = ({
 
                     <Button
                         onClick={handleSearch}
-                        loading={loading || personMapLoading}
+                        loading={registryLoading || personMapLoading}
                         disabled={mappingNotSetUp || Boolean(personMapError)}
                     >
                         {i18n.t('Search')}
                     </Button>
                 </div>
-                {validationStatus?.message && (
+                {validationStatus && (
                     <Help warning={validationStatus.warning}>
                         {validationStatus.message}
                     </Help>
