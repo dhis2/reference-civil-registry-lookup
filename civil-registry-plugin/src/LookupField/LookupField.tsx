@@ -20,6 +20,10 @@ const personMapErrMessage = i18n.t(
     'Unable to obtain civil registry mapping. Patient details can still be entered manually.'
 )
 
+const mappingErrMessage = i18n.t(
+    'Data mapping from civil registry failed. Patient details can still be entered manually.'
+)
+
 const personNotFoundMessage = i18n.t(
     "This person wasn't found in the civil registry. Check the ID and search again, or enter their details manually."
 )
@@ -46,6 +50,7 @@ export const LookupField = ({
     const [query, { loading: registryLoading, error: registryError }] =
         useCivilRegistryQuery()
     const [patientId, setPatientId] = useState(values['id'] || '')
+    const [mappingError, setMappingError] = useState(false)
 
     const updateFormValue = useCallback(
         debounce((value) => {
@@ -69,10 +74,8 @@ export const LookupField = ({
     }, [updateFormValue])
 
     const handleSearch = useCallback(async () => {
+        const fhirPerson = await query({ id: patientId })
         try {
-            const fhirPerson = await query({ id: patientId })
-
-            // The Person mapping should exist if the app gets here
             const lookupPerson = await jsonata(
                 personMap?.escapedScript as string
             ).evaluate(fhirPerson)
@@ -91,6 +94,7 @@ export const LookupField = ({
                 }
             })
         } catch (error) {
+            setMappingError(true)
             console.error(error.details || error)
         }
     }, [patientId, personMap])
@@ -105,16 +109,26 @@ export const LookupField = ({
     )
 
     const validationStatus = useMemo(() => {
-        if (!registryError && !personMapError && !mappingNotSetUp) {
+        if (
+            !registryError &&
+            !personMapError &&
+            !mappingNotSetUp &&
+            !mappingError
+        ) {
             return null
         }
 
         if (mappingNotSetUp) {
             return { message: mappingNotFoundMessage, warning: true }
         }
-        // other Person Map errors
+        // other Person Map request errors
         if (personMapError) {
             return { message: personMapErrMessage, warning: true }
+        }
+
+        // Error trying to map data with Jsonata
+        if (mappingError) {
+            return { message: mappingErrMessage, warning: true }
         }
 
         // This is the case if a person is not found in the registry;
@@ -132,7 +146,7 @@ export const LookupField = ({
         }
 
         return null
-    }, [registryError, mappingNotSetUp, personMapError])
+    }, [registryError, mappingNotSetUp, personMapError, mappingError])
 
     return (
         <div className={classes.fieldContainer}>
@@ -156,7 +170,11 @@ export const LookupField = ({
                     <Button
                         onClick={handleSearch}
                         loading={registryLoading || personMapLoading}
-                        disabled={mappingNotSetUp || Boolean(personMapError)}
+                        disabled={
+                            mappingNotSetUp ||
+                            Boolean(personMapError) ||
+                            mappingError
+                        }
                     >
                         {i18n.t('Search')}
                     </Button>
