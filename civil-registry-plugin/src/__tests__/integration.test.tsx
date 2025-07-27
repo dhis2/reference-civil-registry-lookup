@@ -113,7 +113,7 @@ const mockData = {
         throw expectedError
     },
     'dataStore/capture/personMap': async (_: string, query: any) => {
-        return "{\\r\\n  \\\"id\\\": entry[0].resource.identifier[0].value,\\r\\n  \\\"firstName\\\": entry[0].resource.name[0].given[0],\\r\\n  \\\"lastName\\\": entry[0].resource.name[0].family,\\r\\n  \\\"sex\\\": $uppercase(entry[0].resource.gender),\\r\\n  \\\"dateOfBirth\\\": entry[0].resource.birthDate,\\r\\n  \\\"address\\\": $join(entry[0].resource.address[0].line, \\\", \\\"),\\r\\n  \\\"phone\\\": entry[0].resource.telecom[0].value\\r\\n}"
+        return "{\r\n \"id\": entry[0].resource.identifier[0].value,\r\n  \"firstName\": entry[0].resource.name[0].given[0],\r\n  \"lastName\": entry[0].resource.name[0].family,\r\n  \"sex\": $uppercase(entry[0].resource.gender),\r\n  \"dateOfBirth\": entry[0].resource.birthDate,\r\n  \"address\": $join(entry[0].resource.address[0].line, \", \"),\r\n  \"phone\": entry[0].resource.telecom[0].value\r\n}"
     },
 }
 
