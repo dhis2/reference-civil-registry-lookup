@@ -7,5 +7,7 @@ const mutation = {
 }
 
 export const useCivilRegistryQuery = () => {
-    return useDataMutation(mutation as any)
+    return useDataMutation(mutation as any, {
+        onError: (err) => console.error(err),
+    })
 }
