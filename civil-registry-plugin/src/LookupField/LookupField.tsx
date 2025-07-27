@@ -1,7 +1,7 @@
 import i18n from '@dhis2/d2-i18n'
 import debounce from 'lodash/debounce'
 import { Button, Help, Input, Label } from '@dhis2/ui'
-import React, { useState, useCallback } from 'react'
+import React, { useState, useCallback, useMemo } from 'react'
 import { useCivilRegistryQuery } from '../lib/useCivilRegistryQuery'
 import { usePersonMapQuery } from '../lib/usePersonMapQuery'
 import { FieldsMetadata, SetFieldValue } from '../Plugin.types'
@@ -12,6 +12,13 @@ import jsonata from 'jsonata'
 let idWarningIssued = false
 const idWarning =
     "No field with a plugin alias `id` has been found; the value in this field won't automatically update the form value. Values returned from the civil registry still may, depending on the configured plugin aliases."
+
+const mappingNotFoundMessage = i18n.t(
+    'Civil registry mapping has not been set up; contact a system administrator. Patient details can still be entered manually.'
+)
+const personMapErrMessage = i18n.t(
+    'Unable to obtain civil registry mapping. Patient details can still be entered manually.'
+)
 
 const personNotFoundMessage = i18n.t(
     "This person wasn't found in the civil registry. Check the ID and search again, or enter their details manually."
@@ -32,12 +39,11 @@ export const LookupField = ({
     values,
 }: Props) => {
     const {
-        // todo: handle
-        // loading: personMapLoading,
-        // error: personMapError,
+        loading: personMapLoading,
+        error: personMapError,
         data: personMap,
     } = usePersonMapQuery()
-
+    // todo: similar value names between queries
     const [query, { loading, error }] = useCivilRegistryQuery()
     const [patientId, setPatientId] = useState(values['id'] || '')
 
@@ -64,9 +70,9 @@ export const LookupField = ({
 
     const handleSearch = useCallback(async () => {
         try {
-            // todo: handle missing personMap
             const fhirPerson = await query({ id: patientId })
-
+            
+            // The Person mapping should exist if the app gets here
             const lookupPerson = await jsonata(
                 personMap?.escapedScript as string
             ).evaluate(fhirPerson)
@@ -89,7 +95,31 @@ export const LookupField = ({
         }
     }, [patientId, personMap])
 
-    const validationStatus = React.useMemo(() => {
+    const mappingNotSetUp = useMemo(
+        () =>
+            personMapError?.details.httpStatusCode === 404 ||
+            (!personMapLoading &&
+                !personMapError && // (rule out other errors)
+                personMap?.escapedScript === undefined),
+        [personMapError, personMapLoading, personMap]
+    )
+
+    const validationStatus = useMemo(() => {
+        if (mappingNotSetUp) {
+            return {
+                message: mappingNotFoundMessage,
+                warning: true,
+            }
+        }
+
+        // other Person Map errors
+        if (personMapError) {
+            return {
+                message: personMapErrMessage,
+                warning: true,
+            }
+        }
+
         if (!error) {
             return {}
         }
@@ -103,9 +133,8 @@ export const LookupField = ({
         }
 
         // All other errors
-        // (useCivilRegistryQuery logs error to the console)
         return { message: registryErrMessage, warning: true }
-    }, [error])
+    }, [error, mappingNotSetUp, personMapError])
 
     return (
         <div className={classes.fieldContainer}>
@@ -120,17 +149,21 @@ export const LookupField = ({
                     <Input
                         name="patientId"
                         className={classes.input}
-                        warning={validationStatus.warning}
+                        warning={validationStatus?.warning}
                         value={patientId}
                         onChange={handleChange}
                         onBlur={handleBlur}
                     />
 
-                    <Button onClick={handleSearch} loading={loading}>
+                    <Button
+                        onClick={handleSearch}
+                        loading={loading || personMapLoading}
+                        disabled={mappingNotSetUp || Boolean(personMapError)}
+                    >
                         {i18n.t('Search')}
                     </Button>
                 </div>
-                {error && (
+                {validationStatus?.message && (
                     <Help warning={validationStatus.warning}>
                         {validationStatus.message}
                     </Help>
