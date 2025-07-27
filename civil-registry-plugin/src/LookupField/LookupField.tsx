@@ -45,7 +45,7 @@ export const LookupField = ({
     const {
         loading: personMapLoading,
         error: personMapError,
-        data: personMap,
+        data: personMapData,
     } = usePersonMapQuery()
     const [query, { loading: registryLoading, error: registryError }] =
         useCivilRegistryQuery()
@@ -77,9 +77,11 @@ export const LookupField = ({
     }, [updateFormValue])
 
     const jsonataExpression = useMemo(() => {
-        if (personMap) {
+        if (personMapData) {
             try {
-                const expression = jsonata(personMap.escapedScript as string)
+                const expression = jsonata(
+                    personMapData.escapedExpression as string
+                )
                 return expression
             } catch (err) {
                 console.error('Failed to parse mapping expression')
@@ -87,7 +89,7 @@ export const LookupField = ({
                 setMappingError(true)
             }
         }
-    }, [personMap])
+    }, [personMapData])
 
     const handleSearch = useCallback(async () => {
         const fhirPerson = await query({ id: patientId })
@@ -119,8 +121,8 @@ export const LookupField = ({
             personMapError?.details.httpStatusCode === 404 ||
             (!personMapLoading &&
                 !personMapError && // (rule out other errors)
-                personMap?.escapedScript === undefined),
-        [personMapError, personMapLoading, personMap]
+                personMapData?.escapedExpression === undefined),
+        [personMapError, personMapLoading, personMapData]
     )
 
     const validationStatus = useMemo(() => {

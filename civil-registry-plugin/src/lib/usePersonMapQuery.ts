@@ -1,7 +1,7 @@
 import { useDataQuery } from '@dhis2/app-runtime'
 
 const query = {
-    escapedScript: {
+    escapedExpression: {
         resource: 'dataStore/capture/personMap'
     }
 }
