@@ -1,6 +1,6 @@
 services:
   dhis2:
-    image: "${DHIS2_IMAGE:-dhis2/core:40.5.0}"
+    image: "${DHIS2_IMAGE:-dhis2/core:42.1.0}"
     restart: unless-stopped
     volumes:
       - ./config/dhis2/dhis.conf:/opt/dhis2/dhis.conf:ro
@@ -10,7 +10,7 @@ services:
       db:
         condition: service_healthy
     healthcheck:
-      test: [ "CMD-SHELL", "wget -q -S -O /dev/null http://127.0.0.1:8080/dhis-web-commons/security/login.action 2>&1| grep -q 'HTTP.*200'" ]
+      test: [ "CMD-SHELL", "wget -q -S -O /dev/null http://127.0.0.1:8080/dhis-web-login/ 2>&1| grep -q 'HTTP.*200'" ]
       start_period: 120s
       interval: 10s
       timeout: 5s
@@ -113,7 +113,6 @@ services:
     restart: always
     environment:
       CIVIL_REGISTRY_URL: http://auth-proxy:4180/fhir
-      DATASONNET_DHIS2PERSON: resource:file:/dhis2Person.ds
       OAUTH2_TOKENENDPOINT: http://identity-provider:8080/realms/civil-registry/protocol/openid-connect/token
       OAUTH2_CLIENTID: civil-registry-client
       OAUTH2_CLIENTSECRET: ibz2lEXdGe02CJS2N7tY13r6664eJpoX
@@ -122,28 +121,31 @@ services:
         condition: service_healthy
     security_opt:
       - no-new-privileges:true
-    volumes:
-      - ./config/oauth-route-middleware/dhis2Person.ds:/dhis2Person.ds:ro
     networks:
       - middleware
       - auth
 
   seed:
-    image: busybox
+    image: curlimages/curl
     command:
       - "/bin/sh"
       - "-c"
       - |
-        wget --quiet --timeout=0 --header 'Content-Type: application/json' --post-file persons.json 'http://civil-registry:8080/fhir'
-        wget --quiet --timeout=0 --header 'Authorization: Basic YWRtaW46ZGlzdHJpY3Q=' --header 'Content-Type: application/json' --post-file route.json 'http://dhis2:8080/api/routes'
-        wget --quiet --timeout=0 --header 'Authorization: Basic YWRtaW46ZGlzdHJpY3Q=' --header 'Content-Type: application/json' --post-file pluginConfig.json 'http://dhis2:8080/api/40/dataStore/capture/dataEntryForms'
-        wget --quiet --timeout=0 --header 'Authorization: Basic YWRtaW46ZGlzdHJpY3Q=' --header 'Content-Type: application/json' --post-data '' 'http://dhis2:8080/api/appHub/e66cece4-8582-4329-81c2-043869cf1614'
+        curl -X POST -s --max-time 0 -H "Content-Type: application/json" -d @/persons.json http://civil-registry:8080/fhir
+        curl -X PATCH -s --max-time 0 -H "Authorization: Basic YWRtaW46ZGlzdHJpY3Q=" -H "Content-Type: application/json" -d @/roles.json http://dhis2:8080/userRoles/yrB6vc5Ip3r
+        curl -X POST -s --max-time 0 -H "Authorization: Basic YWRtaW46ZGlzdHJpY3Q=" -H "Content-Type: application/json" -d @/route.json http://dhis2:8080/api/routes
+        curl -X POST -s --max-time 0 -H "Authorization: Basic YWRtaW46ZGlzdHJpY3Q=" -H "Content-Type: application/json" -d @/pluginConfig.json http://dhis2:8080/api/dataStore/capture/dataEntryForms
+        curl -X POST -s --max-time 0 -H "Authorization: Basic YWRtaW46ZGlzdHJpY3Q=" -H "Content-Type: application/json" http://dhis2:8080/api/appHub/e66cece4-8582-4329-81c2-043869cf1614
+        curl -X POST -s --max-time 0 -H "Authorization: Basic YWRtaW46ZGlzdHJpY3Q=" -H "Content-Type: application/json" -d @/personMap.json http://dhis2:8080/api/dataStore/civilRegistryPlugin/personMap
+
       # ls /civil-registry-plugin/*.zip | head -1 | xargs -0 -I '{}' wget --quiet --timeout=0 --header 'Authorization: Basic YWRtaW46ZGlzdHJpY3Q=' --post-file '{}' 'http://dhis2:8080/api/apps'
       # ls /route-manager-app/*.zip | head -1 | xargs -0 -I '{}' wget --quiet --timeout=0 --header 'Authorization: Basic YWRtaW46ZGlzdHJpY3Q=' --post-file {} 'http://dhis2:8080/api/apps'
     volumes:
       - ./config/civil-registry/persons.json:/persons.json:ro
+      - ./config/dhis2/roles.json:/roles.json:ro
       - ./config/dhis2/route.json:/route.json:ro
       - ./config/dhis2/pluginConfig.json:/pluginConfig.json:ro
+      - ./config/dhis2/personMap.json:/personMap.json:ro
       #- ./civil-registry-plugin/build/bundle/:/civil-registry-plugin/:ro
       #- ./route-manager-app/build/bundle/:/route-manager-app/:ro
     depends_on:

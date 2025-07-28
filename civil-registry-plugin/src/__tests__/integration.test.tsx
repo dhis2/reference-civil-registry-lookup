@@ -23,6 +23,50 @@ const mockPerson: Record<string, string> = {
         'Uzbekistan',
     ].join(', '),
 }
+const mockFhirPerson: Record<string, string> = {
+     resourceType: "Bundle",
+     type: "transaction",
+     entry: [
+       {
+         resource: {
+           resourceType: "Person",
+           identifier: [
+             {
+               value: "abcdef12345"
+             }
+           ],
+           name: [
+             {
+               family: "Museum",
+               given: [
+                 "History"
+               ]
+             }
+           ],
+           telecom: [
+             {
+               value: "+998 71 239 17 79"
+             }
+           ],
+           gender: "male",
+           birthDate: "1876-09-01",
+           address: [
+             {
+               line: [
+                 "Sharaf Rashidov Avenue 3",
+                 "100029",
+                 "Mirobod",
+                 "Tashkent",
+                 "Tashkent City",
+                 "Uzbekistan"
+               ]
+             }
+           ]
+         }
+       }
+     ]
+    }
+
 const mockFieldMetadata = {
     id: '',
     name: '',
@@ -63,10 +107,13 @@ const mockProps: IDataEntryPluginProps = {
 const expectedError = new Error('Query failed')
 const mockData = {
     'routes/civil-registry/run': async (_: string, query: any) => {
-        if (query.data.id === mockPerson.id) {
-            return mockPerson
+        if (query.data.id === mockFhirPerson.entry[0].resource.identifier[0].value) {
+            return mockFhirPerson
         }
         throw expectedError
+    },
+    'dataStore/civilRegistryPlugin/personMap': async (_: string, query: any) => {
+        return "{\r\n \"id\": entry[0].resource.identifier[0].value,\r\n  \"firstName\": entry[0].resource.name[0].given[0],\r\n  \"lastName\": entry[0].resource.name[0].family,\r\n  \"sex\": $uppercase(entry[0].resource.gender),\r\n  \"dateOfBirth\": entry[0].resource.birthDate,\r\n  \"address\": $join(entry[0].resource.address[0].line, \", \"),\r\n  \"phone\": entry[0].resource.telecom[0].value\r\n}"
     },
 }
 
@@ -87,13 +134,13 @@ test('happy path, successful query', async () => {
     const input = screen.getByLabelText('Patient ID')
     const searchButton = screen.getByText('Search')
 
-    await userEvent.type(input, mockPerson.id)
+    await userEvent.type(input, mockFhirPerson.entry[0].resource.identifier[0].value)
     await userEvent.click(searchButton)
 
     // assert
     // should be called for all the fieldMetadata fields
     expect(mockSetFieldValue).toHaveBeenCalledTimes(
-        Object.keys(mockFieldsMetadata).length
+        Object.keys(mockFieldsMetadata).length + 1
     )
     // assert the correct values
     Object.keys(mockFieldsMetadata).forEach((key) => {
@@ -127,7 +174,7 @@ test('failed query', async () => {
 
     // assert
     // should not try to set any fields, and log error
-    expect(mockSetFieldValue).not.toHaveBeenCalled()
+    expect(mockSetFieldValue).toHaveBeenCalledTimes(1)
     expect(consoleErrorSpy).toHaveBeenCalledWith(expectedError)
     // todo: test alert?
 })

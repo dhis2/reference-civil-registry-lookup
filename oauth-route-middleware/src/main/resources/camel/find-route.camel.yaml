@@ -54,16 +54,15 @@
               oauth2ClientId: "{{oauth2.clientId}}"
               oauth2ClientSecret: "{{oauth2.clientSecret}}"
               oauth2TokenEndpoint: "{{oauth2.tokenEndpoint}}"
+        - unmarshal:
+            json: {}
         - choice:
             when:
               - jsonpath: $[?(@.total > 0)]
                 steps:
-                - transform:
-                    datasonnet:
-                      expression: "{{dataSonnet.dhis2Person}}"
-                      resultType: java.util.Map
-                      bodyMediaType: application/json
-                      outputMediaType: application/x-java-object
+                  - setHeader:
+                      name: Content-Type
+                      constant: application/json
             otherwise:
               steps:
                 - setBody:

@@ -152,13 +152,7 @@ public class FindRouteFunctionalTestCase extends AbstractRouteFunctionalTestCase
 
     Map<String, Object> body =
         objectMapper.readValue(outExchange.getMessage().getBody(String.class), Map.class);
-    assertEquals("328802792660010", body.get("id"));
-    assertEquals("John", body.get("firstName"));
-    assertEquals("Doe", body.get("lastName"));
-    assertEquals("MALE", body.get("sex"));
-    assertEquals(new SimpleDateFormat("yyyy-MM-dd").format(new Date()), body.get("dateOfBirth"));
-    assertEquals("HISP Centre, University of Oslo, Oslo", body.get("address"));
-    assertEquals("+998 12345678", body.get("phone"));
+    assertEquals("328802792660010", ((List<Map<String, Object>>) ((Map<String, Object>) (((List<Map<String, Object>>) body.get("entry")).get(0)).get("resource")).get("identifier")).get(0).get("value"));
   }
 
   @Test
