@@ -1,5 +1,5 @@
 import i18n from '@dhis2/d2-i18n'
-import { Button, Help, Input, Label } from '@dhis2/ui'
+import { Button, Help, Input, Label, Tooltip } from '@dhis2/ui'
 import jsonata from 'jsonata'
 import debounce from 'lodash/debounce'
 import React, { useState, useCallback, useMemo } from 'react'
@@ -165,6 +165,21 @@ export const LookupField = ({
         return null
     }, [registryError, mappingNotSetUp, personMapError, mappingError])
 
+    const SearchButton = () => (
+        <Button
+            onClick={handleSearch}
+            loading={registryLoading || personMapLoading}
+            disabled={
+                patientId.length === 0 ||
+                mappingNotSetUp ||
+                Boolean(personMapError) ||
+                mappingError
+            }
+        >
+            {i18n.t('Search')}
+        </Button>
+    )
+
     return (
         <div className={classes.fieldContainer}>
             <div className={classes.labelContainer}>
@@ -184,17 +199,13 @@ export const LookupField = ({
                         onBlur={handleBlur}
                     />
 
-                    <Button
-                        onClick={handleSearch}
-                        loading={registryLoading || personMapLoading}
-                        disabled={
-                            mappingNotSetUp ||
-                            Boolean(personMapError) ||
-                            mappingError
-                        }
-                    >
-                        {i18n.t('Search')}
-                    </Button>
+                    {patientId.length === 0 ? (
+                        <Tooltip content={i18n.t('Enter an ID to search')}>
+                            <SearchButton />
+                        </Tooltip>
+                    ) : (
+                        <SearchButton />
+                    )}
                 </div>
                 {validationStatus && (
                     <Help warning={validationStatus.warning}>
