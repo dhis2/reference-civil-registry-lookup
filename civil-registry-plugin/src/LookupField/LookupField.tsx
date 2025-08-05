@@ -114,7 +114,7 @@ export const LookupField = ({
             console.error(error.details || error)
             setMappingError(true)
         }
-    }, [patientId, jsonataExpression, fieldsMetadata])
+    }, [patientId, jsonataExpression, fieldsMetadata, query, setFieldValue])
 
     const mappingNotSetUp = useMemo(
         () =>
@@ -150,9 +150,7 @@ export const LookupField = ({
 
         // This is the case if a person is not found in the registry;
         // it depends on the middleware setup
-        if (
-            registryError.details?.message === 'Person not found'
-        ) {
+        if (registryError.details?.message === 'Person not found') {
             return { message: personNotFoundMessage, warning: false }
         }
 
