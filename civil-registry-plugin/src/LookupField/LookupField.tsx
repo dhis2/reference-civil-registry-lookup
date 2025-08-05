@@ -1,5 +1,5 @@
 import i18n from '@dhis2/d2-i18n'
-import { Button, Help, Input, Label } from '@dhis2/ui'
+import { Button, Help, Input, Label, Tooltip } from '@dhis2/ui'
 import jsonata from 'jsonata'
 import debounce from 'lodash/debounce'
 import React, { useState, useCallback, useMemo } from 'react'
@@ -114,7 +114,7 @@ export const LookupField = ({
             console.error(error.details || error)
             setMappingError(true)
         }
-    }, [patientId, jsonataExpression, fieldsMetadata])
+    }, [patientId, jsonataExpression, fieldsMetadata, query, setFieldValue])
 
     const mappingNotSetUp = useMemo(
         () =>
@@ -150,10 +150,7 @@ export const LookupField = ({
 
         // This is the case if a person is not found in the registry;
         // it depends on the middleware setup
-        if (
-            registryError?.details?.httpStatusCode === 404 &&
-            !registryError.details?.errorCode
-        ) {
+        if (registryError.details?.message === 'Person not found') {
             return { message: personNotFoundMessage, warning: false }
         }
 
@@ -164,6 +161,21 @@ export const LookupField = ({
 
         return null
     }, [registryError, mappingNotSetUp, personMapError, mappingError])
+
+    const SearchButton = () => (
+        <Button
+            onClick={handleSearch}
+            loading={registryLoading || personMapLoading}
+            disabled={
+                patientId.length === 0 ||
+                mappingNotSetUp ||
+                Boolean(personMapError) ||
+                mappingError
+            }
+        >
+            {i18n.t('Search')}
+        </Button>
+    )
 
     return (
         <div className={classes.fieldContainer}>
@@ -184,17 +196,13 @@ export const LookupField = ({
                         onBlur={handleBlur}
                     />
 
-                    <Button
-                        onClick={handleSearch}
-                        loading={registryLoading || personMapLoading}
-                        disabled={
-                            mappingNotSetUp ||
-                            Boolean(personMapError) ||
-                            mappingError
-                        }
-                    >
-                        {i18n.t('Search')}
-                    </Button>
+                    {patientId.length === 0 ? (
+                        <Tooltip content={i18n.t('Enter an ID to search')}>
+                            <SearchButton />
+                        </Tooltip>
+                    ) : (
+                        <SearchButton />
+                    )}
                 </div>
                 {validationStatus && (
                     <Help warning={validationStatus.warning}>

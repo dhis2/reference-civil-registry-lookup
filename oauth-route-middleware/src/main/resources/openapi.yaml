@@ -28,40 +28,50 @@
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 
-server:
-  port: 9070
-  address: 0.0.0.0
-  error:
-    whitelabel:
-      enabled: false
-  servlet:
-    session:
-      cookie:
-        same-site: strict
+openapi: "3.1.0"
+info:
+  version: 1.0.0
+paths:
+  /find:
+    post:
+      operationId: find
+      summary: "Finds a person"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/personQuery'
+        required: true
+      responses:
+        "200":
+          description: Person found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/fhirResource'
+        "404":
+          description: Person not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorMessage'
 
-camel:
-  springboot:
-    main-run-controller: true
-  dataformat:
-    json-jackson:
-      auto-discover-object-mapper: true
-  rest:
-    context-path: /api
-
-management:
-  server:
-    port: 9071
-  endpoints:
-    web:
-      base-path: /management
-      exposure:
-        include: '*'
-  health:
-    show-details: always
-
-spring:
-  jmx:
-    enabled: true
-
-hawtio:
-  authenticationEnabled: false
+components:
+  schemas:
+    personQuery:
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          type: string
+          minLength: 1
+          pattern: '^[\w]+$'
+    fhirResource:
+      type: object
+    errorMessage:
+      type: object
+      properties:
+        message:
+          type: string
+          minLength: 1

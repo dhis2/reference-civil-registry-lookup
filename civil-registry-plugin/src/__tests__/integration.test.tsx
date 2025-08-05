@@ -1,10 +1,10 @@
-import React from 'react'
+import { CustomDataProvider } from '@dhis2/app-runtime'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import React from 'react'
 import '@testing-library/jest-dom'
 import Plugin from '../Plugin'
 import { IDataEntryPluginProps } from '../Plugin.types'
-import { CustomDataProvider } from '@dhis2/app-runtime'
 
 const mockSetFieldValue = jest.fn()
 const mockPerson: Record<string, string> = {
@@ -23,49 +23,47 @@ const mockPerson: Record<string, string> = {
         'Uzbekistan',
     ].join(', '),
 }
-const mockFhirPerson: Record<string, string> = {
-     resourceType: "Bundle",
-     type: "transaction",
-     entry: [
-       {
-         resource: {
-           resourceType: "Person",
-           identifier: [
-             {
-               value: "abcdef12345"
-             }
-           ],
-           name: [
-             {
-               family: "Museum",
-               given: [
-                 "History"
-               ]
-             }
-           ],
-           telecom: [
-             {
-               value: "+998 71 239 17 79"
-             }
-           ],
-           gender: "male",
-           birthDate: "1876-09-01",
-           address: [
-             {
-               line: [
-                 "Sharaf Rashidov Avenue 3",
-                 "100029",
-                 "Mirobod",
-                 "Tashkent",
-                 "Tashkent City",
-                 "Uzbekistan"
-               ]
-             }
-           ]
-         }
-       }
-     ]
-    }
+const mockFhirPerson: Record<string, string | any[]> = {
+    resourceType: 'Bundle',
+    type: 'transaction',
+    entry: [
+        {
+            resource: {
+                resourceType: 'Person',
+                identifier: [
+                    {
+                        value: 'abcdef12345',
+                    },
+                ],
+                name: [
+                    {
+                        family: 'Museum',
+                        given: ['History'],
+                    },
+                ],
+                telecom: [
+                    {
+                        value: '+998 71 239 17 79',
+                    },
+                ],
+                gender: 'male',
+                birthDate: '1876-09-01',
+                address: [
+                    {
+                        line: [
+                            'Sharaf Rashidov Avenue 3',
+                            '100029',
+                            'Mirobod',
+                            'Tashkent',
+                            'Tashkent City',
+                            'Uzbekistan',
+                        ],
+                    },
+                ],
+            },
+        },
+    ],
+}
 
 const mockFieldMetadata = {
     id: '',
@@ -107,13 +105,19 @@ const mockProps: IDataEntryPluginProps = {
 const expectedError = new Error('Query failed')
 const mockData = {
     'routes/civil-registry/run': async (_: string, query: any) => {
-        if (query.data.id === mockFhirPerson.entry[0].resource.identifier[0].value) {
+        if (
+            query.data.id ===
+            mockFhirPerson.entry[0].resource.identifier[0].value
+        ) {
             return mockFhirPerson
         }
         throw expectedError
     },
-    'dataStore/civilRegistryPlugin/personMap': async (_: string, query: any) => {
-        return "{\r\n \"id\": entry[0].resource.identifier[0].value,\r\n  \"firstName\": entry[0].resource.name[0].given[0],\r\n  \"lastName\": entry[0].resource.name[0].family,\r\n  \"sex\": $uppercase(entry[0].resource.gender),\r\n  \"dateOfBirth\": entry[0].resource.birthDate,\r\n  \"address\": $join(entry[0].resource.address[0].line, \", \"),\r\n  \"phone\": entry[0].resource.telecom[0].value\r\n}"
+    'dataStore/civilRegistryPlugin/personMap': async (
+        _: string,
+        query: any
+    ) => {
+        return '{\r\n "id": entry[0].resource.identifier[0].value,\r\n  "firstName": entry[0].resource.name[0].given[0],\r\n  "lastName": entry[0].resource.name[0].family,\r\n  "sex": $uppercase(entry[0].resource.gender),\r\n  "dateOfBirth": entry[0].resource.birthDate,\r\n  "address": $join(entry[0].resource.address[0].line, ", "),\r\n  "phone": entry[0].resource.telecom[0].value\r\n}'
     },
 }
 
@@ -132,9 +136,13 @@ test('happy path, successful query', async () => {
 
     // act
     const input = screen.getByLabelText('Patient ID')
-    const searchButton = screen.getByText('Search')
+    await userEvent.type(
+        input,
+        mockFhirPerson.entry[0].resource.identifier[0].value
+    )
 
-    await userEvent.type(input, mockFhirPerson.entry[0].resource.identifier[0].value)
+    // note: get search button here, because it's disabled before typing
+    const searchButton = screen.getByText('Search')
     await userEvent.click(searchButton)
 
     // assert
@@ -167,9 +175,9 @@ test('failed query', async () => {
 
     // act
     const input = screen.getByLabelText('Patient ID')
-    const searchButton = screen.getByText('Search')
-
     await userEvent.type(input, 'not an id')
+
+    const searchButton = screen.getByText('Search')
     await userEvent.click(searchButton)
 
     // assert
