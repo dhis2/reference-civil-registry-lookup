@@ -40,20 +40,25 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/findPerson'
+              $ref: '#/components/schemas/personQuery'
         required: true
       responses:
         "200":
-          description: Success
+          description: Person found
           content:
-            application/fhir+json:
+            application/json:
               schema:
-                $ref: '#/components/schemas/fhirJsonResource'
+                $ref: '#/components/schemas/fhirResource'
+        "404":
+          description: Person not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorMessage'
+
 components:
   schemas:
-    fhirJsonResource:
-      type: object
-    findPerson:
+    personQuery:
       type: object
       required:
         - id
@@ -62,3 +67,11 @@ components:
           type: string
           minLength: 1
           pattern: '^[\w]+$'
+    fhirResource:
+      type: object
+    errorMessage:
+      type: object
+      properties:
+        message:
+          type: string
+          minLength: 1

@@ -63,16 +63,18 @@
                 steps:
                   - setHeader:
                       name: Content-Type
-                      constant: application/json
+                      constant: application/fhir+json
                   - marshal:
                       json: {}
             otherwise:
               steps:
                 - setBody:
-                    simple: "Person not found"
+                    groovy: "['message': 'Person not found']"
+                - marshal:
+                    json: {}
                 - setHeader:
                     name: CamelHttpResponseCode
                     constant: "404"
                 - setHeader:
                     name: Content-Type
-                    constant: text/plain
+                    constant: application/json
