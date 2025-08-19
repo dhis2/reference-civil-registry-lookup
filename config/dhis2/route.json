@@ -1,8 +1,14 @@
 {
   "name": "Civil Registry",
   "code": "civil-registry",
-  "url": "http://oauth-route-middleware:9070/api/find",
+  "url": "http://mediator:9070/api/find",
   "headers": {
     "Content-Type": "application/json"
+  },
+  "auth": {
+    "type": "api-headers",
+    "headers": {
+      "X-API-KEY": "$ecr3t"
+    }
   }
 }

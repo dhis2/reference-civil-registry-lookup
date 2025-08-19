@@ -13,10 +13,10 @@
     "wait-on": "^8.0.1"
   },
   "scripts": {
-    "build-middleware": "mvn -B clean package -Dmaven.test.skip=true -f oauth-route-middleware/pom.xml",
+    "build-mediator": "mvn -B clean package -Dmaven.test.skip=true -f mediator/pom.xml",
     "build-plugin": "cd civil-registry-plugin && yarn install --frozen-lockfile && yarn build --no-verify",
     "build-app": "cd route-manager-app && yarn install --frozen-lockfile && yarn build --no-verify",
-    "build": "concurrently --kill-others-on-fail \"yarn:build-middleware\" \"yarn:build-plugin\" \"yarn:build-app\"",
+    "build": "concurrently --kill-others-on-fail \"yarn:build-mediator\" \"yarn:build-plugin\" \"yarn:build-app\"",
     "deploy-plugin": "cd civil-registry-plugin && yarn deploy http://localhost:8080 --username admin --password district",
     "deploy-app": "cd route-manager-app && yarn deploy http://localhost:8080 --username admin --password district",
     "deploy": "wait-on http-get://localhost:8080/api/ping && yarn deploy-app && yarn deploy-plugin",

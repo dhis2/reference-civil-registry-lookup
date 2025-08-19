@@ -19,7 +19,7 @@ services:
       - no-new-privileges:true
     networks:
       - default
-      - middleware
+      - mediator
       - db
 
   db:
@@ -42,7 +42,7 @@ services:
     networks:
       - db
 
-  gateway:
+  reverse-proxy:
     image: nginx
     restart: always
     depends_on:
@@ -51,7 +51,7 @@ services:
     ports:
       - "${DHIS2_PORT:-8080}:80"
     volumes:
-      - ./config/gateway/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./config/reverse-proxy/nginx.conf:/etc/nginx/nginx.conf:ro
     security_opt:
       - no-new-privileges:true
 
@@ -66,7 +66,7 @@ services:
     networks:
       - civil-registry
 
-  identity-provider:
+  authorisation-server:
     image: "quay.io/keycloak/keycloak:25.0.6"
     environment:
       KEYCLOAK_ADMIN: "admin"
@@ -74,7 +74,7 @@ services:
       KC_HEALTH_ENABLED: "true"
 
       # comment KC_HOSTNAME and KC_HOSTNAME_BACKCHANNEL_DYNAMIC to test Keycloak from Docker host
-      KC_HOSTNAME: "http://identity-provider:8080"
+      KC_HOSTNAME: "http://authorisation-server:8080"
       KC_HOSTNAME_BACKCHANNEL_DYNAMIC: "true"
     healthcheck:
       test:
@@ -87,20 +87,20 @@ services:
       timeout: 5s
       retries: 10
     volumes:
-      - ./config/identity-provider/civil-registry-realm.json:/opt/keycloak/data/import/civil-registry-realm.json:ro
+      - ./config/authorisation-server/civil-registry-realm.json:/opt/keycloak/data/import/civil-registry-realm.json:ro
     command: [ "start-dev", "--import-realm" ]
     security_opt:
       - no-new-privileges:true
     networks:
       - auth
 
-  auth-proxy:
+  civil-registry-gateway:
     image: "quay.io/oauth2-proxy/oauth2-proxy:v7.6.0"
     command: --config /oauth2-proxy.cfg
     volumes:
-      - "./config/auth-proxy/oauth2-proxy-keycloak.cfg:/oauth2-proxy.cfg"
+      - "./config/civil-registry-gateway/oauth2-proxy-keycloak.cfg:/oauth2-proxy.cfg"
     depends_on:
-      identity-provider:
+      authorisation-server:
         condition: service_healthy
     security_opt:
       - no-new-privileges:true
@@ -108,21 +108,21 @@ services:
       - auth
       - civil-registry
 
-  oauth-route-middleware:
-    build: ./oauth-route-middleware
+  mediator:
+    build: ./mediator
     restart: always
     environment:
-      CIVIL_REGISTRY_URL: http://auth-proxy:4180/fhir
-      OAUTH2_TOKENENDPOINT: http://identity-provider:8080/realms/civil-registry/protocol/openid-connect/token
+      CIVIL_REGISTRY_URL: http://civil-registry-gateway:4180/fhir
+      OAUTH2_TOKENENDPOINT: http://authorisation-server:8080/realms/civil-registry/protocol/openid-connect/token
       OAUTH2_CLIENTID: civil-registry-client
       OAUTH2_CLIENTSECRET: ibz2lEXdGe02CJS2N7tY13r6664eJpoX
     depends_on:
-      identity-provider:
+      authorisation-server:
         condition: service_healthy
     security_opt:
       - no-new-privileges:true
     networks:
-      - middleware
+      - mediator
       - auth
 
   seed:
@@ -169,7 +169,7 @@ networks:
     internal: true
   auth:
     internal: true
-  middleware:
+  mediator:
     internal: true
   db:
     internal: true

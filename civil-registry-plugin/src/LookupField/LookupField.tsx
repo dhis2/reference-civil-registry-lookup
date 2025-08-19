@@ -149,7 +149,7 @@ export const LookupField = ({
         }
 
         // This is the case if a person is not found in the registry;
-        // it depends on the middleware setup
+        // it depends on the mediator setup
         if (registryError.details?.message === 'Person not found') {
             return { message: personNotFoundMessage, warning: false }
         }

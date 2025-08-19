@@ -20,5 +20,5 @@ jobs:
           cache: maven
       - name: Test civil-registry-plugin
         run: cd civil-registry-plugin && yarn install --frozen-lockfile && yarn build && yarn test
-      - name: Test oauth-route-middleware
-        run: mvn -B clean package -f oauth-route-middleware/pom.xml
+      - name: Test mediator
+        run: mvn -B clean package -f mediator/pom.xml
