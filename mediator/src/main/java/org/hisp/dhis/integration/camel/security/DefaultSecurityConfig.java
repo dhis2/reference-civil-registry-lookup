@@ -81,6 +81,7 @@ public class DefaultSecurityConfig implements ApplicationListener<WebServerIniti
         .csrf(
             csrf ->
                 csrf.ignoringRequestMatchers("/api/**")
+                    // Hawtio requires CookieCsrfTokenRepository.withHttpOnlyFalse().
                     .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                     .csrfTokenRequestHandler(new SpaCsrfTokenRequestHandler()))
         .addFilterBefore(
