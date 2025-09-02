@@ -22,8 +22,8 @@ jobs:
           cache: maven
       - name: Install dependencies
         run: yarn install --frozen-lockfile
-      - name: Build middleware component
-        run: yarn build-middleware
+      - name: Build mediator
+        run: yarn build-mediator
       - uses: hoverkraft-tech/compose-action@v2.0.1
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps

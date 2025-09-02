@@ -12,7 +12,7 @@ test('should not find a person', async ({
         }
     });
     expect(person.status()).toBe(404);
-    expect((await person.json()).message).toBe('404 : \"Person not found\"');
+    expect((await person.json()).message).toBe('Person not found');
 });
 
 
