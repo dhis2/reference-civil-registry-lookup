@@ -202,7 +202,7 @@ After receiving the access token, the mediator adds it as an HTTP header to its 
 
 ### Authorisation Server
 
-The [civil registry](#civil-registry) is protected from unauthorised access with OAuth 2.0 client credentials (i.e., machine-to-machine) authorisation. In particular, [Keycloak](https://www.keycloak.org/) is acting as an authorisation server that issues short-lived access tokens to authorised clients in order to grant access to the civil registry. The [mediator](#mediator) is an authorised client because it is configured with a client ID and secret that allows it to obtain an access token from Keycloak. The mediator includes the issued access token in HTTP requests transmitted to the civil registry gateway. The gateway validates the access token with same Keycloak instance. If the validation is successful, the gateway forwards the request to the civil registry.
+The [civil registry](#civil-registry) is protected from unauthorised access with OAuth 2.0 client credentials (i.e., machine-to-machine) authorisation. In particular, [Keycloak](https://www.keycloak.org/) is acting as an authorisation server that issues short-lived access tokens to authorised clients in order to grant access to the civil registry. The [mediator](#mediator) is an authorised client because it is configured with a client ID and secret that allows it to obtain an access token from Keycloak. The mediator includes the issued access token in HTTP requests transmitted to the civil registry gateway. The gateway validates the access token with the same Keycloak instance. If the validation is successful, the gateway forwards the request to the civil registry.
 
 ### Civil Registry Gateway
 
@@ -212,7 +212,7 @@ The OAuth2 Proxy config employed for this set up is located in `config/civil-reg
 
 ### Civil Registry
 
-A [HAPI FHIR](https://hapifhir.io/) server mocks the civil registry. Individuals are represented in the FHIR server using the [FHIR Person resource](https://www.hl7.org/fhir/person.html). As part of the example set up, the server is seeded with a few Person resources which are read from the path  `config/civil-registry/persons.json`, located in the reference implementation project. 
+A [HAPI FHIR](https://hapifhir.io/) server mocks the civil registry. Individuals are represented in the FHIR server using the [FHIR Person resource](https://www.hl7.org/fhir/person.html). As part of the example set up, the server is seeded with a few Person resources which are read from the path `config/civil-registry/persons.json`, located in the reference implementation project. 
 
 Adapting this reference implementation usually means modifying the mediator to support the existing civil registry in your architecture.
 
