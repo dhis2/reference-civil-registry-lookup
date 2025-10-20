@@ -10,8 +10,7 @@
     5. [Authorisation Server](#authorisation-server)
     6. [Civil Registry Gateway](#civil-registry-gateway)
     7. [Civil Registry](#civil-registry)
-3. [Security Considerations](#security-considerations)
-4. [Running the example](#running-the-example)
+4. [Security Considerations](#security-considerations)
 5. [Support](#support)
 
 ## What is this implementation?
@@ -26,7 +25,9 @@ This is an example meant to guide you in developing your own civil registry look
 
 ## Quick Start
 
-To run this example locally, the following prerequisites need to be installed:
+You can use the included [Docker Compose config](#docker-compose.yml) to run this self-contained example in a non-production environment. This config stands up the DHIS2 and civil registry containers together with ancillary containers for authentication and proxying. Besides standing up and wiring the containers, the config also (1) installs the civil registry lookup plugin in DHIS2, (2) creates the DHIS2 metadata of a simple Tracker program, (3) configures a DHIS2 route, and (4) adds the necessary client info in [KeyCloak](https://www.keycloak.org/) for authenticating and validating requests to the civil registry.
+
+The following prerequisites need to be installed prior to running the config with Docker Compose:
 
 * [Docker Desktop](https://docs.docker.com/desktop/)
 * [Maven](https://maven.apache.org/install.html)
@@ -229,10 +230,6 @@ Adapting this reference implementation usually means modifying the mediator to s
 * Sensitive data, like the national ID, should always be carried in the body of HTTP POST requests. Sending POST requests, instead of GET requests, reduces the risk of sensitive data ID leaking into the server access logs.
 
 * The reference implementation, by its nature, facilitates the searching and transferring of data which most likely contains personal identifying information. For this reason, a Privacy Impact Assessment (PIA) ought to be carried out before granting civil registry lookup access to DHIS2. In some jurisdictions (e.g., European Union), a PIA is required in order to comply with national regulations.
-
-## Running the example
-
-To run this self-contained example setup (in non-production environments), you can use the included `docker-compose.yml` configuration. Running the following command will spin up all components listed above. That is, install the civil registry lookup plugin in DHIS2, configure DHIS2 metadata with a simple Tracker program, and set up the necessary clients in KeyCloak for both DHIS2 authentication and civil registry resource protection (through a DHIS2 route).
 
 ## Route Manager Configuration
 
