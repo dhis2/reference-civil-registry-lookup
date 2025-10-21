@@ -241,13 +241,13 @@ Adapting this reference implementation usually means modifying the mediator to s
 
 ## Route Manager Configuration
 
-You will need to add a new route to DHIS2 to configure the route for the civil registry lookup. This route is used by the Capture app plugin to look up information from the civil registry. For this reference implementation, the code `civil-registry` identifies the lookup route. The [Route Manager App](https://apps.dhis2.org/app/5dbe9ab8-46bd-411e-b22f-905f08a81d78) is used to configure the route.
+You will need to add a new route to DHIS2 to configure the route for the civil registry lookup. This route is used by the Capture app plugin to look up information from the civil registry. For this reference implementation, the code `civil-registry` identifies the lookup route. It is recommended to use the [Route Manager app](https://apps.dhis2.org/app/5dbe9ab8-46bd-411e-b22f-905f08a81d78) to create the route.
 
 ### Configuration Steps
 
 #### Install Route Manager from App Hub
 
-Route Manager is available from [App Hub](https://apps.dhis2.org/app/5dbe9ab8-46bd-411e-b22f-905f08a81d78). You can (a) download the app from the App Hub and upload it to your DHIS2 instance, or even better, (b) install it directly in your DHIS2 instance in the App Management App.
+Route Manager is available from [App Hub](https://apps.dhis2.org/app/5dbe9ab8-46bd-411e-b22f-905f08a81d78). You can (a) download the app from the App Hub and upload it to your DHIS2 instance, or even better, (b) install it directly in your DHIS2 instance from App Management.
 
 1. Go to the App Management app in your DHIS2 instance
 2. Click on the `App Hub` tab
