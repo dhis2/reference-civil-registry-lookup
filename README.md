@@ -50,7 +50,7 @@ yarn test
 
 Walkthrough the steps below to achieve an end-to-end experience of the civil registry lookup:
 
-1. Open http://localhost:8080 from your browser to bring up the DHIS2 login page-
+1. Open http://localhost:8080 from your browser to bring up the DHIS2 login page.
 2. Log into DHIS2 using the username `admin` and password `district`. 
 3. When logged in, open http://localhost:8080/apps/capture#/new?orgUnitId=sZ79N6vfrSR&programId=KYzHf1Ta6C4 to load the Anti-Tuberculosis DRS DHIS2 Capture program. 
 4. From the `Profile` section of the form, type the person identifier `328808792660011` inside the `National ID` text field and then click on the `Search` button next to the field. 
