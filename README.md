@@ -15,7 +15,7 @@
 
 ## What is this implementation?
 
-A civil registry is a national database for storing personal details of citizens. It can be useful to look up information from the civil registry to automatically populate forms in DHIS2. Automatic population reduces the chances of errors and provides a quick way to prefill forms with patient information that is accurate and up-to-date.
+A civil registry is a national database for storing personal details of citizens. It is useful to look up information from the civil registry to automatically populate forms in DHIS2. Automatic population reduces the chances of errors and provides a quick way to prefill forms with patient information that is accurate and up-to-date.
 
 This reference implementation illustrates a [DHIS2 Capture app plugin](https://developers.dhis2.org/docs/capture-plugins/developer/getting-started) that looks up and transforms data from a civil registry before prefilling fields with demographic information in a form used to carry out an [Anti-Tuberculosis Drug Resistance Survey (DRS)](https://docs.dhis2.org/en/implement/health/tuberculosis/anti-tuberculosis-drug-resistance-survey-drs/design.html). 
 
@@ -47,6 +47,14 @@ Execute the following command in a different terminal if you want to run the API
 ```sh
 yarn test
 ```
+
+Walkthrough the steps below to achieve an end-to-end experience of the civil registry lookup:
+
+1. Open http://localhost:8080 from your browser to bring up the DHIS2 login page-
+2. Log into DHIS2 using the username `admin` and password `district`. 
+3. When logged in, open http://localhost:8080/apps/capture#/new?orgUnitId=sZ79N6vfrSR&programId=KYzHf1Ta6C4 to load the Anti-Tuberculosis DRS DHIS2 Capture program. 
+4. From the `Profile` section of the form, type the person identifier `328808792660011` inside the `National ID` text field and then click on the `Search` button next to the field. 
+5. After a moment or two, the `First Name`, `Last name`, `Sex`, `Date of Birth`, and `Home Address` form fields are populated with information about the searched person.
 
 ## Overview
 
@@ -276,7 +284,7 @@ You can observe a sharing configuration in the above screenshot. The configurati
 
 #### Test Route
 
-The `Test` button in Route Manager permits you to try out the route after saving it. Clicking the button will send a request to the URL configured in the route and show the response in Route Manager directly. If it is successful, you should see a response from the civil registry.
+The `Test` button in Route Manager permits you to try out the route once it is saved. Clicking the button will send a request to the URL configured in the route and show the response in Route Manager directly. If it is successful, you should see a response from the civil registry.
 
 # Support
 
