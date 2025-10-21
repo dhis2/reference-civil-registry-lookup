@@ -3,15 +3,20 @@
 1. [What is this implementation?](#what-is-this-implementation)
 2. [Quick Start](#quick-start)
 3. [Overview](#overview)
-    1. [DHIS2 Capture App Plugin](#dhis2-capture-app-plugin)
-    2. [Reverse Proxy](#reverse-proxy)
-    3. [Surveillance System](#surveillance-system)
-    4. [Mediator](#mediator)
-    5. [Authorisation Server](#authorisation-server)
-    6. [Civil Registry Gateway](#civil-registry-gateway)
-    7. [Civil Registry](#civil-registry)
+   + [DHIS2 Capture App Plugin](#dhis2-capture-app-plugin)
+   + [Reverse Proxy](#reverse-proxy)
+   + [Surveillance System](#surveillance-system)
+   + [Mediator](#mediator)
+   + [Authorisation Server](#authorisation-server)
+   + [Civil Registry Gateway](#civil-registry-gateway)
+   + [Civil Registry](#civil-registry)
 4. [Security Considerations](#security-considerations)
-5. [Support](#support)
+5. [Route Manager Configuration](#route-manager-configuration)
+      - [Install Route Manager from App Hub](#install-route-manager-from-app-hub)
+      - [Configure the route](#configure-the-route)
+      - [Restrict access](#restrict-access)
+      - [Test Route](#test-route)
+6. [Support](#support)
 
 ## What is this implementation?
 
@@ -243,9 +248,7 @@ Adapting this reference implementation usually means modifying the mediator to s
 
 You will need to add a new route to DHIS2 to configure the route for the civil registry lookup. This route is used by the Capture app plugin to look up information from the civil registry. For this reference implementation, the code `civil-registry` identifies the lookup route. It is recommended to use the [Route Manager app](https://apps.dhis2.org/app/5dbe9ab8-46bd-411e-b22f-905f08a81d78) to create the route.
 
-### Configuration Steps
-
-#### Install Route Manager from App Hub
+### Install Route Manager from App Hub
 
 Route Manager is available from [App Hub](https://apps.dhis2.org/app/5dbe9ab8-46bd-411e-b22f-905f08a81d78). You can (a) download the app from App Hub and upload it to your DHIS2 server, or even better, (b) follow the instructions below to install it directly in your DHIS2 instance from App Management:
 
@@ -254,7 +257,7 @@ Route Manager is available from [App Hub](https://apps.dhis2.org/app/5dbe9ab8-46
 3. Search for `Route Manager`.
 4. Click on the `Install` button.
 
-#### Configure the route
+### Configure the route
 
 1. Open the Route Manager app from DHIS2.
 2. Click on the `Create new Route` button on the top right of the screen. A form to fill out the route details is presented:
@@ -274,7 +277,7 @@ Route Manager is available from [App Hub](https://apps.dhis2.org/app/5dbe9ab8-46
 
 4. Click on the `Save Route` button.
 
-#### Restrict access
+### Restrict access
 
 Access to the configured route can be restricted after saving it which will prevent unauthorized users from editing the route. To configure sharing, click the `Sharing` button in Route Manager on the `civil-registry` route.
 
@@ -282,7 +285,7 @@ Access to the configured route can be restricted after saving it which will prev
 
 You can observe a sharing configuration in the above screenshot. The configuration gives access to the `Administrators` user group to view and edit the route while the `TB Program Coordinator` user group to view the route. The `All users` user group is denied any access to the route. Needless to say that the configuration should be adapted to your implementation accordingly.
 
-#### Test Route
+### Test Route
 
 The `Test` button in Route Manager permits you to try out the route once it is saved. Clicking the button will send a request to the URL configured in the route and show the response in Route Manager directly. If it is successful, you should see a response from the civil registry.
 
