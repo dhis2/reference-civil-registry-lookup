@@ -25,7 +25,7 @@ This is an example meant to guide you in developing your own civil registry look
 
 ## Quick Start
 
-You can use the included [Docker Compose config](docker-compose.yml) to run this self-contained example in a non-production environment. This config stands up the DHIS2 and civil registry containers together with ancillary containers for authentication and proxying. Besides standing up and wiring the containers, the config also (1) installs the civil registry lookup plugin in DHIS2, (2) creates the DHIS2 metadata of a simple Tracker programme, (3) configures a DHIS2 route, and (4) adds the necessary client info in [KeyCloak](https://www.keycloak.org/) for authenticating and validating requests to the civil registry.
+You can use the included [Docker Compose config](docker-compose.yml) to run this self-contained example in a non-production environment. This config stands up the DHIS2 and civil registry containers together with ancillary containers for authentication, transformation, and proxying. Besides standing up and wiring the containers, the config also (1) installs the civil registry lookup plugin in DHIS2, (2) creates the DHIS2 metadata of a simple Tracker programme, (3) configures a DHIS2 route, and (4) adds the necessary client info in [KeyCloak](https://www.keycloak.org/) for authenticating and validating requests to the civil registry.
 
 The following prerequisites need to be installed prior to running the config with Docker Compose:
 
