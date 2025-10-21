@@ -10,12 +10,12 @@
    + [Authorisation Server](#authorisation-server)
    + [Civil Registry Gateway](#civil-registry-gateway)
    + [Civil Registry](#civil-registry)
-4. [Security Considerations](#security-considerations)
-5. [Route Manager Configuration](#route-manager-configuration)
+4. [Route Manager Configuration](#route-manager-configuration)
       - [Install Route Manager from App Hub](#install-route-manager-from-app-hub)
       - [Configure the route](#configure-the-route)
       - [Restrict access](#restrict-access)
       - [Test Route](#test-route)
+5. [Security Considerations](#security-considerations)
 6. [Support](#support)
 
 ## What is this implementation?
@@ -230,20 +230,6 @@ A [HAPI FHIR](https://hapifhir.io/) server mocks the civil registry. Individuals
 
 Adapting this reference implementation usually means modifying the mediator to support the existing civil registry in your architecture.
 
-## Security Considerations
-
-* Civil registry access control varies widely across implementations and it is outside the scope of this reference implementation. The way the civil registry is secured in this reference implementation is for illustration purposes only.
-
-* Only highly privileged DHIS2 users such as administrators should be able to configure routes and access Route Manager. However, all users with access to the Anti-Tuberculosis DRS Capture programme should be able to run the DHIS2 route. It is imperative that the DHIS2 authorities are assigned according to the aforementioned permissions to prevent unauthorised access to the civil registry. Rights to creating or editing routes should be given with extreme caution. If inappropriately configured, a DHIS2 route can compromise the security of the system.
-
-* The route runs for the `civil-registry` DHIS2 route should be audited in order to have a trail of the DHIS2 users looking up persons from the civil registry. Route runs are automatically audited in the latest releases of DHIS2 unless explicitly disabled by the DHIS2 server administrator.
-
-* All parties, including the Capture app programme user, are assumed to be trusted from the civil registry's perspective in this reference implementation. If a party in this workflow is untrusted, then rate limiting should be considered in order to reduce the risk of abuse.
-
-* Sensitive data, like the national ID, should always be carried in the body of HTTP POST requests. Transmitting sensitive data in the body of POST requests, as opposed to including it in the URL query params, reduces the risk of personal identifiable information leaking into the server access logs.
-
-* The reference implementation, by its nature, facilitates the searching and transferring of data which most likely contains personal identifying information. For this reason, a Privacy Impact Assessment (PIA) ought to be carried out before granting civil registry lookup access to DHIS2. In some jurisdictions (e.g., European Union), a PIA is required in order to comply with national regulations.
-
 ## Route Manager Configuration
 
 You will need to add a new route to DHIS2 to configure the route for the civil registry lookup. This route is used by the Capture app plugin to look up information from the civil registry. For this reference implementation, the code `civil-registry` identifies the lookup route. It is recommended to use the [Route Manager app](https://apps.dhis2.org/app/5dbe9ab8-46bd-411e-b22f-905f08a81d78) to create the route.
@@ -288,6 +274,20 @@ You can observe a sharing configuration in the above screenshot. The configurati
 ### Test Route
 
 The `Test` button in Route Manager permits you to try out the route once it is saved. Clicking the button will send a request to the URL configured in the route and show the response in Route Manager directly. If it is successful, you should see a response from the civil registry.
+
+## Security Considerations
+
+* Civil registry access control varies widely across implementations and it is outside the scope of this reference implementation. The way the civil registry is secured in this reference implementation is for illustration purposes only.
+
+* Only highly privileged DHIS2 users such as administrators should be able to configure routes and access Route Manager. However, all users with access to the Anti-Tuberculosis DRS Capture programme should be able to run the DHIS2 route. It is imperative that the DHIS2 authorities are assigned according to the aforementioned permissions to prevent unauthorised access to the civil registry. Rights to creating or editing routes should be given with extreme caution. If inappropriately configured, a DHIS2 route can compromise the security of the system.
+
+* The route runs for the `civil-registry` DHIS2 route should be audited in order to have a trail of the DHIS2 users looking up persons from the civil registry. Route runs are automatically audited in the latest releases of DHIS2 unless explicitly disabled by the DHIS2 server administrator.
+
+* All parties, including the Capture app programme user, are assumed to be trusted from the civil registry's perspective in this reference implementation. If a party in this workflow is untrusted, then rate limiting should be considered in order to reduce the risk of abuse.
+
+* Sensitive data, like the national ID, should always be carried in the body of HTTP POST requests. Transmitting sensitive data in the body of POST requests, as opposed to including it in the URL query params, reduces the risk of personal identifiable information leaking into the server access logs.
+
+* The reference implementation, by its nature, facilitates the searching and transferring of data which most likely contains personal identifying information. For this reason, a Privacy Impact Assessment (PIA) ought to be carried out before granting civil registry lookup access to DHIS2. In some jurisdictions (e.g., European Union), a PIA is required in order to comply with national regulations.
 
 # Support
 
