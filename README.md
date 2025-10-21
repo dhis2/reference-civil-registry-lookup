@@ -25,7 +25,7 @@ This is an example meant to guide you in developing your own civil registry look
 
 ## Quick Start
 
-You can use the included [Docker Compose config](docker-compose.yml) to run this self-contained example in a non-production environment. This config stands up the DHIS2 and civil registry containers together with ancillary containers for authentication and proxying. Besides standing up and wiring the containers, the config also (1) installs the civil registry lookup plugin in DHIS2, (2) creates the DHIS2 metadata of a simple Tracker program, (3) configures a DHIS2 route, and (4) adds the necessary client info in [KeyCloak](https://www.keycloak.org/) for authenticating and validating requests to the civil registry.
+You can use the included [Docker Compose config](docker-compose.yml) to run this self-contained example in a non-production environment. This config stands up the DHIS2 and civil registry containers together with ancillary containers for authentication and proxying. Besides standing up and wiring the containers, the config also (1) installs the civil registry lookup plugin in DHIS2, (2) creates the DHIS2 metadata of a simple Tracker programme, (3) configures a DHIS2 route, and (4) adds the necessary client info in [KeyCloak](https://www.keycloak.org/) for authenticating and validating requests to the civil registry.
 
 The following prerequisites need to be installed prior to running the config with Docker Compose:
 
@@ -52,7 +52,7 @@ Walkthrough the steps below to achieve an end-to-end experience of the civil reg
 
 1. Open http://localhost:8080 from your browser to bring up the DHIS2 login page.
 2. Log into DHIS2 using the username `admin` and password `district`. 
-3. When logged in, open http://localhost:8080/apps/capture#/new?orgUnitId=sZ79N6vfrSR&programId=KYzHf1Ta6C4 to load the Anti-Tuberculosis DRS DHIS2 Capture program. 
+3. When logged in, open http://localhost:8080/apps/capture#/new?orgUnitId=sZ79N6vfrSR&programId=KYzHf1Ta6C4 to load the Anti-Tuberculosis DRS DHIS2 Capture programme. 
 4. From the `Profile` section of the form, type the person identifier `328808792660011` inside the `National ID` text field and then click on the `Search` button next to the field. 
 5. After a moment or two, the `First Name`, `Last name`, `Sex`, `Date of Birth`, and `Home Address` form fields are populated with information about the searched person.
 
