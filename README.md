@@ -235,7 +235,7 @@ Adapting this reference implementation usually means modifying the mediator to s
 
 * All parties, including the Capture app programme user, are assumed to be trusted from the civil registry's perspective in this reference implementation. If a party in this workflow is untrusted, then rate limiting should be considered in order to reduce the risk of abuse.
 
-* Sensitive data, like the national ID, should always be carried in the body of HTTP POST requests. Sending POST requests, instead of GET requests, reduces the risk of sensitive data ID leaking into the server access logs.
+* Sensitive data, like the national ID, should always be carried in the body of HTTP POST requests. Transmitting sensitive data in the body of POST requests, as opposed to including it in the URL query params, reduces the risk of personal identifiable information leaking into the server access logs.
 
 * The reference implementation, by its nature, facilitates the searching and transferring of data which most likely contains personal identifying information. For this reason, a Privacy Impact Assessment (PIA) ought to be carried out before granting civil registry lookup access to DHIS2. In some jurisdictions (e.g., European Union), a PIA is required in order to comply with national regulations.
 
