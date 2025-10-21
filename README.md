@@ -48,7 +48,7 @@ Execute the following command in a different terminal if you want to run the API
 yarn test
 ```
 
-Walkthrough the steps below to achieve an end-to-end experience of the civil registry lookup:
+Walkthrough the steps below to obtain an end-to-end experience of the civil registry lookup:
 
 1. Open http://localhost:8080 from your browser to bring up the DHIS2 login page.
 2. Log into DHIS2 using the username `admin` and password `district`. 
