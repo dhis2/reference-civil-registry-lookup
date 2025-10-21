@@ -247,12 +247,12 @@ You will need to add a new route to DHIS2 to configure the route for the civil r
 
 #### Install Route Manager from App Hub
 
-Route Manager is available from [App Hub](https://apps.dhis2.org/app/5dbe9ab8-46bd-411e-b22f-905f08a81d78). You can (a) download the app from the App Hub and upload it to your DHIS2 instance, or even better, (b) install it directly in your DHIS2 instance from App Management.
+Route Manager is available from [App Hub](https://apps.dhis2.org/app/5dbe9ab8-46bd-411e-b22f-905f08a81d78). You can (a) download the app from App Hub and upload it to your DHIS2 server, or even better, (b) follow the instructions below to install it directly in your DHIS2 instance from App Management:
 
-1. Go to the App Management app in your DHIS2 instance
-2. Click on the `App Hub` tab
-3. Search for `Route Manager`
-4. Click on the `Install` button
+1. Go to the App Management app in your DHIS2 instance.
+2. Click on the `App Hub` tab.
+3. Search for `Route Manager`.
+4. Click on the `Install` button.
 
 #### Configure the route
 
