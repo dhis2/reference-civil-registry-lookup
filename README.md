@@ -101,7 +101,7 @@ The Capture app plugin is a [DHIS2 web app](https://developers.dhis2.org/docs/qu
 }
 ```
 
- On clicking the search button, the lookup plugin POSTs a request containing the national ID to a DHIS2 route identified by the code `civil-registry`. It then feeds the FHIR JSON response body returned from the route along with the above JSONata expression to the [JSONata engine](https://www.npmjs.com/package/jsonata) in order to transform the FHIR body into an internal structure that the plugin can process. Here is a sample of a response that the plugin receives from the civil registry route:
+On clicking the search button, the lookup plugin POSTs a request containing the national ID to a DHIS2 route identified by the code `civil-registry`. It then feeds the FHIR JSON response body returned from the route along with the above JSONata expression to the [JSONata engine](https://www.npmjs.com/package/jsonata) in order to transform the FHIR body into an internal structure that the plugin can process. Here is a sample of a response that the plugin receives from the civil registry route:
 
 ```json
 {
@@ -252,14 +252,14 @@ Route Manager is available from [App Hub](https://apps.dhis2.org/app/5dbe9ab8-46
 
 3. Fill out the form with the following details:
    
-   | Field                 | Value                   | Comments                                                                       |
-   |-----------------------|-------------------------|--------------------------------------------------------------------------------|
-   | Route Code            | `civil-registry`        | The plugin expects this exact value                                            |
-   | Name                  | `Civil Registry Lookup` | This name is up to you to decide                                               |
-   | URL                   | `http://localhost:8080` | The URL configured by the middleware                                           |
-   | Authentication Scheme | `API Token`             | The middleware requires authorisation so this should be set to `API Token`     |
-   | Token                 | `$ecr3t`                | The middleware handles Authentication so this should be left to `None`         |
-   | Authorities           | `PLUGIN_USERS`          | Use the authority that represents the users that will interact with the plugin |
+   | Field                 | Value                   | Comment                                                                                                                                                                   |
+   |-----------------------|-------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+   | Route Code            | `civil-registry`        | The plugin expects this exact value.                                                                                                                                      |
+   | Name                  | `Civil Registry Lookup` | A human-friendly name to label the route.                                                                                                                                 |
+   | URL                   | `http://localhost:8080` | The URL configured by the middleware.                                                                                                                                     |
+   | Authentication Scheme | `API Token`             | The middleware is kept minimally secure from unauthorised access with with an API token. A real-life implementation would more than likely require better access control. |
+   | Token                 | `$ecr3t`                | The secret value of the API token.                                                                                                                                        |
+   | Authorities           | `PLUGIN_USERS`          | Use the authority that represents the users that will interact with the plugin.                                                                                           |
 
 4. Click on the `Save Route` button.
 
