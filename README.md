@@ -252,14 +252,14 @@ Route Manager is available from [App Hub](https://apps.dhis2.org/app/5dbe9ab8-46
 
 3. Fill out the form with the following details:
    
-   | Field                 | Value                   | Comment                                                                                                                                                                   |
-   |-----------------------|-------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-   | Route Code            | `civil-registry`        | The plugin expects this exact value.                                                                                                                                      |
-   | Name                  | `Civil Registry Lookup` | A human-friendly name to label the route.                                                                                                                                 |
-   | URL                   | `http://localhost:8080` | The URL configured by the middleware.                                                                                                                                     |
-   | Authentication Scheme | `API Token`             | The middleware is kept minimally secure from unauthorised access with with an API token. A real-life implementation would more than likely require better access control. |
-   | Token                 | `$ecr3t`                | The secret value of the API token.                                                                                                                                        |
-   | Authorities           | `PLUGIN_USERS`          | Use the authority that represents the users that will interact with the plugin.                                                                                           |
+   | Field                 | Value                   | Comment                                                                                                                                                                 |
+   |-----------------------|-------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+   | Route Code            | `civil-registry`        | The Capture app plugin expects this exact value.                                                                                                                        |
+   | Name                  | `Civil Registry Lookup` | A human-friendly name to label the route.                                                                                                                               |
+   | URL                   | `http://localhost:8080` | The URL of the mediator.                                                                                                                                                |
+   | Authentication Scheme | `API Token`             | The mediator is kept minimally secure from unauthorised access with with an API token. A real-life implementation would more than likely require better access control. |
+   | Token                 | `$ecr3t`                | The secret value of the API token.                                                                                                                                      |
+   | Authorities           | `PLUGIN_USERS`          | Use the authority that represents the users that will interact with the plugin.                                                                                         |
 
 4. Click on the `Save Route` button.
 
