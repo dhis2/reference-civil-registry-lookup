@@ -28,7 +28,7 @@
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 
-FROM openjdk:21-slim
+FROM eclipse-temurin:21-jdk-alpine
 COPY target/mediator-1.0.0-SNAPSHOT.jar mediator-1.0.0-SNAPSHOT.jar
 EXPOSE 9070
 ENTRYPOINT ["java","-jar","/mediator-1.0.0-SNAPSHOT.jar"]
