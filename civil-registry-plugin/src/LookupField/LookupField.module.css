@@ -9,6 +9,8 @@
     flex-grow: 0;
     flex-shrink: 0;
     flex-basis: 200px;
+    /* Match sizing of other Capture fields */
+    min-width: 40%;
 }
 
 .label {
@@ -31,4 +33,10 @@
 :global(.app-shell-app) {
     background-color: #fbfcfd;
     border-block-end: 1px solid #e8edf2;
+}
+
+/* This... for some reason fixes an issue in Windows where the plugin
+   will hit a resize loop and shrink to it's minimum size: */
+:global(#resizeDiv > *) {
+    border: 1px solid transparent;
 }

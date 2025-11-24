@@ -3,6 +3,7 @@
     {
       "id": "default",
       "elements": [
+        { "id": "Ewi7FUfcHAD", "type": "TrackedEntityAttribute" },
         {
           "id": "civil-registry-plugin",
           "type": "plugin",

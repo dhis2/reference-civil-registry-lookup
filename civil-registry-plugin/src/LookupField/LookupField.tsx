@@ -1,17 +1,11 @@
 import i18n from '@dhis2/d2-i18n'
-import { Button, Help, Input, Label, Tooltip } from '@dhis2/ui'
+import { Button, Help, Label, Tooltip } from '@dhis2/ui'
 import jsonata from 'jsonata'
-import debounce from 'lodash/debounce'
 import React, { useState, useCallback, useMemo } from 'react'
 import { useCivilRegistryQuery } from '../lib/useCivilRegistryQuery'
 import { usePersonMapQuery } from '../lib/usePersonMapQuery'
 import { FieldsMetadata, SetFieldValue } from '../Plugin.types'
 import classes from './LookupField.module.css'
-
-// ! NB: This is a little custom, and not so generic
-let idWarningIssued = false
-const idWarning =
-    "No field with a plugin alias `id` has been found; the value in this field won't automatically update the form value. Values returned from the civil registry still may, depending on the configured plugin aliases."
 
 const mappingNotFoundMessage = i18n.t(
     'Civil registry mapping has not been set up; contact a system administrator. Patient details can still be entered manually.'
@@ -20,6 +14,7 @@ const personMapErrMessage = i18n.t(
     'Unable to obtain civil registry mapping. Patient details can still be entered manually.'
 )
 
+const idMissingErrMessage = i18n.t('Enter an ID to search')
 const mappingErrMessage = i18n.t(
     'Data mapping from civil registry failed. Patient details can still be entered manually.'
 )
@@ -49,32 +44,8 @@ export const LookupField = ({
     } = usePersonMapQuery()
     const [query, { loading: registryLoading, error: registryError }] =
         useCivilRegistryQuery()
-    const [patientId, setPatientId] = useState(values['id'] || '')
     const [mappingError, setMappingError] = useState(false)
-
-    const updateFormValue = useCallback(
-        debounce((value) => {
-            if ('id' in fieldsMetadata) {
-                setFieldValue({ fieldId: 'id', value })
-            } else if (!idWarningIssued) {
-                console.warn(idWarning)
-                idWarningIssued = true
-            }
-        }, 800),
-        []
-    )
-
-    const handleChange = useCallback(
-        ({ value }: { value: string }) => {
-            setPatientId(value)
-            updateFormValue(value)
-        },
-        [updateFormValue]
-    )
-
-    const handleBlur = useCallback(() => {
-        updateFormValue.flush()
-    }, [updateFormValue])
+    const [idMissingError, setIdMissingError] = useState(false)
 
     const jsonataExpression = useMemo(() => {
         if (personMapData) {
@@ -92,7 +63,13 @@ export const LookupField = ({
     }, [personMapData])
 
     const handleSearch = useCallback(async () => {
-        const fhirPerson = await query({ id: patientId })
+        if (!values.id || values.id.length === 0) {
+            setIdMissingError(true)
+            return
+        }
+        setIdMissingError(false)
+
+        const fhirPerson = await query({ id: values.id })
         try {
             const lookupPerson = await jsonataExpression.evaluate(fhirPerson)
 
@@ -114,7 +91,7 @@ export const LookupField = ({
             console.error(error.details || error)
             setMappingError(true)
         }
-    }, [patientId, jsonataExpression, fieldsMetadata, query, setFieldValue])
+    }, [values.id, jsonataExpression, fieldsMetadata, query, setFieldValue])
 
     const mappingNotSetUp = useMemo(
         () =>
@@ -130,17 +107,24 @@ export const LookupField = ({
             !registryError &&
             !personMapError &&
             !mappingNotSetUp &&
-            !mappingError
+            !mappingError &&
+            !idMissingError
         ) {
             return null
         }
 
+        // Mapping setup errors -
         if (mappingNotSetUp) {
             return { message: mappingNotFoundMessage, warning: true }
         }
         // other Person Map request errors
         if (personMapError) {
             return { message: personMapErrMessage, warning: true }
+        }
+
+        // Search errors -
+        if (idMissingError) {
+            return { message: idMissingErrMessage, warning: true }
         }
 
         // Error trying to map data with Jsonata
@@ -160,18 +144,22 @@ export const LookupField = ({
         }
 
         return null
-    }, [registryError, mappingNotSetUp, personMapError, mappingError])
+    }, [
+        registryError,
+        mappingNotSetUp,
+        personMapError,
+        mappingError,
+        idMissingError,
+    ])
 
     const SearchButton = () => (
         <Button
             onClick={handleSearch}
             loading={registryLoading || personMapLoading}
             disabled={
-                patientId.length === 0 ||
-                mappingNotSetUp ||
-                Boolean(personMapError) ||
-                mappingError
+                mappingNotSetUp || Boolean(personMapError) || mappingError
             }
+            name="searchRegistry"
         >
             {i18n.t('Search')}
         </Button>
@@ -180,23 +168,15 @@ export const LookupField = ({
     return (
         <div className={classes.fieldContainer}>
             <div className={classes.labelContainer}>
-                <Label htmlFor={'patientId'} className={classes.label}>
-                    {fieldsMetadata['id']?.formName || i18n.t('Patient ID')}
+                <Label htmlFor={'searchRegistry'} className={classes.label}>
+                    {i18n.t('Search civil registry')}
                 </Label>
             </div>
 
             <div className={classes.input}>
                 <div className={classes.inputContainer}>
-                    <Input
-                        name="patientId"
-                        className={classes.input}
-                        warning={validationStatus?.warning}
-                        value={patientId}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                    />
-
-                    {patientId.length === 0 ? (
+                    {/* Show a tooltip if the ID field is empty */}
+                    {!values.id || values.id?.length === 0 ? (
                         <Tooltip content={i18n.t('Enter an ID to search')}>
                             <SearchButton />
                         </Tooltip>
