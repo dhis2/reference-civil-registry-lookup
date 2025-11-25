@@ -1,7 +1,7 @@
 import i18n from '@dhis2/d2-i18n'
 import { Button, Help, Label, Tooltip } from '@dhis2/ui'
 import jsonata from 'jsonata'
-import React, { useState, useCallback, useMemo } from 'react'
+import React, { useState, useCallback, useMemo, useRef } from 'react'
 import { useCivilRegistryQuery } from '../lib/useCivilRegistryQuery'
 import { usePersonMapQuery } from '../lib/usePersonMapQuery'
 import { FieldsMetadata, SetFieldValue } from '../Plugin.types'
@@ -46,6 +46,7 @@ export const LookupField = ({
         useCivilRegistryQuery()
     const [mappingError, setMappingError] = useState(false)
     const [idMissingError, setIdMissingError] = useState(false)
+    const currentIdRef = useRef(values.id)
 
     const jsonataExpression = useMemo(() => {
         if (personMapData) {
@@ -62,36 +63,54 @@ export const LookupField = ({
         }
     }, [personMapData])
 
-    const handleSearch = useCallback(async () => {
-        if (!values.id || values.id.length === 0) {
-            setIdMissingError(true)
-            return
-        }
-        setIdMissingError(false)
+    /**
+     * This search is subject to a race condition: `values.id` gets updated when
+     * the Capture app field is blurred, so if the user types in an ID, and goes
+     * right to click the "Search" button, both the blur event and the search
+     * happen at the same time, so the search probably won't have the latest ID
+     * value. To handle that:
+     * 1. Track the latest `values.id` value in a ref, so it can be accessed at
+     * any time, without being affected by closures
+     * 2. Trigger a short delay before attempting the search to give time for
+     * a potential blur event to finish and update `values.id`
+     * 3. Use the `currentIdRef` value in the timed-out function to use the
+     * latest value when it does trigger
+     */
+    currentIdRef.current = values.id
+    const handleSearch = useCallback(() => {
+        setTimeout(async () => {
+            if (!currentIdRef.current || currentIdRef.current.length === 0) {
+                setIdMissingError(true)
+                return
+            }
+            setIdMissingError(false)
 
-        const fhirPerson = await query({ id: values.id })
-        try {
-            const lookupPerson = await jsonataExpression.evaluate(fhirPerson)
+            const fhirPerson = await query({ id: currentIdRef.current })
+            try {
+                const lookupPerson = await jsonataExpression.evaluate(
+                    fhirPerson
+                )
 
-            // Take data returned from Route and set enrollment field values.
-            // Expects a flat object, and for keys and values to match the
-            // plugin's configured fields
-            Object.entries(lookupPerson).forEach(([key, value]) => {
-                // Avoids setting values outside of plugin's configured fields
-                if (Object.hasOwn(fieldsMetadata, key)) {
-                    setFieldValue({ fieldId: key, value: value })
-                } else {
-                    console.warn(
-                        `Field ID "${key}" not found in configured fields; skipping value ${value}`
-                    )
-                }
-            })
-        } catch (error) {
-            console.error('Failed to map registry data')
-            console.error(error.details || error)
-            setMappingError(true)
-        }
-    }, [values.id, jsonataExpression, fieldsMetadata, query, setFieldValue])
+                // Take data returned from Route and set enrollment field values.
+                // Expects a flat object, and for keys and values to match the
+                // plugin's configured fields
+                Object.entries(lookupPerson).forEach(([key, value]) => {
+                    // Avoids setting values outside of plugin's configured fields
+                    if (Object.hasOwn(fieldsMetadata, key)) {
+                        setFieldValue({ fieldId: key, value: value })
+                    } else {
+                        console.warn(
+                            `Field ID "${key}" not found in configured fields; skipping value ${value}`
+                        )
+                    }
+                })
+            } catch (error) {
+                console.error('Failed to map registry data')
+                console.error(error.details || error)
+                setMappingError(true)
+            }
+        }, 200)
+    }, [jsonataExpression, fieldsMetadata, query, setFieldValue])
 
     const mappingNotSetUp = useMemo(
         () =>
@@ -154,12 +173,12 @@ export const LookupField = ({
 
     const SearchButton = () => (
         <Button
-            onClick={handleSearch}
+            name="searchRegistry"
             loading={registryLoading || personMapLoading}
             disabled={
                 mappingNotSetUp || Boolean(personMapError) || mappingError
             }
-            name="searchRegistry"
+            onClick={handleSearch}
         >
             {i18n.t('Search')}
         </Button>
