@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2025-07-30T14:16:56.281Z\n"
-"PO-Revision-Date: 2025-07-30T14:16:56.281Z\n"
+"POT-Creation-Date: 2025-11-24T23:38:08.176Z\n"
+"PO-Revision-Date: 2025-11-24T23:38:08.176Z\n"
 
 msgid ""
 "Civil registry mapping has not been set up; contact a system administrator. "
@@ -21,6 +21,9 @@ msgid ""
 msgstr ""
 "Unable to obtain civil registry mapping. Patient details can still be "
 "entered manually."
+
+msgid "Enter an ID to search"
+msgstr "Enter an ID to search"
 
 msgid ""
 "Data mapping from civil registry failed. Patient details can still be "
@@ -42,11 +45,8 @@ msgstr "Failed to query civil registry. Please enter the person's details manual
 msgid "Search"
 msgstr "Search"
 
-msgid "Patient ID"
-msgstr "Patient ID"
-
-msgid "Enter an ID to search"
-msgstr "Enter an ID to search"
+msgid "Search civil registry"
+msgstr "Search civil registry"
 
 msgctxt "Application title"
 msgid "__MANIFEST_APP_TITLE"
