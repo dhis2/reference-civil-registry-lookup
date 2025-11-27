@@ -73,7 +73,7 @@ These components can be stood up from the [Docker Compose file](https://docs.doc
 
 The civil registry lookup workflow is accomplished in a few steps:
 
-1. The health worker types the national ID in field contained within a Capture app form and then clicks on the search button
+1. The health worker types the national ID in a field contained within a Capture app form and then clicks on the search button
 2. The Capture app lookup plugin transmits a request for looking up a person by their national ID to a DHIS2 route
 3. The DHIS2 route proxies the request to a mediator sitting in front of the civil registry.
 4. The mediator obtains an access token from an authorisation server and includes this token in a query it sends to the civil registry
