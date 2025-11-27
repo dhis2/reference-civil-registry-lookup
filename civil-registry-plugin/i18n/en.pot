@@ -5,8 +5,8 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"POT-Creation-Date: 2025-07-30T14:16:56.281Z\n"
-"PO-Revision-Date: 2025-07-30T14:16:56.281Z\n"
+"POT-Creation-Date: 2025-11-27T08:26:56.766Z\n"
+"PO-Revision-Date: 2025-11-27T08:26:56.773Z\n"
 
 msgid ""
 "Civil registry mapping has not been set up; contact a system administrator. "
@@ -38,6 +38,9 @@ msgstr ""
 
 msgid "Failed to query civil registry. Please enter the person's details manually."
 msgstr "Failed to query civil registry. Please enter the person's details manually."
+
+msgid "Invalid Patient ID. The ID should only contain letters or numbers."
+msgstr "Invalid Patient ID. The ID should only contain letters or numbers."
 
 msgid "Search"
 msgstr "Search"

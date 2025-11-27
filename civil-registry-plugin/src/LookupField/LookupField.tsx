@@ -31,6 +31,20 @@ const registryErrMessage = i18n.t(
     "Failed to query civil registry. Please enter the person's details manually."
 )
 
+const IdErrorMessage = i18n.t(
+    "Invalid Patient ID. The ID should only contain letters or numbers."
+)
+
+const isValidValue = (value: string) => {
+    if (value === null || value === '') {
+        console.error("Value is null or empty")
+        return false
+    }
+
+    const alphanumericPattern = /^[a-zA-Z0-9]+$/i
+    return alphanumericPattern.test(value)
+}
+
 type Props = {
     setFieldValue: SetFieldValue
     fieldsMetadata: FieldsMetadata
@@ -51,6 +65,7 @@ export const LookupField = ({
         useCivilRegistryQuery()
     const [patientId, setPatientId] = useState(values['id'] || '')
     const [mappingError, setMappingError] = useState(false)
+    const [idError, setIdError] = useState(false)
 
     const updateFormValue = useCallback(
         debounce((value) => {
@@ -66,6 +81,7 @@ export const LookupField = ({
 
     const handleChange = useCallback(
         ({ value }: { value: string }) => {
+            setIdError(false)
             setPatientId(value)
             updateFormValue(value)
         },
@@ -92,13 +108,31 @@ export const LookupField = ({
     }, [personMapData])
 
     const handleSearch = useCallback(async () => {
+        if (!isValidValue(patientId)) {
+            console.error("Invalid Patient ID value")
+            setIdError(true)
+            return
+        }
         const fhirPerson = await query({ id: patientId })
+
+        // validation check
+        // Todo: validate actual fhir resource structure
+        if (fhirPerson == null || typeof fhirPerson !== 'object') {
+            console.error("Invalid data returned from registry lookup")
+            setMappingError(true)
+            return
+        }
+
+        console.error("FHIR person data:", fhirPerson)
         try {
             const lookupPerson = await jsonataExpression.evaluate(fhirPerson)
+
+            console.warn("Lookup person data:", lookupPerson)
 
             // Take data returned from Route and set enrollment field values.
             // Expects a flat object, and for keys and values to match the
             // plugin's configured fields
+
             Object.entries(lookupPerson).forEach(([key, value]) => {
                 // Avoids setting values outside of plugin's configured fields
                 if (Object.hasOwn(fieldsMetadata, key)) {
@@ -130,9 +164,14 @@ export const LookupField = ({
             !registryError &&
             !personMapError &&
             !mappingNotSetUp &&
-            !mappingError
+            !mappingError &&
+            !idError
         ) {
             return null
+        }
+
+        if (idError) {
+            return { message: IdErrorMessage, warning: true }
         }
 
         if (mappingNotSetUp) {
@@ -160,7 +199,7 @@ export const LookupField = ({
         }
 
         return null
-    }, [registryError, mappingNotSetUp, personMapError, mappingError])
+    }, [registryError, personMapError, mappingNotSetUp, mappingError, idError])
 
     const SearchButton = () => (
         <Button
