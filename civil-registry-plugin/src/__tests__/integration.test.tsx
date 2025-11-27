@@ -183,6 +183,6 @@ test('failed query', async () => {
     // assert
     // should not try to set any fields, and log error
     expect(mockSetFieldValue).toHaveBeenCalledTimes(1)
-    expect(consoleErrorSpy).toHaveBeenCalledWith(expectedError)
+    expect(consoleErrorSpy).toHaveBeenCalledWith("Invalid Patient ID value")
     // todo: test alert?
 })
