@@ -9,6 +9,8 @@
     flex-grow: 0;
     flex-shrink: 0;
     flex-basis: 200px;
+    /* Match the width of other inputs */
+    min-width: 40%;
 }
 
 .label {
