@@ -73,15 +73,16 @@ These components can be stood up from the [Docker Compose file](https://docs.doc
 
 The civil registry lookup workflow is accomplished in a few steps:
 
-1. The health worker types the national ID in a field contained within a Capture app form and then clicks on the search button
-2. The Capture app lookup plugin transmits a request for looking up a person by their national ID to a DHIS2 route
-3. The DHIS2 route proxies the request to a mediator sitting in front of the civil registry.
-4. The mediator obtains an access token from an authorisation server and includes this token in a query it sends to the civil registry
-5. A gateway intercepts the query and validates the token before forwarding the authorised query to the civil registry
-6. If found, the civil registry responds with the person details.
-7. The response is returned to the origin, that is, the plugin.
-8. The plugin uses a mapping file, downloaded from DHIS2's data store, to transform the fetched person details into a structure it can read.
-9. The plugin goes on to read the transformation output and populate the Capture form 
+1. From the Capture app, the health worker begins enrolling a participant into the anti-TB DRS programme.
+2. The health worker obtains the national ID from the participant and types it into a Capture plugin field which is part of the programme form.
+3. When the health worker clicks the search button next to the national ID field, the Capture app plugin transmits a request to look up the participant by their national ID to a DHIS2 route.
+4. The DHIS2 route proxies the request to a mediator sitting in front of the civil registry.
+5. The mediator obtains an access token from an authorisation server and includes this token in a query it sends to the civil registry.
+6. A gateway intercepts the query and validates the token before forwarding the authorised query to the civil registry.
+7. If found, the civil registry responds with the person's details contained within a FHIR bundle.
+8. The response is returned to the downstream client, that is, the plugin.
+9. The plugin uses a mapping file, downloaded from DHIS2's data store, to transform the FHIR bundle into a structure it can read. Having the mapping defined in the data store allows you to change only the mapping without having to modify, rebuild, and reinstall the plugin source code whenever the form field content is adjusted or the JSON structure of the civil registry response changes.
+10. The plugin proceeds to autopopulate the personal identifiable and demographic information form fields with the transformed output.
 
 What follows is a brief overview of the architectural components:
 
