@@ -22,7 +22,7 @@
 
 A civil registry is a national database for storing personal details of citizens. It is useful to look up information from the civil registry to automatically populate forms in DHIS2. Automatic population reduces the chances of errors and provides a quick way to prefill forms with patient information that is accurate and up-to-date.
 
-This reference implementation illustrates a [DHIS2 Capture app plugin](https://developers.dhis2.org/docs/capture-plugins/developer/getting-started) that looks up and transforms data from a civil registry before prefilling fields with demographic information in a form used to carry out an [Anti-Tuberculosis Drug Resistance Survey (DRS)](https://docs.dhis2.org/en/implement/health/tuberculosis/anti-tuberculosis-drug-resistance-survey-drs/design.html). 
+This reference implementation illustrates a [DHIS2 Capture app plugin](https://developers.dhis2.org/docs/capture-plugins/developer/getting-started) that looks up and transforms data from a civil registry before prefilling fields with demographic information in a form used to carry out an [Anti-Tuberculosis Drug Resistance Survey (Anti-DRS)](https://docs.dhis2.org/en/implement/health/tuberculosis/anti-tuberculosis-drug-resistance-survey-drs/design.html). 
 
 The plugin accesses the civil registry through a [route](https://docs.dhis2.org/en/develop/using-the-api/dhis-core-version-master/route.html) configured in DHIS2. This DHIS2 route proxies lookup requests to a mediator restricting access to the civil registry. On receiving the route request, the mediator queries the civil registry for the person where the results are returned to the DHIS2 route client, that is, the Capture app plugin. The information originating from the civil registry could potentially contain the national ID, first name, last name, gender, date of birth, and so on.
 
@@ -57,7 +57,7 @@ Walkthrough the steps below to obtain an end-to-end experience of the civil regi
 
 1. Open http://localhost:8080 from your browser to bring up the DHIS2 login page.
 2. Log into DHIS2 using the username `admin` and password `district`. 
-3. When logged in, open http://localhost:8080/apps/capture#/new?orgUnitId=sZ79N6vfrSR&programId=KYzHf1Ta6C4 to load the Anti-Tuberculosis DRS DHIS2 Capture programme. 
+3. When logged in, open http://localhost:8080/apps/capture#/new?orgUnitId=sZ79N6vfrSR&programId=KYzHf1Ta6C4 to load the Anti-TB DRS DHIS2 Capture programme. 
 4. From the `Profile` section of the form, type the person identifier `328808792660011` inside the `National ID` text field and then click on the `Search` button next to the field. 
 5. After a moment or two, the `First Name`, `Last name`, `Sex`, `Date of Birth`, and `Home Address` form fields are populated with information about the searched person.
 
@@ -73,7 +73,7 @@ These components can be stood up from the [Docker Compose file](https://docs.doc
 
 The civil registry lookup workflow is accomplished in a few steps:
 
-1. From the Capture app, the health worker begins enrolling a participant into the anti-TB DRS programme.
+1. From the Capture app, the health worker begins enrolling a participant into the Anti-TB DRS programme.
 2. The health worker obtains the national ID from the participant and types it into a Capture plugin field which is part of the programme form.
 3. When the health worker clicks the search button next to the national ID field, the Capture app plugin transmits a request to look up the participant by their national ID to a DHIS2 route.
 4. The DHIS2 route proxies the request to a mediator sitting in front of the civil registry.
@@ -280,7 +280,7 @@ The `Test` button in Route Manager permits you to try out the route once it is s
 
 * Civil registry access control varies widely across implementations and it is outside the scope of this reference implementation. The way the civil registry is secured in this reference implementation is for illustration purposes only.
 
-* Only highly privileged DHIS2 users such as administrators should be able to configure routes and access Route Manager. However, all users with access to the Anti-Tuberculosis DRS Capture programme should be able to run the DHIS2 route. It is imperative that the DHIS2 authorities are assigned according to the aforementioned permissions to prevent unauthorised access to the civil registry. Rights to creating or editing routes should be given with extreme caution. If inappropriately configured, a DHIS2 route can compromise the security of the system.
+* Only highly privileged DHIS2 users such as administrators should be able to configure routes and access Route Manager. However, all users with access to the Anti-TB DRS Capture programme should be able to run the DHIS2 route. It is imperative that the DHIS2 authorities are assigned according to the aforementioned permissions to prevent unauthorised access to the civil registry. Rights to creating or editing routes should be given with extreme caution. If inappropriately configured, a DHIS2 route can compromise the security of the system.
 
 * The route runs for the `civil-registry` DHIS2 route should be audited in order to have a trail of the DHIS2 users looking up persons from the civil registry. Route runs are automatically audited in the latest releases of DHIS2 unless explicitly disabled by the DHIS2 server administrator.
 
