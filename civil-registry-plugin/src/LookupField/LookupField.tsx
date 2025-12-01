@@ -35,12 +35,16 @@ type Props = {
     setFieldValue: SetFieldValue
     fieldsMetadata: FieldsMetadata
     values: Record<string, any>
+    errors: string[] | undefined
+    warnings: string[] | undefined
 }
 
 export const LookupField = ({
     setFieldValue,
     fieldsMetadata,
     values,
+    errors,
+    warnings,
 }: Props) => {
     const {
         loading: personMapLoading,
@@ -190,7 +194,10 @@ export const LookupField = ({
                     <Input
                         name="patientId"
                         className={classes.input}
-                        warning={validationStatus?.warning}
+                        warning={
+                            validationStatus?.warning || warnings?.length > 0
+                        }
+                        error={errors?.length > 0}
                         value={patientId}
                         onChange={handleChange}
                         onBlur={handleBlur}
@@ -204,11 +211,23 @@ export const LookupField = ({
                         <SearchButton />
                     )}
                 </div>
+                {/* Validation messages from this file */}
                 {validationStatus && (
                     <Help warning={validationStatus.warning}>
                         {validationStatus.message}
                     </Help>
                 )}
+                {/* Warnings and errors from Capture validation */}
+                {warnings?.map((msg) => (
+                    <Help key={msg} warning>
+                        {msg}
+                    </Help>
+                ))}
+                {errors?.map((msg) => (
+                    <Help key={msg} error>
+                        {msg}
+                    </Help>
+                ))}
             </div>
         </div>
     )
