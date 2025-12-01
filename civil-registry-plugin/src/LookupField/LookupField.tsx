@@ -1,5 +1,6 @@
 import i18n from '@dhis2/d2-i18n'
 import { Button, Help, Input, Label, Tooltip } from '@dhis2/ui'
+import DOMPurify from 'dompurify';
 import jsonata from 'jsonata'
 import debounce from 'lodash/debounce'
 import React, { useState, useCallback, useMemo } from 'react'
@@ -127,8 +128,6 @@ export const LookupField = ({
         try {
             const lookupPerson = await jsonataExpression.evaluate(fhirPerson)
 
-            console.warn("Lookup person data:", lookupPerson)
-
             // Take data returned from Route and set enrollment field values.
             // Expects a flat object, and for keys and values to match the
             // plugin's configured fields
@@ -136,7 +135,16 @@ export const LookupField = ({
             Object.entries(lookupPerson).forEach(([key, value]) => {
                 // Avoids setting values outside of plugin's configured fields
                 if (Object.hasOwn(fieldsMetadata, key)) {
-                    setFieldValue({ fieldId: key, value: value })
+                    // sanitization step
+                    let sanitizedValue = value
+
+                    if (typeof value === 'string') {
+                        sanitizedValue = DOMPurify.sanitize(value, {
+                            ALLOWED_TAGS: [],
+                        }).trim();
+                    }
+
+                    setFieldValue({ fieldId: key, value: sanitizedValue })
                 } else {
                     console.warn(
                         `Field ID "${key}" not found in configured fields; skipping value ${value}`
