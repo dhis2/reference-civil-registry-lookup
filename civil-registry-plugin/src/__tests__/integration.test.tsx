@@ -185,4 +185,128 @@ test('failed query', async () => {
     expect(mockSetFieldValue).toHaveBeenCalledTimes(1)
     expect(consoleErrorSpy).toHaveBeenCalledWith("Invalid Patient ID value")
     // todo: test alert?
+
+    // test empty id
+    await userEvent.clear(input)
+    await userEvent.click(searchButton)
+
+    expect(mockSetFieldValue).toHaveBeenCalledTimes(1)
+    expect(consoleErrorSpy).toHaveBeenCalledWith("Invalid Patient ID value")
+
+    // test non-alphanumeric id
+    await userEvent.type(input, 'InvalidId!@#')
+    await userEvent.click(searchButton)
+
+    expect(mockSetFieldValue).toHaveBeenCalledTimes(1)
+    expect(consoleErrorSpy).toHaveBeenCalledWith("Invalid Patient ID value")
+})
+
+test('sanitization by removing HTML tags from string values', async () => {
+    render(
+        <CustomDataProvider data={{
+            ...mockData,
+            'routes/civil-registry/run': async (_: string, query: any) => {
+                if (query.data.id === mockFhirPerson.entry[0].resource.identifier[0].value) {
+                    return {
+                        ...mockFhirPerson,
+                        entry: [{
+                            resource: {
+                                ...mockFhirPerson.entry[0].resource,
+                                name: [{
+                                    family: 'Museum<script>alert("xss")</script>',
+                                    given: ['History<img src=x onerror="alert(1)">'],
+                                }],
+                            },
+                        }],
+                    }
+                }
+                throw new Error('Query failed')
+            },
+        }}>
+            <Plugin {...mockProps} />
+        </CustomDataProvider>
+    )
+
+    const input = screen.getByLabelText('Patient ID')
+    await userEvent.type(input, mockFhirPerson.entry[0].resource.identifier[0].value)
+    const searchButton = screen.getByText('Search')
+    await userEvent.click(searchButton)
+
+    expect(mockSetFieldValue).toHaveBeenCalledWith({
+        fieldId: 'firstName',
+        value: 'History',
+    })
+    expect(mockSetFieldValue).toHaveBeenCalledWith({
+        fieldId: 'lastName',
+        value: 'Museum',
+    })
+})
+
+test('sanitization by trimming whitespace from string values', async () => {
+    render(
+        <CustomDataProvider data={{
+            ...mockData,
+            'routes/civil-registry/run': async (_: string, query: any) => {
+                if (query.data.id === mockFhirPerson.entry[0].resource.identifier[0].value) {
+                    return {
+                        ...mockFhirPerson,
+                        entry: [{
+                            resource: {
+                                ...mockFhirPerson.entry[0].resource,
+                                name: [{
+                                    family: '  Museum  ',
+                                    given: ['\t History \n'],
+                                }],
+                            },
+                        }],
+                    }
+                }
+                throw new Error('Query failed')
+            },
+        }}>
+            <Plugin {...mockProps} />
+        </CustomDataProvider>
+    )
+
+    const input = screen.getByLabelText('Patient ID')
+    await userEvent.type(input, mockFhirPerson.entry[0].resource.identifier[0].value)
+    const searchButton = screen.getByText('Search')
+    await userEvent.click(searchButton)
+
+    expect(mockSetFieldValue).toHaveBeenCalledWith({
+        fieldId: 'firstName',
+        value: 'History',
+    })
+    expect(mockSetFieldValue).toHaveBeenCalledWith({
+        fieldId: 'lastName',
+        value: 'Museum',
+    })
+})
+
+test('handle non-FHIR response gracefully', async () => {
+    render(
+        <CustomDataProvider data={{
+            ...mockData,
+            'routes/civil-registry/run': async (_: string, query: any) => {
+                return "Random unexpected response"
+            },
+        }}>
+            <Plugin {...mockProps} />
+        </CustomDataProvider>
+    )
+
+    const input = screen.getByLabelText('Patient ID')
+    await userEvent.type(input, mockFhirPerson.entry[0].resource.identifier[0].value)
+    const searchButton = screen.getByText('Search')
+    await userEvent.click(searchButton)
+
+    // Shows the mapping error message
+    expect(screen.getByText('Data mapping from civil registry failed. Patient details can still be entered manually.')).toBeInTheDocument()
+
+    // only sets the id field
+    expect(mockSetFieldValue).toHaveBeenCalledTimes(1)
+    expect(mockSetFieldValue).toHaveBeenCalledWith({
+        fieldId: 'id',
+        value: mockPerson['id'],
+    })
 })

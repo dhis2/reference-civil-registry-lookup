@@ -124,7 +124,6 @@ export const LookupField = ({
             return
         }
 
-        console.error("FHIR person data:", fhirPerson)
         try {
             const lookupPerson = await jsonataExpression.evaluate(fhirPerson)
 
