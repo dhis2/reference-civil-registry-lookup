@@ -57,7 +57,7 @@ Walkthrough the steps below to obtain an end-to-end experience of the civil regi
 
 1. Open http://localhost:8080 from your browser to bring up the DHIS2 login page.
 2. Log into DHIS2 using the username `admin` and password `district`. 
-3. When logged in, open http://localhost:8080/apps/capture#/new?orgUnitId=sZ79N6vfrSR&programId=KYzHf1Ta6C4 to load the Anti-TB DRS DHIS2 Tracker programme from the Capture app. 
+3. When logged in, open http://localhost:8080/apps/capture#/new?orgUnitId=sZ79N6vfrSR&programId=KYzHf1Ta6C4 to load the DHIS2 Tracker Anti-TB DRS programme from the Capture app. 
 4. From the `Profile` section of the form, type the person identifier `328808792660011` inside the `National ID` text field and then click on the `Search` button next to the field. 
 5. After a moment or two, the `First Name`, `Last name`, `Sex`, `Date of Birth`, and `Home Address` form fields are populated with information about the searched person.
 
