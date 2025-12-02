@@ -57,7 +57,7 @@ Walkthrough the steps below to obtain an end-to-end experience of the civil regi
 
 1. Open http://localhost:8080 from your browser to bring up the DHIS2 login page.
 2. Log into DHIS2 using the username `admin` and password `district`. 
-3. When logged in, open http://localhost:8080/apps/capture#/new?orgUnitId=sZ79N6vfrSR&programId=KYzHf1Ta6C4 to load the Anti-TB DRS DHIS2 Capture programme. 
+3. When logged in, open http://localhost:8080/apps/capture#/new?orgUnitId=sZ79N6vfrSR&programId=KYzHf1Ta6C4 to load the Anti-TB DRS DHIS2 Tracker programme from the Capture app. 
 4. From the `Profile` section of the form, type the person identifier `328808792660011` inside the `National ID` text field and then click on the `Search` button next to the field. 
 5. After a moment or two, the `First Name`, `Last name`, `Sex`, `Date of Birth`, and `Home Address` form fields are populated with information about the searched person.
 
@@ -74,14 +74,14 @@ These components can be stood up from the [Docker Compose file](https://docs.doc
 The civil registry lookup workflow is accomplished in a few steps:
 
 1. From the Capture app, the health worker begins enrolling a participant into the Anti-TB DRS programme.
-2. The health worker obtains the national ID from the participant and types it into a Capture plugin field which is part of the programme form.
+2. The health worker obtains the national ID from the participant and types it into a Capture plugin field which is part of the programme form. 
 3. When the health worker clicks the search button next to the national ID field, the Capture app plugin transmits a request to look up the participant by their national ID to a DHIS2 route.
 4. The DHIS2 route proxies the request to a mediator sitting in front of the civil registry.
-5. The mediator obtains an access token from an authorisation server and includes this token in a query it sends to the civil registry.
+5. The mediator obtains an access token from an authorisation server and includes this token in a query it sends to the civil registry
 6. A gateway intercepts the query and validates the token before forwarding the authorised query to the civil registry.
-7. If found, the civil registry responds with the person's details contained within a FHIR bundle.
+7. If found, the civil registry responds with the person's details contained within a [FHIR bundle](https://hl7.org/fhir/bundle.html).
 8. The response is returned to the downstream client, that is, the plugin.
-9. The plugin uses a mapping file, downloaded from DHIS2's data store, to transform the FHIR bundle into a structure it can read. Having the transformation rules residing in the data store allows you to edit the mapping without having to modify, rebuild, and reinstall the plugin source code whenever the transformation output is adjusted or the JSON structure of the civil registry response changes.
+9. The plugin uses a mapping file, downloaded from DHIS2's data store, to transform the FHIR bundle into a structure it can read. Having the transformation rules reside in the data store allows you to edit the mapping without having to modify, rebuild, and reinstall the plugin source code whenever the transformation output is adjusted or the JSON structure of the civil registry response changes.
 10. The plugin proceeds to autopopulate the personal identifiable and demographic information form fields with the transformed output.
 
 What follows is a brief overview of the architectural components:
