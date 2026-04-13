@@ -40,7 +40,7 @@ const sanitizeString = (value: string): string => {
 
 const isValidValue = (value: string) => {
     // Generic validation: only ensure value exists
-    if (value === null || value === '' || value.length === 0) {
+    if (value === null || value === '') {
         console.error('Value is null or empty')
         return false
     }
@@ -125,6 +125,11 @@ export const LookupField = ({
 
         try {
             const lookupPerson = await jsonataExpression.evaluate(fhirPerson)
+
+            if (!lookupPerson || Object.keys(lookupPerson).length === 0) {
+                setMappingError(true)
+                return
+            }
 
             // Take data returned from Route and set enrollment field values.
             // Expects a flat object, and for keys and values to match the

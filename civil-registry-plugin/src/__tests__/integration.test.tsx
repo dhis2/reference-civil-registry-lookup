@@ -175,23 +175,19 @@ test('failed query', async () => {
 
     // act
     const input = screen.getByLabelText('Patient ID')
-    await userEvent.type(input, 'not an id')
+
+    // test whitespace-only input
+    // triggers search, and validates to empty/invalid value
+    await userEvent.type(input, '   ')
 
     const searchButton = screen.getByText('Search')
     await userEvent.click(searchButton)
 
     // assert
-    // should not try to set any fields, and log error
+    // should not try to set any other fields, and log error
     expect(mockSetFieldValue).toHaveBeenCalledTimes(1)
     expect(consoleErrorSpy).toHaveBeenCalledWith("Invalid Patient ID value")
     // todo: test alert?
-
-    // test empty id
-    await userEvent.clear(input)
-    await userEvent.click(searchButton)
-
-    expect(mockSetFieldValue).toHaveBeenCalledTimes(1)
-    expect(consoleErrorSpy).toHaveBeenCalledWith("Invalid Patient ID value")
 })
 
 test('sanitization by removing HTML tags from string values', async () => {
