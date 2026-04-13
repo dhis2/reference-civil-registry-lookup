@@ -193,8 +193,8 @@ test('failed query', async () => {
     expect(mockSetFieldValue).toHaveBeenCalledTimes(1)
     expect(consoleErrorSpy).toHaveBeenCalledWith("Invalid Patient ID value")
 
-    // test non-alphanumeric id
-    await userEvent.type(input, 'InvalidId!@#')
+    // test ID with invalid characters: !, #
+    await userEvent.type(input, 'InvalidId!#')
     await userEvent.click(searchButton)
 
     expect(mockSetFieldValue).toHaveBeenCalledTimes(1)
