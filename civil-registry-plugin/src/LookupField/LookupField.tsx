@@ -32,18 +32,21 @@ const registryErrMessage = i18n.t(
     "Failed to query civil registry. Please enter the person's details manually."
 )
 
-const IdErrorMessage = i18n.t(
-    "Invalid Patient ID. The ID should only contain letters or numbers."
-)
+const IdErrorMessage = i18n.t("Invalid Patient ID")
+
+const sanitizeString = (value: string): string => {
+    return DOMPurify.sanitize(value, { ALLOWED_TAGS: [] })
+}
 
 const isValidValue = (value: string) => {
     if (value === null || value === '') {
-        console.error("Value is null or empty")
+        console.error('Value is null or empty')
         return false
     }
 
-    const alphanumericPattern = /^[a-zA-Z0-9]+$/i
-    return alphanumericPattern.test(value)
+    // ID: alphanumeric, hyphens, dots, slashes, @
+    const idPattern = /^[a-zA-Z0-9\-_.@/]+$/
+    return idPattern.test(value)
 }
 
 type Props = {
@@ -113,20 +116,14 @@ export const LookupField = ({
     }, [personMapData])
 
     const handleSearch = useCallback(async () => {
-        if (!isValidValue(patientId)) {
-            console.error("Invalid Patient ID value")
+        const sanitizedId = sanitizeString(patientId).trim()
+
+        if (!isValidValue(sanitizedId)) {
+            console.error('Invalid Patient ID value')
             setIdError(true)
             return
         }
-        const fhirPerson = await query({ id: patientId })
-
-        // validation check
-        // Todo: validate actual fhir resource structure
-        if (fhirPerson == null || typeof fhirPerson !== 'object') {
-            console.error("Invalid data returned from registry lookup")
-            setMappingError(true)
-            return
-        }
+        const fhirPerson = await query({ id: sanitizedId })
 
         try {
             const lookupPerson = await jsonataExpression.evaluate(fhirPerson)
@@ -142,9 +139,7 @@ export const LookupField = ({
                     let sanitizedValue = value
 
                     if (typeof value === 'string') {
-                        sanitizedValue = DOMPurify.sanitize(value, {
-                            ALLOWED_TAGS: [],
-                        }).trim();
+                        sanitizedValue = sanitizeString(value).trim()
                     }
 
                     setFieldValue({ fieldId: key, value: sanitizedValue })
