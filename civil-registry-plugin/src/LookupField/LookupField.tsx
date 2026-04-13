@@ -39,14 +39,12 @@ const sanitizeString = (value: string): string => {
 }
 
 const isValidValue = (value: string) => {
-    if (value === null || value === '') {
+    // Generic validation: only ensure value exists
+    if (value === null || value === '' || value.length === 0) {
         console.error('Value is null or empty')
         return false
     }
-
-    // ID: alphanumeric, hyphens, dots, slashes, @
-    const idPattern = /^[a-zA-Z0-9\-_.@/]+$/
-    return idPattern.test(value)
+    return true
 }
 
 type Props = {

@@ -192,13 +192,6 @@ test('failed query', async () => {
 
     expect(mockSetFieldValue).toHaveBeenCalledTimes(1)
     expect(consoleErrorSpy).toHaveBeenCalledWith("Invalid Patient ID value")
-
-    // test ID with invalid characters: !, #
-    await userEvent.type(input, 'InvalidId!#')
-    await userEvent.click(searchButton)
-
-    expect(mockSetFieldValue).toHaveBeenCalledTimes(1)
-    expect(consoleErrorSpy).toHaveBeenCalledWith("Invalid Patient ID value")
 })
 
 test('sanitization by removing HTML tags from string values', async () => {
