@@ -288,6 +288,8 @@ The `Test` button in Route Manager permits you to try out the route once it is s
 
 * Sensitive data, like the national ID, should always be carried in the body of HTTP POST requests. Transmitting sensitive data in the body of POST requests, as opposed to including it in the URL query params, reduces the risk of personal identifiable information leaking into the server access logs.
 
+* The reference implementation does a basic and generic validation of the patient ID used [here](./civil-registry-plugin/src/LookupField/LookupField.tsx), i.e. it ensures it is not empty. This allows various formats of the ID that may be implemented across different use cases. Hence, it is advisable to validate the structure of the ID before passing it to the civil registry.
+
 * The reference implementation, by its nature, facilitates the searching and transferring of data which most likely contains personal identifying information. For this reason, a Privacy Impact Assessment (PIA) ought to be carried out before granting civil registry lookup access to DHIS2. In some jurisdictions (e.g., European Union), a PIA is required in order to comply with national regulations.
 
 # Support
