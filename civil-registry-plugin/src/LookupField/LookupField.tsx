@@ -1,5 +1,6 @@
 import i18n from '@dhis2/d2-i18n'
 import { Button, Help, Input, Label, Tooltip } from '@dhis2/ui'
+import DOMPurify from 'dompurify';
 import jsonata from 'jsonata'
 import debounce from 'lodash/debounce'
 import React, { useState, useCallback, useMemo } from 'react'
@@ -31,6 +32,21 @@ const registryErrMessage = i18n.t(
     "Failed to query civil registry. Please enter the person's details manually."
 )
 
+const IdErrorMessage = i18n.t("Invalid Patient ID")
+
+const sanitizeString = (value: string): string => {
+    return DOMPurify.sanitize(value, { ALLOWED_TAGS: [] })
+}
+
+const isValidValue = (value: string) => {
+    // Generic validation: only ensure value exists
+    if (value === null || value === '') {
+        console.error('Value is null or empty')
+        return false
+    }
+    return true
+}
+
 type Props = {
     setFieldValue: SetFieldValue
     fieldsMetadata: FieldsMetadata
@@ -55,6 +71,7 @@ export const LookupField = ({
         useCivilRegistryQuery()
     const [patientId, setPatientId] = useState(values['id'] || '')
     const [mappingError, setMappingError] = useState(false)
+    const [idError, setIdError] = useState(false)
 
     const updateFormValue = useCallback(
         debounce((value) => {
@@ -70,6 +87,7 @@ export const LookupField = ({
 
     const handleChange = useCallback(
         ({ value }: { value: string }) => {
+            setIdError(false)
             setPatientId(value)
             updateFormValue(value)
         },
@@ -96,17 +114,38 @@ export const LookupField = ({
     }, [personMapData])
 
     const handleSearch = useCallback(async () => {
-        const fhirPerson = await query({ id: patientId })
+        const sanitizedId = sanitizeString(patientId).trim()
+
+        if (!isValidValue(sanitizedId)) {
+            console.error('Invalid Patient ID value')
+            setIdError(true)
+            return
+        }
+        const fhirPerson = await query({ id: sanitizedId })
+
         try {
             const lookupPerson = await jsonataExpression.evaluate(fhirPerson)
+
+            if (!lookupPerson || Object.keys(lookupPerson).length === 0) {
+                setMappingError(true)
+                return
+            }
 
             // Take data returned from Route and set enrollment field values.
             // Expects a flat object, and for keys and values to match the
             // plugin's configured fields
+
             Object.entries(lookupPerson).forEach(([key, value]) => {
                 // Avoids setting values outside of plugin's configured fields
                 if (Object.hasOwn(fieldsMetadata, key)) {
-                    setFieldValue({ fieldId: key, value: value })
+                    // sanitization step
+                    let sanitizedValue = value
+
+                    if (typeof value === 'string') {
+                        sanitizedValue = sanitizeString(value).trim()
+                    }
+
+                    setFieldValue({ fieldId: key, value: sanitizedValue })
                 } else {
                     console.warn(
                         `Field ID "${key}" not found in configured fields; skipping value ${value}`
@@ -134,9 +173,14 @@ export const LookupField = ({
             !registryError &&
             !personMapError &&
             !mappingNotSetUp &&
-            !mappingError
+            !mappingError &&
+            !idError
         ) {
             return null
+        }
+
+        if (idError) {
+            return { message: IdErrorMessage, warning: true }
         }
 
         if (mappingNotSetUp) {
@@ -164,7 +208,7 @@ export const LookupField = ({
         }
 
         return null
-    }, [registryError, mappingNotSetUp, personMapError, mappingError])
+    }, [registryError, personMapError, mappingNotSetUp, mappingError, idError])
 
     const SearchButton = () => (
         <Button
