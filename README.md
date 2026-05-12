@@ -5,7 +5,7 @@
 3. [Overview](#overview)
    + [DHIS2 Capture App Plugin](#dhis2-capture-app-plugin)
    + [Reverse Proxy](#reverse-proxy)
-   + [Surveillance System](#surveillance-system)
+   + [DHIS2](#dhis2)
    + [Mediator](#mediator)
    + [Authorisation Server](#authorisation-server)
    + [Civil Registry Gateway](#civil-registry-gateway)
@@ -187,7 +187,7 @@ Given the JSONata expression fetched from the data store and the above response 
 
 As in many real-world DHIS2 installations, [Nginx](https://nginx.org/) sits in front of DHIS2 to provide reverse proxy capabilities. For this reference implementation, the reverse proxy is primarily configured to set a few request headers and forward requests to the DHIS2 web server. However, in practice, the reverse proxy would also be configured to cache content, rewrite URLs, balance the load, and so on.  
 
-### Surveillance System
+### DHIS2
 
 The minimum version of your DHIS2 instance should be at least [v40.5](https://dhis2.org/downloads/) when seeking to adapt the reference implementation. DHIS2 is customised in this set up to present survey questions and collect the answers. DHIS2 can then aggregate these answers for reporting and visualisation purposes. 
 
