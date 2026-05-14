@@ -7,5 +7,14 @@
     "headers": {
       "X-API-KEY": "$ecr3t"
     }
+  },
+  "sharing": {
+    "userGroups": {
+      "byS9SDFsd9p": {
+        "access": "r-------",
+        "id": "byS9SDFsd9p"
+      }
+    },
+    "public": "--------"
   }
 }
