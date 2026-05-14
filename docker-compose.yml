@@ -1,11 +1,9 @@
 services:
   dhis2:
-    image: "${DHIS2_IMAGE:-dhis2/core:42.2}"
+    image: "${DHIS2_IMAGE:-dhis2/core:42.4}"
     restart: unless-stopped
     volumes:
       - ./config/dhis2/dhis.conf:/opt/dhis2/dhis.conf:ro
-    environment:
-      JAVA_OPTS: "-Dcontext.path='${DHIS2_CORE_CONTEXT_PATH:-}' -Dlog4j2.configurationFile=/opt/dhis2/log4j2.xml"
     depends_on:
       db:
         condition: service_healthy
@@ -135,19 +133,16 @@ services:
         curl -X PATCH -s --max-time 0 -H "Authorization: Basic YWRtaW46ZGlzdHJpY3Q=" -H "Content-Type: application/json" -d @/roles.json http://dhis2:8080/userRoles/yrB6vc5Ip3r
         curl -X POST -s --max-time 0 -H "Authorization: Basic YWRtaW46ZGlzdHJpY3Q=" -H "Content-Type: application/json" -d @/route.json http://dhis2:8080/api/routes
         curl -X POST -s --max-time 0 -H "Authorization: Basic YWRtaW46ZGlzdHJpY3Q=" -H "Content-Type: application/json" -d @/pluginConfig.json http://dhis2:8080/api/dataStore/capture/dataEntryForms
-        curl -X POST -s --max-time 0 -H "Authorization: Basic YWRtaW46ZGlzdHJpY3Q=" -H "Content-Type: application/json" http://dhis2:8080/api/appHub/e66cece4-8582-4329-81c2-043869cf1614
+        curl -X POST -s --max-time 0 -H "Authorization: Basic YWRtaW46ZGlzdHJpY3Q=" -H "Content-Type: application/json" http://dhis2:8080/api/appHub/37831dc1-2ec9-4d77-b86b-57721b622344
         curl -X POST -s --max-time 0 -H "Authorization: Basic YWRtaW46ZGlzdHJpY3Q=" -H "Content-Type: application/json" -d @/personMap.json http://dhis2:8080/api/dataStore/civilRegistryPlugin/personMap
-
-      # ls /civil-registry-plugin/*.zip | head -1 | xargs -0 -I '{}' wget --quiet --timeout=0 --header 'Authorization: Basic YWRtaW46ZGlzdHJpY3Q=' --post-file '{}' 'http://dhis2:8080/api/apps'
-      # ls /route-manager-app/*.zip | head -1 | xargs -0 -I '{}' wget --quiet --timeout=0 --header 'Authorization: Basic YWRtaW46ZGlzdHJpY3Q=' --post-file {} 'http://dhis2:8080/api/apps'
+        curl -X POST -s --max-time 0 -H "Authorization: Basic YWRtaW46ZGlzdHJpY3Q=" -F file=@/civil-registry-plugin.zip http://dhis2:8080/api/apps
     volumes:
       - ./config/civil-registry/persons.json:/persons.json:ro
       - ./config/dhis2/roles.json:/roles.json:ro
       - ./config/dhis2/route.json:/route.json:ro
       - ./config/dhis2/pluginConfig.json:/pluginConfig.json:ro
       - ./config/dhis2/personMap.json:/personMap.json:ro
-      #- ./civil-registry-plugin/build/bundle/:/civil-registry-plugin/:ro
-      #- ./route-manager-app/build/bundle/:/route-manager-app/:ro
+      - ./civil-registry-plugin/build/bundle/civil-registry-plugin-1.0.0.zip:/civil-registry-plugin.zip:ro
     depends_on:
       civil-registry:
         condition: service_healthy
