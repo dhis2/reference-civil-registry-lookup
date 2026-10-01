@@ -26,7 +26,7 @@ This reference implementation illustrates a [DHIS2 Capture app plugin](https://d
 
 The plugin accesses the civil registry through a [route](https://docs.dhis2.org/en/develop/using-the-api/dhis-core-version-master/route.html) configured in DHIS2. This DHIS2 route proxies lookup requests to a mediator restricting access to the civil registry. On receiving the route request, the mediator queries the civil registry for the person where the results are returned to the DHIS2 route client, that is, the Capture app plugin. The information originating from the civil registry could potentially contain the national ID, first name, last name, gender, date of birth, and so on.
 
-This is an example meant to guide you in developing your own civil registry lookup solution. It **SHOULD NOT** be used directly in production without adapting it to your local context.
+The expected audience of this reference implementation is enterprise and solution architects, integrators, and implementation engineers. This is a self-contained, working example meant to technically guide you in developing your own integration between an LIS and DHIS2. It **SHOULD NOT** be used directly in production without adapting it to your local context.
 
 ## Quick Start
 
